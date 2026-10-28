@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './modules/dashboard/dashboard.component';
-import { ItemsComponent } from './modules/catalog/items.component';
-import { PosComponent } from './modules/sales/pos.component';
-import { InventoryComponent } from './modules/inventory/inventory.component';
-import { PartnersComponent } from './modules/partners/partners.component';
+import { DashboardComponent } from './modules/DASHBOARD/dashboard.component';
+import { ItemsComponent } from './modules/WMS/items.component';
+import { PosComponent } from './modules/SD/pos.component';
+import { InventoryComponent } from './modules/WMS/inventory.component';
+import { PartnersComponent } from './modules/CRM/partners.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

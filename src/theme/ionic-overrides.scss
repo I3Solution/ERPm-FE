@@ -271,7 +271,7 @@ ion-segment {
 
   ion-segment-button {
     --background: transparent;
-    --background-checked: #ffffff;
+    --background-checked: var(--erpm-bg-surface);
     --color: var(--erpm-text-muted);
     --color-checked: var(--erpm-text-heading);
     --indicator-color: transparent;

@@ -157,7 +157,7 @@
 
       /* Hover highlight with soft brand accent indicator */
       &:hover {
-        background-color: #f8faff;
+        background-color: var(--erpm-bg-surface-active);
         box-shadow: inset 3px 0 0 var(--erpm-primary-600);
 
         .row-action-btn {
@@ -175,9 +175,9 @@
   /* Striped table variant */
   &.erpm-table-striped {
     tbody tr:nth-child(even) {
-      background-color: #fafbfc;
+      background-color: var(--erpm-bg-surface-subtle);
       &:hover {
-        background-color: #f8faff;
+        background-color: var(--erpm-bg-surface-active);
       }
     }
   }

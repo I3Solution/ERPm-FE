@@ -160,3 +160,118 @@
   --ion-toolbar-background: var(--erpm-bg-surface);
   --ion-tab-bar-background: var(--erpm-bg-surface);
 }
+
+
+/* ==========================================================================
+   ERPM DARK THEME TOKENS
+   Activated via body.dark-theme, html[data-theme="dark"], or .ion-palette-dark
+   High-contrast, elegant Fintech/SaaS dark aesthetic
+   ========================================================================== */
+
+body.dark-theme,
+[data-theme="dark"],
+.ion-palette-dark {
+  /* Surfaces & Backgrounds */
+  --erpm-bg-canvas: #090d16;
+  --erpm-bg-surface: #111827;
+  --erpm-bg-surface-elevated: #1e293b;
+  --erpm-bg-surface-subtle: #161f30;
+  --erpm-bg-surface-active: #1e2a3f;
+
+  /* Borders & Dividers */
+  --erpm-border-subtle: #1e293b;
+  --erpm-border: #243248;
+  --erpm-border-strong: #334155;
+  --erpm-border-focus: #818cf8;
+
+  /* Text Colors */
+  --erpm-text-heading: #f8fafc;
+  --erpm-text-body: #cbd5e1;
+  --erpm-text-muted: #94a3b8;
+  --erpm-text-subtle: #64748b;
+  --erpm-text-inverse: #090d16;
+
+  /* Brand Palette Overrides for Dark Mode */
+  --erpm-primary-50: rgba(99, 102, 241, 0.14);
+  --erpm-primary-100: rgba(99, 102, 241, 0.22);
+  --erpm-primary-200: rgba(99, 102, 241, 0.32);
+  --erpm-primary-300: #818cf8;
+  --erpm-primary-400: #6366f1;
+  --erpm-primary-500: #6366f1;
+  --erpm-primary-600: #818cf8; /* Lightened primary for crisp dark background contrast */
+  --erpm-primary-700: #a5b4fc;
+  --erpm-primary-800: #c7d2fe;
+  --erpm-primary-900: #e0e7ff;
+  --erpm-primary-rgb: 99, 102, 241;
+
+  /* Brand Gradients in Dark */
+  --erpm-gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --erpm-gradient-primary-hover: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --erpm-gradient-accent: linear-gradient(135deg, #38bdf8 0%, #60a5fa 100%);
+  --erpm-gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --erpm-gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --erpm-gradient-danger: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+  --erpm-gradient-surface: linear-gradient(180deg, #111827 0%, #090d16 100%);
+  --erpm-gradient-dark: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+
+  /* Status Colors in Dark */
+  --erpm-success-bg: rgba(16, 185, 129, 0.15);
+  --erpm-success-border: rgba(16, 185, 129, 0.35);
+  --erpm-success-text: #34d399;
+  --erpm-success-core: #10b981;
+
+  --erpm-warning-bg: rgba(245, 158, 11, 0.15);
+  --erpm-warning-border: rgba(245, 158, 11, 0.35);
+  --erpm-warning-text: #fbbf24;
+  --erpm-warning-core: #f59e0b;
+
+  --erpm-danger-bg: rgba(244, 63, 94, 0.15);
+  --erpm-danger-border: rgba(244, 63, 94, 0.35);
+  --erpm-danger-text: #fb7185;
+  --erpm-danger-core: #f43f5e;
+
+  --erpm-info-bg: rgba(14, 165, 233, 0.15);
+  --erpm-info-border: rgba(14, 165, 233, 0.35);
+  --erpm-info-text: #38bdf8;
+  --erpm-info-core: #0ea5e9;
+
+  --erpm-neutral-bg: rgba(100, 116, 139, 0.15);
+  --erpm-neutral-border: rgba(100, 116, 139, 0.3);
+  --erpm-neutral-text: #94a3b8;
+  --erpm-neutral-core: #64748b;
+
+  /* Glassmorphism for Dark Mode */
+  --erpm-glass-bg: rgba(17, 24, 39, 0.88);
+  --erpm-glass-border: 1px solid rgba(36, 50, 72, 0.7);
+  --erpm-glass-blur: blur(12px);
+
+  /* Soft Ambient Shadows in Dark */
+  --erpm-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --erpm-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+  --erpm-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --erpm-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+  --erpm-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.6);
+  --erpm-shadow-glow: 0 0 25px -2px rgba(99, 102, 241, 0.35);
+  --erpm-shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.35);
+
+  /* Ionic Overrides in Dark Mode */
+  --ion-background-color: var(--erpm-bg-canvas);
+  --ion-text-color: var(--erpm-text-body);
+  --ion-border-color: var(--erpm-border);
+  --ion-item-background: var(--erpm-bg-surface);
+  --ion-card-background: var(--erpm-bg-surface);
+  --ion-toolbar-background: var(--erpm-bg-surface);
+  --ion-tab-bar-background: var(--erpm-bg-surface);
+
+  --ion-color-dark: #f8fafc;
+  --ion-color-dark-rgb: 248, 250, 252;
+  --ion-color-light: #111827;
+  --ion-color-light-rgb: 17, 24, 39;
+  --ion-color-medium: #94a3b8;
+  --ion-color-medium-rgb: 148, 163, 184;
+
+  --ion-color-primary: #6366f1;
+  --ion-color-primary-rgb: 99, 102, 241;
+  --ion-color-primary-shade: #4f46e5;
+  --ion-color-primary-tint: #818cf8;
+}

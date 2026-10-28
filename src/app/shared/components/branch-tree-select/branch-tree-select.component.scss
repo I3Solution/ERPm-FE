@@ -160,7 +160,7 @@
     font-size: 0.8rem;
     border-radius: var(--erpm-radius-sm);
     border: 1px solid var(--erpm-border);
-    background-color: #ffffff;
+    background-color: var(--erpm-bg-surface);
     color: var(--erpm-text-heading);
     caret-color: var(--erpm-text-heading, #0f172a) !important;
     cursor: text !important;
@@ -259,7 +259,7 @@
     padding: 0.6rem 0.75rem;
     border: 1px dashed var(--erpm-primary-200);
     border-radius: var(--erpm-radius-sm);
-    background-color: #fafbfc;
+    background-color: var(--erpm-bg-surface-subtle);
 
     &:hover {
       background-color: var(--erpm-primary-50);

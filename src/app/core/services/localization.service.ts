@@ -27,6 +27,12 @@ const DEFAULT_FALLBACK_DICTIONARY: Record<string, Record<string, string>> = {
     'common.select_placeholder': 'Chọn một mục...',
     'common.saving': 'Đang lưu...',
 
+    /* Theme */
+    'theme.toggle': 'Chuyển đổi giao diện',
+    'theme.dark': 'Chế độ Tối',
+    'theme.light': 'Chế độ Sáng',
+    'theme.system': 'Theo hệ thống',
+
     /* Menu */
     'menu.dashboard': 'Tổng quan',
     'menu.catalog': 'Sản phẩm (ITEM)',
@@ -224,6 +230,12 @@ const DEFAULT_FALLBACK_DICTIONARY: Record<string, Record<string, string>> = {
     'common.all': 'All',
     'common.select_placeholder': 'Select an option...',
     'common.saving': 'Saving...',
+
+    /* Theme */
+    'theme.toggle': 'Toggle Theme',
+    'theme.dark': 'Dark Mode',
+    'theme.light': 'Light Mode',
+    'theme.system': 'System Theme',
 
     /* Menu */
     'menu.dashboard': 'Dashboard',

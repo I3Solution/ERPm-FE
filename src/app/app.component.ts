@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe } from './shared/pipes/translate.pipe';
 import { LocalizationService } from './core/services/localization.service';
-
+import { ThemeService } from './core/services/theme.service';
 import { BranchTreeSelectComponent } from './shared/components/branch-tree-select/branch-tree-select.component';
 
 @Component({
@@ -21,13 +21,24 @@ import { BranchTreeSelectComponent } from './shared/components/branch-tree-selec
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(private localizationService: LocalizationService) {}
+  constructor(
+    private localizationService: LocalizationService,
+    private themeService: ThemeService
+  ) {}
 
   public get currentLang() {
     return this.localizationService.currentLang;
   }
 
+  public get isDarkMode() {
+    return this.themeService.isDarkMode;
+  }
+
   public setLanguage(lang: 'vi' | 'en'): void {
     this.localizationService.setLanguage(lang);
+  }
+
+  public toggleTheme(): void {
+    this.themeService.toggleTheme();
   }
 }

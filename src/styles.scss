@@ -13,6 +13,7 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+@import "@ionic/angular/css/palettes/dark.class.css";
 
 /* 2. ERPm Custom Design System & Theme Modules */
 @import "./theme/variables.scss";
@@ -222,4 +223,42 @@ html, body {
   .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .lg\:col-span-2 { grid-column: span 2 / span 2; }
+}
+
+
+/* ==========================================================================
+   THEME ADAPTATION UTILITIES & TRANSITIONS
+   Ensures seamless contrast and fluid animation between Light & Dark themes
+   ========================================================================== */
+.text-slate-900, .text-slate-800 { color: var(--erpm-text-heading) !important; }
+.text-slate-700, .text-slate-600 { color: var(--erpm-text-body) !important; }
+.text-slate-500, .text-slate-400 { color: var(--erpm-text-muted) !important; }
+.text-slate-300 { color: var(--erpm-text-subtle) !important; }
+.bg-slate-50 { background-color: var(--erpm-bg-canvas) !important; }
+.bg-white { background-color: var(--erpm-bg-surface) !important; }
+.text-indigo-600 { color: var(--erpm-primary-600) !important; }
+.text-amber-400 { color: #fbbf24 !important; }
+
+/* Fluid Theme Transitions */
+body {
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.desktop-sidebar,
+.top-header,
+.mobile-bottom-bar,
+.erpm-card,
+.erpm-stat-card,
+.erpm-table-container,
+.erpm-modal,
+.custom-select-trigger,
+.custom-select-dropdown,
+.branch-select-trigger,
+.branch-dropdown-menu,
+.pos-cart-panel,
+.product-card {
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }

@@ -1,0 +1,15 @@
+[submodule "src/app/modules/catalog"]
+	path = src/app/modules/catalog
+	url = https://github.com/I3Solution/ERPm-FE-catalog.git
+[submodule "src/app/modules/dashboard"]
+	path = src/app/modules/dashboard
+	url = https://github.com/I3Solution/ERPm-FE-dashboard.git
+[submodule "src/app/modules/inventory"]
+	path = src/app/modules/inventory
+	url = https://github.com/I3Solution/ERPm-FE-inventory.git
+[submodule "src/app/modules/partners"]
+	path = src/app/modules/partners
+	url = https://github.com/I3Solution/ERPm-FE-partners.git
+[submodule "src/app/modules/sales"]
+	path = src/app/modules/sales
+	url = https://github.com/I3Solution/ERPm-FE-sales.git

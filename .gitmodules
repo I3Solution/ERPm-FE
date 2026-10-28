@@ -26,5 +26,6 @@
 	path = src/app/modules/PM
 	url = https://github.com/I3Solution/ERPm-FE-PM.git
 [submodule "src/app/modules/DASHBOARD"]
-	path = src/app/modules/DASHBOARD
+	path = src/app/modules/dashboard
 	url = https://github.com/I3Solution/ERPm-FE-DASHBOARD.git
+

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './modules/DASHBOARD/dashboard.component';
+import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { ItemsComponent } from './modules/WMS/items.component';
 import { PosComponent } from './modules/SD/pos.component';
 import { InventoryComponent } from './modules/WMS/inventory.component';

@@ -11,8 +11,8 @@ export enum AttributeDataType {
 }
 
 export interface ItemAttributeDto {
-  id: string;
-  categoryId?: string;
+  id: number;
+  categoryId?: number;
   categoryName?: string;
   code: string;
   name: string;
@@ -25,15 +25,15 @@ export interface ItemAttributeDto {
 }
 
 export interface ItemDto {
-  id: string;
+  id: number;
   code: string;
   barcode?: string;
   name: string;
   translations: Record<string, string>;
   itemType: number;
-  categoryId?: string;
+  categoryId?: number;
   categoryName?: string;
-  baseUomId: string;
+  baseUomId: number;
   baseUomName?: string;
   salePrice: number;
   costPrice: number;
@@ -51,8 +51,8 @@ export interface CreateItemRequest {
   name: string;
   translations?: Record<string, string>;
   itemType: number;
-  categoryId?: string;
-  baseUomId: string;
+  categoryId?: number;
+  baseUomId: number;
   salePrice: number;
   costPrice: number;
   minStockAlert: number;
@@ -71,7 +71,7 @@ export interface PagedResult<T> {
 
 const DEFAULT_ATTRIBUTES: ItemAttributeDto[] = [
   {
-    id: 'attr-001',
+    id: 1,
     code: 'color',
     name: 'Màu sắc',
     dataType: AttributeDataType.Select,
@@ -81,7 +81,7 @@ const DEFAULT_ATTRIBUTES: ItemAttributeDto[] = [
     sortOrder: 1
   },
   {
-    id: 'attr-002',
+    id: 2,
     code: 'size',
     name: 'Kích cỡ / Quy cách',
     dataType: AttributeDataType.Select,
@@ -91,7 +91,7 @@ const DEFAULT_ATTRIBUTES: ItemAttributeDto[] = [
     sortOrder: 2
   },
   {
-    id: 'attr-003',
+    id: 3,
     code: 'origin',
     name: 'Xuất xứ',
     dataType: AttributeDataType.Text,
@@ -101,7 +101,7 @@ const DEFAULT_ATTRIBUTES: ItemAttributeDto[] = [
     sortOrder: 3
   },
   {
-    id: 'attr-004',
+    id: 4,
     code: 'warranty_months',
     name: 'Thời hạn bảo hành',
     dataType: AttributeDataType.Number,
@@ -146,7 +146,7 @@ export class ItemService {
       });
   }
 
-  public loadAttributes(categoryId?: string): void {
+  public loadAttributes(categoryId?: number): void {
     const url = categoryId
       ? `${this.attributesApiUrl}/by-category/${categoryId}`
       : `${this.attributesApiUrl}/by-category`;

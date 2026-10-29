@@ -9,7 +9,7 @@ export enum PartnerType {
 }
 
 export interface PartnerDto {
-  id: string;
+  id: number;
   code: string;
   name: string;
   partnerType: PartnerType;
@@ -36,7 +36,7 @@ export interface CreatePartnerRequest {
 
 const MOCK_PARTNERS: PartnerDto[] = [
   {
-    id: '66666666-6666-6666-6666-666666666666',
+    id: 1,
     code: 'KH0001',
     name: 'Công ty TNHH Giải pháp Minh Khang',
     partnerType: PartnerType.Customer,
@@ -49,7 +49,7 @@ const MOCK_PARTNERS: PartnerDto[] = [
     isActive: true
   },
   {
-    id: '77777777-7777-7777-7777-777777777777',
+    id: 2,
     code: 'NCC0001',
     name: 'Nhà cung ứng Văn phòng phẩm Ánh Dương',
     partnerType: PartnerType.Vendor,

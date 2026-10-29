@@ -26,7 +26,7 @@ export class BranchTreeSelectComponent implements OnInit {
   public readonly allBranchesOption = ALL_BRANCHES_OPTION;
   public isOpen = signal<boolean>(false);
   public searchKeyword = signal<string>('');
-  public expandedIds = signal<Set<string>>(new Set());
+  public expandedIds = signal<Set<number>>(new Set());
 
   // Filtered tree supporting keyword search
   public displayedTree = computed<BranchDto[]>(() => {
@@ -94,7 +94,7 @@ export class BranchTreeSelectComponent implements OnInit {
     this.searchKeyword.set('');
   }
 
-  public toggleExpand(id: string, event: Event): void {
+  public toggleExpand(id: number, event: Event): void {
     event.stopPropagation();
     this.expandedIds.update(set => {
       const next = new Set(set);
@@ -107,7 +107,7 @@ export class BranchTreeSelectComponent implements OnInit {
     });
   }
 
-  public isExpanded(id: string): boolean {
+  public isExpanded(id: number): boolean {
     return this.expandedIds().has(id);
   }
 

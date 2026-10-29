@@ -9,17 +9,17 @@ export enum PaymentMethod {
 }
 
 export interface SalesInvoiceItemRequest {
-  itemId: string;
+  itemId: number;
   quantity: number;
   unitPrice: number;
   discountPercent?: number;
 }
 
 export interface CreateSalesInvoiceRequest {
-  branchId?: string;
-  customerId?: string;
+  branchId?: number;
+  customerId?: number;
   customerName?: string;
-  warehouseId: string;
+  warehouseId: number;
   paymentMethod: PaymentMethod;
   discountAmount?: number;
   paidAmount?: number;
@@ -28,7 +28,7 @@ export interface CreateSalesInvoiceRequest {
 }
 
 export interface SalesInvoiceItemDto {
-  itemId: string;
+  itemId: number;
   itemCode: string;
   itemName: string;
   quantity: number;
@@ -37,10 +37,10 @@ export interface SalesInvoiceItemDto {
 }
 
 export interface SalesInvoiceDto {
-  id: string;
+  id: number;
   invoiceNumber: string;
   invoiceDate: string;
-  branchId?: string;
+  branchId?: number;
   branchCode?: string;
   branchName?: string;
   customerName: string;
@@ -55,7 +55,7 @@ export interface SalesInvoiceDto {
 
 const MOCK_INVOICES: SalesInvoiceDto[] = [
   {
-    id: 'e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b',
+    id: 1,
     invoiceNumber: 'HD-20261011-0001',
     invoiceDate: new Date().toISOString(),
     customerName: 'Khách lẻ',
@@ -67,7 +67,7 @@ const MOCK_INVOICES: SalesInvoiceDto[] = [
     remainingDebt: 0,
     items: [
       {
-        itemId: 'b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e',
+        itemId: 2,
         itemCode: 'SP0002',
         itemName: 'Giấy in Double A A4 70gsm',
         quantity: 2,
@@ -89,7 +89,7 @@ export class SalesService {
 
   constructor(private http: HttpClient) {}
 
-  public loadInvoices(branchId?: string | null): void {
+  public loadInvoices(branchId?: number | null): void {
     this.isLoading.set(true);
     const url = branchId ? `${this.apiUrl}/invoices?branchId=${branchId}` : `${this.apiUrl}/invoices`;
     this.http.get<{ success: boolean; data: SalesInvoiceDto[] }>(url)

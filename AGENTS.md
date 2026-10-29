@@ -30,3 +30,14 @@ Chào bạn AI Assistant, bạn đang làm việc trên repository **ERPm-FE** -
    - Đa ngôn ngữ (i18n): Mọi text hiển thị bắt buộc qua pipe `translate`.
    - Cursor pointer & User select: Không để caret nhấp nháy trên non-editable text, các vùng tương tác ép `cursor: pointer`.
    - **Code Comments (English Only):** Toàn bộ comment trong TypeScript, HTML, SCSS bắt buộc 100% bằng Tiếng Anh.
+
+5. **Quy tắc Git Commit (Commit Message Convention):**
+   - Mọi lệnh `git commit` trên `ERPm-FE` và các Submodules bắt buộc tuân thủ cú pháp:
+     `[tag] nội dung commit` hoặc `[tag](MODULE) nội dung commit`
+   - **Bộ 6 Tag chuẩn:**
+     - `[add]`: Thêm mới màn hình, component, service, tính năng UI.
+     - `[update]`: Cập nhật giao diện, luồng tương tác hoặc tối ưu hiệu năng.
+     - `[fix]`: Sửa lỗi hiển thị, lỗi logic hoặc lỗi build.
+     - `[refactor]`: Tái cấu trúc component/service không làm thay đổi hành vi.
+     - `[db]`: Cập nhật mock data hoặc local storage schema.
+     - `[docs]`: Cập nhật tài liệu (`PROJECT_MASTER.md`, `AGENTS.md`, `.ai/`).

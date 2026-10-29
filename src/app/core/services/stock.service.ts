@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, of, map, tap } from 'rxjs';
 
 export interface WarehouseDto {
-  id: string;
-  branchId?: string;
+  id: number;
+  branchId?: number;
   branchName?: string;
   code: string;
   name: string;
@@ -14,9 +14,9 @@ export interface WarehouseDto {
 }
 
 export interface StockBalanceDto {
-  warehouseId: string;
+  warehouseId: number;
   warehouseName: string;
-  itemId: string;
+  itemId: number;
   itemCode: string;
   itemName: string;
   barcode?: string;
@@ -28,22 +28,22 @@ export interface StockBalanceDto {
 }
 
 export interface StockReceiptItemRequest {
-  itemId: string;
+  itemId: number;
   quantity: number;
   unitPrice: number;
 }
 
 export interface CreateStockReceiptRequest {
-  branchId?: string;
-  warehouseId: string;
-  supplierId?: string;
+  branchId?: number;
+  warehouseId: number;
+  supplierId?: number;
   notes?: string;
   items: StockReceiptItemRequest[];
 }
 
 const MOCK_WAREHOUSES: WarehouseDto[] = [
   {
-    id: '44444444-4444-4444-4444-444444444444',
+    id: 1,
     code: 'KHO-TONG',
     name: 'Kho Tổng Hà Nội',
     address: 'Số 1 Phố Huế, Hoàn Kiếm, Hà Nội',
@@ -53,9 +53,9 @@ const MOCK_WAREHOUSES: WarehouseDto[] = [
 
 const MOCK_BALANCES: StockBalanceDto[] = [
   {
-    warehouseId: '44444444-4444-4444-4444-444444444444',
+    warehouseId: 1,
     warehouseName: 'Kho Tổng Hà Nội',
-    itemId: 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d',
+    itemId: 1,
     itemCode: 'SP0001',
     itemName: 'Bút bi Thiên Long 0.5mm',
     barcode: '8935001812345',
@@ -66,9 +66,9 @@ const MOCK_BALANCES: StockBalanceDto[] = [
     isLowStock: false
   },
   {
-    warehouseId: '44444444-4444-4444-4444-444444444444',
+    warehouseId: 1,
     warehouseName: 'Kho Tổng Hà Nội',
-    itemId: 'b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e',
+    itemId: 2,
     itemCode: 'SP0002',
     itemName: 'Giấy in Double A A4 70gsm',
     barcode: '8936002934567',
@@ -93,7 +93,7 @@ export class StockService {
 
   constructor(private http: HttpClient) {}
 
-  public loadWarehouses(branchId?: string | null): void {
+  public loadWarehouses(branchId?: number | null): void {
     const url = branchId ? `${this.apiUrl}/warehouses?branchId=${branchId}` : `${this.apiUrl}/warehouses`;
     this.http.get<{ success: boolean; data: WarehouseDto[] }>(url)
       .subscribe({
@@ -102,11 +102,11 @@ export class StockService {
             this.warehouses.set(res.data);
           }
         },
-        error: (err) => console.error('Lỗi khi tải danh sách kho:', err)
+        error: (err) => console.error('Failed to load warehouses:', err)
       });
   }
 
-  public loadBalances(warehouseId?: string | null, branchId?: string | null): void {
+  public loadBalances(warehouseId?: number | null, branchId?: number | null): void {
     this.isLoading.set(true);
     const params: string[] = [];
     if (warehouseId) params.push(`warehouseId=${warehouseId}`);

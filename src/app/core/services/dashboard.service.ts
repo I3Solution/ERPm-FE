@@ -55,7 +55,7 @@ export class DashboardService {
 
   constructor(private http: HttpClient) {}
 
-  public loadMetrics(branchId?: string | null): void {
+  public loadMetrics(branchId?: number | null): void {
     this.isLoading.set(true);
     const url = branchId ? `${this.apiUrl}?branchId=${branchId}` : this.apiUrl;
     this.http.get<{ success: boolean; data: DashboardMetricsDto }>(url)

@@ -4,10 +4,10 @@ import { Observable, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface BranchDto {
-  id: string;
+  id: number;
   code: string;
   name: string;
-  parentId?: string | null;
+  parentId?: number | null;
   parentName?: string | null;
   address?: string | null;
   phone?: string | null;
@@ -20,15 +20,15 @@ export interface BranchDto {
 export interface CreateBranchRequest {
   code: string;
   name: string;
-  parentId?: string | null;
+  parentId?: number | null;
   address?: string | null;
   phone?: string | null;
   email?: string | null;
 }
 
-// Special Global Scope Branch option (Toàn công ty / Tất cả chi nhánh)
+// Special Global Scope Branch option (All company branches)
 export const ALL_BRANCHES_OPTION: BranchDto = {
-  id: '00000000-0000-0000-0000-000000000000',
+  id: 0,
   code: 'ALL',
   name: '🌐 Toàn hệ thống (Tất cả chi nhánh)',
   isDefault: false,
@@ -38,7 +38,7 @@ export const ALL_BRANCHES_OPTION: BranchDto = {
 
 const MOCK_BRANCH_TREE: BranchDto[] = [
   {
-    id: '00000000-0000-0000-0000-000000000001',
+    id: 1,
     code: 'root',
     name: 'Tổng Công Ty (Tập đoàn)',
     address: 'Tòa nhà Keangnam, Hà Nội',
@@ -46,37 +46,37 @@ const MOCK_BRANCH_TREE: BranchDto[] = [
     isActive: true,
     children: [
       {
-        id: '00000000-0000-0000-0000-000000000010',
+        id: 10,
         code: 'KMB',
         name: 'Khối Miền Bắc',
-        parentId: '00000000-0000-0000-0000-000000000001',
+        parentId: 1,
         isDefault: false,
         isActive: true,
         children: [
           {
-            id: '00000000-0000-0000-0000-000000000011',
+            id: 11,
             code: 'CN-HN',
             name: 'Chi nhánh Hà Nội (HQ)',
-            parentId: '00000000-0000-0000-0000-000000000010',
+            parentId: 10,
             address: 'Số 1 Phố Huế, Hoàn Kiếm',
             isDefault: false,
             isActive: true,
             children: [
               {
-                id: '00000000-0000-0000-0000-000000000012',
+                id: 12,
                 code: 'CH-HK',
                 name: 'Cửa hàng Hoàn Kiếm',
-                parentId: '00000000-0000-0000-0000-000000000011',
+                parentId: 11,
                 address: 'Tràng Tiền, Hoàn Kiếm',
                 isDefault: false,
                 isActive: true,
                 children: []
               },
               {
-                id: '00000000-0000-0000-0000-000000000013',
+                id: 13,
                 code: 'CH-CG',
                 name: 'Cửa hàng Cầu Giấy',
-                parentId: '00000000-0000-0000-0000-000000000011',
+                parentId: 11,
                 address: 'Xuân Thủy, Cầu Giấy',
                 isDefault: false,
                 isActive: true,
@@ -85,10 +85,10 @@ const MOCK_BRANCH_TREE: BranchDto[] = [
             ]
           },
           {
-            id: '00000000-0000-0000-0000-000000000014',
+            id: 14,
             code: 'CN-HP',
             name: 'Chi nhánh Hải Phòng',
-            parentId: '00000000-0000-0000-0000-000000000010',
+            parentId: 10,
             address: 'Lê Hồng Phong, Hải Phòng',
             isDefault: false,
             isActive: true,
@@ -97,37 +97,37 @@ const MOCK_BRANCH_TREE: BranchDto[] = [
         ]
       },
       {
-        id: '00000000-0000-0000-0000-000000000020',
+        id: 20,
         code: 'KMN',
         name: 'Khối Miền Nam',
-        parentId: '00000000-0000-0000-0000-000000000001',
+        parentId: 1,
         isDefault: false,
         isActive: true,
         children: [
           {
-            id: '00000000-0000-0000-0000-000000000021',
+            id: 21,
             code: 'CN-HCM',
             name: 'Chi nhánh TP. Hồ Chí Minh',
-            parentId: '00000000-0000-0000-0000-000000000020',
+            parentId: 20,
             address: 'Nguyễn Huệ, Quận 1',
             isDefault: false,
             isActive: true,
             children: [
               {
-                id: '00000000-0000-0000-0000-000000000022',
+                id: 22,
                 code: 'CH-Q1',
                 name: 'Cửa hàng Quận 1',
-                parentId: '00000000-0000-0000-0000-000000000021',
+                parentId: 21,
                 address: 'Lê Lợi, Quận 1',
                 isDefault: false,
                 isActive: true,
                 children: []
               },
               {
-                id: '00000000-0000-0000-0000-000000000023',
+                id: 23,
                 code: 'CH-TD',
                 name: 'Cửa hàng Thủ Đức',
-                parentId: '00000000-0000-0000-0000-000000000021',
+                parentId: 21,
                 address: 'Võ Văn Ngân, Thủ Đức',
                 isDefault: false,
                 isActive: true,
@@ -136,10 +136,10 @@ const MOCK_BRANCH_TREE: BranchDto[] = [
             ]
           },
           {
-            id: '00000000-0000-0000-0000-000000000024',
+            id: 24,
             code: 'CN-CT',
             name: 'Chi nhánh Cần Thơ',
-            parentId: '00000000-0000-0000-0000-000000000020',
+            parentId: 20,
             address: 'Ninh Kiều, Cần Thơ',
             isDefault: false,
             isActive: true,
@@ -148,18 +148,18 @@ const MOCK_BRANCH_TREE: BranchDto[] = [
         ]
       },
       {
-        id: '00000000-0000-0000-0000-000000000030',
+        id: 30,
         code: 'KMT',
         name: 'Khối Miền Trung',
-        parentId: '00000000-0000-0000-0000-000000000001',
+        parentId: 1,
         isDefault: false,
         isActive: true,
         children: [
           {
-            id: '00000000-0000-0000-0000-000000000031',
+            id: 31,
             code: 'CN-DN',
             name: 'Chi nhánh Đà Nẵng',
-            parentId: '00000000-0000-0000-0000-000000000030',
+            parentId: 30,
             address: 'Bạch Đằng, Đà Nẵng',
             isDefault: false,
             isActive: true,
@@ -189,11 +189,12 @@ export class BranchService {
   }
 
   private initSavedBranch(): void {
-    const savedId = localStorage.getItem(this.STORAGE_KEY);
-    if (savedId) {
+    const savedIdStr = localStorage.getItem(this.STORAGE_KEY);
+    if (savedIdStr !== null) {
+      const savedId = Number(savedIdStr);
       if (savedId === ALL_BRANCHES_OPTION.id) {
         this.currentBranch.set(ALL_BRANCHES_OPTION);
-      } else {
+      } else if (!Number.isNaN(savedId)) {
         const found = this.findBranchInTree(this.branchTree(), savedId);
         if (found) {
           this.currentBranch.set(found);
@@ -225,8 +226,9 @@ export class BranchService {
         next: (res) => {
           if (res && res.success && res.data && res.data.length > 0) {
             this.branchTree.set(res.data);
-            const savedId = localStorage.getItem(this.STORAGE_KEY);
-            if (savedId && savedId !== ALL_BRANCHES_OPTION.id) {
+            const savedIdStr = localStorage.getItem(this.STORAGE_KEY);
+            const savedId = savedIdStr !== null ? Number(savedIdStr) : null;
+            if (savedId !== null && !Number.isNaN(savedId) && savedId !== ALL_BRANCHES_OPTION.id) {
               const matched = this.findBranchInTree(res.data, savedId);
               if (matched) {
                 this.currentBranch.set(matched);
@@ -246,10 +248,10 @@ export class BranchService {
 
   public selectBranch(branch: BranchDto): void {
     this.currentBranch.set(branch);
-    localStorage.setItem(this.STORAGE_KEY, branch.id);
+    localStorage.setItem(this.STORAGE_KEY, String(branch.id));
   }
 
-  public getActiveBranchIdForQuery(): string | null {
+  public getActiveBranchIdForQuery(): number | null {
     const current = this.currentBranch();
     if (!current || current.id === ALL_BRANCHES_OPTION.id || current.code === 'ALL') {
       return null; // Return null so backend queries all branches
@@ -257,7 +259,7 @@ export class BranchService {
     return current.id;
   }
 
-  public findBranchInTree(nodes: BranchDto[], id: string): BranchDto | null {
+  public findBranchInTree(nodes: BranchDto[], id: number): BranchDto | null {
     for (const node of nodes) {
       if (node.id === id) return node;
       if (node.children && node.children.length > 0) {

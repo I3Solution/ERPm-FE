@@ -4,22 +4,22 @@
    ========================================================================== */
 
 /* 1. Core Ionic Component CSS */
-@import "@ionic/angular/css/core.css";
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
-@import "@ionic/angular/css/palettes/dark.class.css";
+@use "@ionic/angular/css/core";
+@use "@ionic/angular/css/normalize";
+@use "@ionic/angular/css/structure";
+@use "@ionic/angular/css/typography";
+@use "@ionic/angular/css/display";
+@use "@ionic/angular/css/padding";
+@use "@ionic/angular/css/text-alignment";
+@use "@ionic/angular/css/text-transformation";
+@use "@ionic/angular/css/flex-utils";
+@use "@ionic/angular/css/palettes/dark.class";
 
 /* 2. ERPm Custom Design System & Theme Modules */
-@import "./theme/variables.scss";
-@import "./theme/ionic-overrides.scss";
-@import "./theme/tables.scss";
-@import "./theme/components.scss";
+@use "./theme/variables";
+@use "./theme/ionic-overrides";
+@use "./theme/tables";
+@use "./theme/components";
 
 /* 3. Global CSS Reset & Typography */
 *, *::before, *::after {

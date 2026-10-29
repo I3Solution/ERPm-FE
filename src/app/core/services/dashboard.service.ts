@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subscription } from 'rxjs';
+import { catchError, of } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface TopSellingItemDto {
   itemCode: string;
@@ -24,7 +25,7 @@ export interface DashboardMetricsDto {
   providedIn: 'root'
 })
 export class DashboardService {
-  private readonly apiUrl = '/api/v1/dashboard/metrics';
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/v1/dashboard/metrics`;
 
   public metrics = signal<DashboardMetricsDto>({ todaySales: 0, todayInvoiceCount: 0, totalItems: 0, lowStockCount: 0, totalJournalEntries: 0, totalInventoryValue: 0, totalCustomerDebt: 0, topSellingItems: [] });
   public error = signal(false);

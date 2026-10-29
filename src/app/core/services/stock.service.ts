@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subscription, catchError, of, map, tap } from 'rxjs';
+import { Observable, catchError, of, map, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface WarehouseDto {
   id: number;
@@ -46,7 +47,7 @@ export interface CreateStockReceiptRequest {
   providedIn: 'root'
 })
 export class StockService {
-  private readonly apiUrl = '/api/v1/stock';
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/v1/stock`;
 
   // Signals
   public warehouses = signal<WarehouseDto[]>([]);

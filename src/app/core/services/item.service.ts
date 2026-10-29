@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subscription, map, tap } from 'rxjs';
+import { Observable, catchError, of, map, tap } from 'rxjs';
+import { environment }  from '../../../environments/environment';
 
 export enum AttributeDataType {
   Text = 1,
@@ -73,8 +74,8 @@ export interface PagedResult<T> {
   providedIn: 'root'
 })
 export class ItemService {
-  private readonly apiUrl = '/api/v1/items';
-  private readonly attributesApiUrl = '/api/v1/wms/item-attributes';
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/v1/items`;
+  private readonly attributesApiUrl = `${environment.apiBaseUrl}/api/v1/wms/item-attributes`;
 
   // Signals
   public items = signal<ItemDto[]>([]);

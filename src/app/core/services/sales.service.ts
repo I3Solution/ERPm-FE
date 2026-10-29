@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subscription, catchError, of, map, tap } from 'rxjs';
+import { Observable, catchError, of, map, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export enum PaymentMethod {
   Cash = 1,
@@ -61,7 +62,7 @@ export interface SalesInvoiceDto {
   providedIn: 'root'
 })
 export class SalesService {
-  private readonly apiUrl = '/api/v1/sales';
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/v1/sales`;
 
   public invoices = signal<SalesInvoiceDto[]>([]);
   public isLoading = signal<boolean>(false);

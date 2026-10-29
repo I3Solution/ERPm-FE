@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, of, map, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export enum AttributeDataType {
   Text = 1,
@@ -117,8 +118,8 @@ const DEFAULT_ATTRIBUTES: ItemAttributeDto[] = [
   providedIn: 'root'
 })
 export class ItemService {
-  private readonly apiUrl = 'http://localhost:5000/api/v1/items';
-  private readonly attributesApiUrl = 'http://localhost:5000/api/v1/wms/item-attributes';
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/v1/items`;
+  private readonly attributesApiUrl = `${environment.apiBaseUrl}/api/v1/wms/item-attributes`;
 
   // Signals
   public items = signal<ItemDto[]>([]);

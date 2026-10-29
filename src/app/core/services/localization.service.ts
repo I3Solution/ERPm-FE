@@ -1,6 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, of } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface Language {
   code: string;
@@ -423,7 +424,7 @@ const DEFAULT_FALLBACK_DICTIONARY: Record<string, Record<string, string>> = {
   providedIn: 'root'
 })
 export class LocalizationService {
-  private readonly apiUrl = 'http://localhost:5000/api/v1/localization';
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/v1/localization`;
   private readonly currentLangSignal = signal<'vi' | 'en'>('vi');
 
   // In-memory dual-dictionary cache for instant 0ms switching

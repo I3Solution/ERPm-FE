@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, of, map, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export enum PartnerType {
   Customer = 1,
@@ -67,7 +68,7 @@ const MOCK_PARTNERS: PartnerDto[] = [
   providedIn: 'root'
 })
 export class PartnerService {
-  private readonly apiUrl = 'http://localhost:5000/api/v1/partners';
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/v1/partners`;
 
   public partners = signal<PartnerDto[]>([]);
   public isLoading = signal<boolean>(false);

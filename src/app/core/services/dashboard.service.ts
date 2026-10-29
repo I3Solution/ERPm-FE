@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, of } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface TopSellingItemDto {
   itemCode: string;
@@ -48,7 +49,7 @@ const MOCK_METRICS: DashboardMetricsDto = {
   providedIn: 'root'
 })
 export class DashboardService {
-  private readonly apiUrl = 'http://localhost:5000/api/v1/dashboard/metrics';
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/v1/dashboard/metrics`;
 
   public metrics = signal<DashboardMetricsDto>(MOCK_METRICS);
   public isLoading = signal<boolean>(false);

@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, of, map, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface WarehouseDto {
   id: number;
@@ -84,7 +85,7 @@ const MOCK_BALANCES: StockBalanceDto[] = [
   providedIn: 'root'
 })
 export class StockService {
-  private readonly apiUrl = 'http://localhost:5000/api/v1/stock';
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/v1/stock`;
 
   // Signals
   public warehouses = signal<WarehouseDto[]>([]);

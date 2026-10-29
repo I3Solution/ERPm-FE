@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface BranchDto {
   id: number;
@@ -175,7 +176,7 @@ const MOCK_BRANCH_TREE: BranchDto[] = [
   providedIn: 'root'
 })
 export class BranchService {
-  private readonly apiUrl = 'http://localhost:5000/api/v1/branches';
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/v1/branches`;
   private readonly STORAGE_KEY = 'erpm_selected_branch_id';
 
   public branches = signal<BranchDto[]>([]);

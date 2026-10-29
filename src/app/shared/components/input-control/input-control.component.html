@@ -8,23 +8,24 @@
   <ng-container [ngSwitch]="type">
     <!-- 1. Select / Dropdown via CustomSelectComponent -->
     <ng-container *ngSwitchCase="'select'">
-      <app-custom-select
+      <app-custom-select [inputId]="inputId"
         [options]="dataSource"
         [value]="internalValue()"
         (valueChange)="onSelectValueChange($event)"
         (selectionChange)="onSelectOptionChange($event)"
+        (searchChange)="searchChange.emit($event)"
         [placeholder]="placeholder"
         [searchable]="searchable"
         [allowClear]="allowClear"
         [size]="size"
         [minWidth]="minWidth"
-        [disabled]="disabled"
+        [disabled]="disabled || readonly"
       ></app-custom-select>
     </ng-container>
 
     <!-- 2. Multi-line Textarea -->
     <ng-container *ngSwitchCase="'textarea'">
-      <textarea
+      <textarea [id]="inputId"
         class="erpm-input erpm-textarea"
         [rows]="rows"
         [placeholder]="placeholder"
@@ -39,7 +40,7 @@
     <!-- 3. Checkbox / Boolean Toggle -->
     <ng-container *ngSwitchCase="'checkbox'">
       <label class="erpm-checkbox-wrap" [class.disabled]="disabled">
-        <input
+        <input [id]="inputId"
           type="checkbox"
           class="erpm-checkbox-input"
           [disabled]="disabled"
@@ -55,7 +56,7 @@
 
     <ng-container *ngSwitchCase="'boolean'">
       <label class="erpm-checkbox-wrap" [class.disabled]="disabled">
-        <input
+        <input [id]="inputId"
           type="checkbox"
           class="erpm-checkbox-input"
           [disabled]="disabled"
@@ -73,7 +74,7 @@
     <ng-container *ngSwitchCase="'number'">
       <div class="erpm-input-affix-wrap">
         <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
-        <input
+        <input [id]="inputId"
           type="number"
           class="erpm-input font-numeric"
           [class.has-prefix]="!!prefix"
@@ -95,7 +96,7 @@
     <ng-container *ngSwitchCase="'currency'">
       <div class="erpm-input-affix-wrap">
         <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
-        <input
+        <input [id]="inputId"
           type="number"
           class="erpm-input font-numeric font-bold"
           [class.has-prefix]="!!prefix"
@@ -118,7 +119,7 @@
     <ng-container *ngSwitchDefault>
       <div class="erpm-input-affix-wrap">
         <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
-        <input
+        <input [id]="inputId"
           [type]="type"
           class="erpm-input"
           [class.has-prefix]="!!prefix"

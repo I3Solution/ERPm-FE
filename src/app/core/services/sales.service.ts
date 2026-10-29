@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, of, map, tap } from 'rxjs';
+import { Observable, Subscription, catchError, of, map, tap } from 'rxjs';
 
 export enum PaymentMethod {
   Cash = 1,
@@ -16,6 +16,7 @@ export interface SalesInvoiceItemRequest {
 }
 
 export interface CreateSalesInvoiceRequest {
+  requestId: string;
   branchId?: number;
   customerId?: number;
   customerName?: string;
@@ -50,49 +51,29 @@ export interface SalesInvoiceDto {
   totalAmount: number;
   paidAmount: number;
   remainingDebt: number;
+  tenderedAmount?: number;
+  changeAmount?: number;
+  status?: string;
   items: SalesInvoiceItemDto[];
 }
-
-const MOCK_INVOICES: SalesInvoiceDto[] = [
-  {
-    id: 1,
-    invoiceNumber: 'HD-20261011-0001',
-    invoiceDate: new Date().toISOString(),
-    customerName: 'Khách lẻ',
-    paymentMethodName: 'Tiền mặt',
-    subTotal: 156000,
-    discountAmount: 0,
-    totalAmount: 156000,
-    paidAmount: 156000,
-    remainingDebt: 0,
-    items: [
-      {
-        itemId: 2,
-        itemCode: 'SP0002',
-        itemName: 'Giấy in Double A A4 70gsm',
-        quantity: 2,
-        unitPrice: 78000,
-        amount: 156000
-      }
-    ]
-  }
-];
 
 @Injectable({
   providedIn: 'root'
 })
 export class SalesService {
-  private readonly apiUrl = 'http://localhost:5000/api/v1/sales';
+  private readonly apiUrl = '/api/v1/sales';
 
   public invoices = signal<SalesInvoiceDto[]>([]);
   public isLoading = signal<boolean>(false);
 
+  private request?: Subscription;
   constructor(private http: HttpClient) {}
 
   public loadInvoices(branchId?: number | null): void {
+    this.request?.unsubscribe();
     this.isLoading.set(true);
     const url = branchId ? `${this.apiUrl}/invoices?branchId=${branchId}` : `${this.apiUrl}/invoices`;
-    this.http.get<{ success: boolean; data: SalesInvoiceDto[] }>(url)
+    this.request = this.http.get<{ success: boolean; data: SalesInvoiceDto[] }>(url)
       .subscribe({
         next: (res) => {
           if (res && res.success && res.data) {

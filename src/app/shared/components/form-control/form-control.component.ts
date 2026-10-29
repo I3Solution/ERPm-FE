@@ -1,4 +1,8 @@
 import {
+  inject,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  DestroyRef,
   Component,
   EventEmitter,
   Input,
@@ -7,12 +11,15 @@ import {
   Self,
   signal
 } from '@angular/core';
+import { LocalizationService } from '../../../core/services/localization.service';
 import { CommonModule } from '@angular/common';
 import {
   ControlValueAccessor,
   NgControl,
   Validators
 } from '@angular/forms';
+import { FormGroupDirective } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   InputControlComponent,
   InputControlType
@@ -21,12 +28,18 @@ import { SelectOption } from '../custom-select/custom-select.component';
 
 @Component({
   selector: 'app-form-control',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [CommonModule, InputControlComponent],
   templateUrl: './form-control.component.html',
   styleUrls: ['./form-control.component.scss']
 })
 export class FormControlComponent implements ControlValueAccessor {
+  public fieldId = 'erpm-' + crypto.randomUUID();
+  private localization = inject(LocalizationService);
+  private detector = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
+  private parentForm = inject(FormGroupDirective, { optional: true });
   // Label & Field Metadata
   @Input() label: string = '';
   @Input() unit?: string;
@@ -43,7 +56,7 @@ export class FormControlComponent implements ControlValueAccessor {
   @Input() readonly: boolean = false;
   @Input() min?: number;
   @Input() max?: number;
-  @Input() step: number = 1;
+  @Input() step: number = 0.0001;
   @Input() rows: number = 3;
   @Input() prefix?: string;
   @Input() suffix?: string;
@@ -71,6 +84,7 @@ export class FormControlComponent implements ControlValueAccessor {
   @Input() minWidth: string = '100%';
 
   @Output() valueChange = new EventEmitter<any>();
+  @Output() searchChange = new EventEmitter<string>();
   @Output() selectionChange = new EventEmitter<SelectOption | null>();
   @Output() change = new EventEmitter<any>();
 
@@ -100,6 +114,12 @@ export class FormControlComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
+    this.detector.markForCheck();
+  }
+
+  ngOnInit(): void {
+    this.ngControl?.control?.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.detector.markForCheck());
+    this.parentForm?.ngSubmit.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.detector.markForCheck());
   }
 
   // Automatically detect whether the control is required via input or FormControl validator
@@ -128,21 +148,21 @@ export class FormControlComponent implements ControlValueAccessor {
     if (!errors) return '';
 
     if (errors['required']) {
-      return `${this.label || 'Trường này'} là bắt buộc`;
+      return this.localization.translate('error.validation.required');
     }
     if (errors['min']) {
-      return `Giá trị tối thiểu là ${errors['min'].min}`;
+      return this.localization.translate('error.validation.min') + ': ' + errors['min'].min;
     }
     if (errors['max']) {
-      return `Giá trị tối đa là ${errors['max'].max}`;
+      return this.localization.translate('error.validation.max') + ': ' + errors['max'].max;
     }
     if (errors['email']) {
-      return 'Định dạng email không hợp lệ';
+      return this.localization.translate('error.validation.email');
     }
     if (errors['maxlength']) {
-      return `Tối đa ${errors['maxlength'].requiredLength} ký tự`;
+      return this.localization.translate('error.validation.maxlength') + ': ' + errors['maxlength'].requiredLength;
     }
-    return 'Dữ liệu không hợp lệ';
+    return this.localization.translate('error.validation.invalid');
   }
 
   public onInnerValueChange(val: any): void {

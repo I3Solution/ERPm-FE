@@ -52,3 +52,7 @@ ehthumbs.db
 .env
 .env.*
 !.env.example
+
+appsettings*.local.json
+
+.keys/

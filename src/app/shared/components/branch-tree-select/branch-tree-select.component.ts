@@ -1,4 +1,4 @@
-import {
+import { ChangeDetectionStrategy,
   Component,
   ElementRef,
   HostListener,
@@ -13,6 +13,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 import { ALL_BRANCHES_OPTION, BranchDto, BranchService } from '../../../core/services/branch.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-branch-tree-select',
   standalone: true,
   imports: [CommonModule, FormsModule, TranslatePipe],
@@ -55,12 +56,7 @@ export class BranchTreeSelectComponent implements OnInit {
             ...node,
             children: matchedChildren
           });
-          // Auto expand matched parent
-          this.expandedIds.update(set => {
-            const next = new Set(set);
-            next.add(node.id);
-            return next;
-          });
+
         }
       }
       return result;
@@ -108,7 +104,7 @@ export class BranchTreeSelectComponent implements OnInit {
   }
 
   public isExpanded(id: number): boolean {
-    return this.expandedIds().has(id);
+    return !!this.searchKeyword().trim() || this.expandedIds().has(id);
   }
 
   public isSelected(node: BranchDto): boolean {
@@ -132,11 +128,11 @@ export class BranchTreeSelectComponent implements OnInit {
   }
 
   public getNodeIcon(node: BranchDto, depth: number): string {
-    if (depth === 0) return '🏛️'; // Root / Tập đoàn
+    if (depth === 0) return '🏛️';
     if (node.children && node.children.length > 0) {
-      return depth === 1 ? '🌐' : '🏢'; // Khối / Chi nhánh cha
+      return depth === 1 ? '🌐' : '🏢';
     }
-    return depth >= 3 ? '🏪' : '🏬'; // Cửa hàng / Điểm bán
+    return depth >= 3 ? '🏪' : '🏬';
   }
 
   @HostListener('document:click', ['$event'])

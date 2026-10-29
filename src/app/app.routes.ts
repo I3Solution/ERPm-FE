@@ -1,16 +1,13 @@
+import { authGuard } from './core/auth.guard';
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './modules/dashboard/dashboard.component';
-import { ItemsComponent } from './modules/WMS/items.component';
-import { PosComponent } from './modules/SD/pos.component';
-import { InventoryComponent } from './modules/WMS/inventory.component';
-import { PartnersComponent } from './modules/CRM/partners.component';
 
 export const routes: Routes = [
+  { path: 'login', loadComponent: () => import('./core/login/login.component').then(m => m.LoginComponent) },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'catalog', component: ItemsComponent },
-  { path: 'sales', component: PosComponent },
-  { path: 'inventory', component: InventoryComponent },
-  { path: 'partners', component: PartnersComponent },
+  { path: 'dashboard', loadComponent: () => import('./modules/dashboard/dashboard.component').then(m => m.DashboardComponent), canActivate: [authGuard] },
+  { path: 'catalog', loadComponent: () => import('./modules/WMS/items.component').then(m => m.ItemsComponent), canActivate: [authGuard] },
+  { path: 'sales', loadComponent: () => import('./modules/SD/pos.component').then(m => m.PosComponent), canActivate: [authGuard] },
+  { path: 'inventory', loadComponent: () => import('./modules/WMS/inventory.component').then(m => m.InventoryComponent), canActivate: [authGuard] },
+  { path: 'partners', loadComponent: () => import('./modules/CRM/partners.component').then(m => m.PartnersComponent), canActivate: [authGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];

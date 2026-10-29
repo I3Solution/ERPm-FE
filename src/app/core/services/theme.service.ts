@@ -25,7 +25,7 @@ export class ThemeService {
   private initializeTheme(): void {
     const saved = localStorage.getItem(this.storageKey) as ThemeMode | null;
     const initialMode: ThemeMode = (saved === 'light' || saved === 'dark' || saved === 'system') ? saved : 'system';
-    
+
     this.themeMode.set(initialMode);
     this.applyTheme(initialMode);
 

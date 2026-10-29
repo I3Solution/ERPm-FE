@@ -1,6 +1,6 @@
 # 🤖 AGENTS.MD: HƯỚNG DẪN DÀNH CHO AI AGENT TRONG DỰ ÁN ERPM-FE
 
-Chào bạn AI Assistant, bạn đang làm việc trên repository **ERPm-FE** - Ứng dụng Frontend Angular 18 + Ionic 8 Hybrid cho ERPm (Quản trị Bán hàng, Tồn kho & Kế toán mở rộng).
+Chào bạn AI Assistant, bạn đang làm việc trên repository **ERPm-FE** - Ứng dụng Frontend Angular 17.3 + Ionic 8 Hybrid cho ERPm (Quản trị Bán hàng, Tồn kho & Kế toán mở rộng).
 - **Repository Remote:** `https://github.com/I3Solution/ERPm-FE.git`
 
 ---
@@ -14,17 +14,22 @@ Chào bạn AI Assistant, bạn đang làm việc trên repository **ERPm-FE** -
 
 2. **Cấu trúc Git Submodule cho từng Module nghiệp vụ:**
    - Mỗi module trong `src/app/modules/` là một Git Submodule độc lập:
-     - `catalog`: `https://github.com/I3Solution/ERPm-FE-catalog.git`
-     - `dashboard`: `https://github.com/I3Solution/ERPm-FE-dashboard.git`
-     - `inventory`: `https://github.com/I3Solution/ERPm-FE-inventory.git`
-     - `partners`: `https://github.com/I3Solution/ERPm-FE-partners.git`
-     - `sales`: `https://github.com/I3Solution/ERPm-FE-sales.git`
+     - `ACC`: `https://github.com/I3Solution/ERPm-FE-ACC.git`
+     - `SD`: `https://github.com/I3Solution/ERPm-FE-SD.git`
+     - `PUR`: `https://github.com/I3Solution/ERPm-FE-PUR.git`
+     - `WMS`: `https://github.com/I3Solution/ERPm-FE-WMS.git`
+     - `CRM`: `https://github.com/I3Solution/ERPm-FE-CRM.git`
+     - `HRM`: `https://github.com/I3Solution/ERPm-FE-HRM.git`
+     - `MFG`: `https://github.com/I3Solution/ERPm-FE-MFG.git`
+     - `SCM`: `https://github.com/I3Solution/ERPm-FE-SCM.git`
+     - `PM`: `https://github.com/I3Solution/ERPm-FE-PM.git`
+     - `dashboard`: `https://github.com/I3Solution/ERPm-FE-DASHBOARD.git`
    - Khi sửa đổi code trong một module, cần cập nhật `.ai/plan.md`, `.ai/status.md` và `.ai/steps/` bên trong module đó, đồng thời commit submodule trước khi cập nhật pointer ở root FE.
 
 3. **Quy chuẩn lưu vết từng Step vào thư mục `.ai/steps/`:**
    - Cập nhật file log: `d:/WORKING PLACE/ERPm/ERPm-FE/.ai/steps/step-[số thứ tự]-[tên-ngắn-gọn].md`.
 
-4. **Kỷ luật Kỹ thuật Frontend (Angular 18 + Ionic 8):**
+4. **Kỷ luật Kỹ thuật Frontend (Angular 17.3 + Ionic 8):**
    - 100% Standalone Components, Signal State Management, OnPush Change Detection.
    - **Standardized Reactive Forms (`FormGroup` + `<app-form-control>` / `<app-input-control>`):** Mọi biểu mẫu nhập liệu lưu dữ liệu (CRUD Modal, Chứng từ) bắt buộc dùng `FormGroup` (`ReactiveFormsModule`) và vẽ control qua `<app-form-control>` (`FormControlComponent`) hoặc `<app-input-control>` (`InputControlComponent`) bằng cách truyền `type` (`'text' | 'number' | 'currency' | 'date' | 'textarea' | 'select' | 'checkbox'`) và `dataSource` (`SelectOption[]`).
    - Triad 3-file tách bạch: Mỗi component bắt buộc có file `.ts`, `.html`, `.scss` riêng biệt. Không nhét inline template hoặc inline style.

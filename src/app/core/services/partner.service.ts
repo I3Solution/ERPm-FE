@@ -34,40 +34,11 @@ export interface CreatePartnerRequest {
   notes?: string;
 }
 
-const MOCK_PARTNERS: PartnerDto[] = [
-  {
-    id: 1,
-    code: 'KH0001',
-    name: 'Công ty TNHH Giải pháp Minh Khang',
-    partnerType: PartnerType.Customer,
-    phone: '0901234567',
-    email: 'contact@minhkhang.vn',
-    address: '123 Cầu Giấy, Hà Nội',
-    taxCode: '0101234567',
-    creditLimit: 50000000,
-    debtBalance: 12500000,
-    isActive: true
-  },
-  {
-    id: 2,
-    code: 'NCC0001',
-    name: 'Nhà cung ứng Văn phòng phẩm Ánh Dương',
-    partnerType: PartnerType.Vendor,
-    phone: '0988765432',
-    email: 'kinhdoanh@anhduong.vn',
-    address: '45 Hai Bà Trưng, Hà Nội',
-    taxCode: '0109876543',
-    creditLimit: 100000000,
-    debtBalance: 0,
-    isActive: true
-  }
-];
-
 @Injectable({
   providedIn: 'root'
 })
 export class PartnerService {
-  private readonly apiUrl = 'http://localhost:5000/api/v1/partners';
+  private readonly apiUrl = '/api/v1/partners';
 
   public partners = signal<PartnerDto[]>([]);
   public isLoading = signal<boolean>(false);

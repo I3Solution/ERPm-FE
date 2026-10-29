@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, of } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 export interface TopSellingItemDto {
   itemCode: string;
@@ -20,51 +20,30 @@ export interface DashboardMetricsDto {
   topSellingItems: TopSellingItemDto[];
 }
 
-const MOCK_METRICS: DashboardMetricsDto = {
-  todaySales: 18450000,
-  todayInvoiceCount: 14,
-  totalItems: 3,
-  lowStockCount: 1,
-  totalJournalEntries: 36,
-  totalInventoryValue: 1110000,
-  totalCustomerDebt: 12500000,
-  topSellingItems: [
-    {
-      itemCode: 'SP0002',
-      itemName: 'Giấy in Double A A4 70gsm',
-      quantitySold: 28,
-      revenue: 2184000
-    },
-    {
-      itemCode: 'SP0001',
-      itemName: 'Bút bi Thiên Long 0.5mm',
-      quantitySold: 120,
-      revenue: 600000
-    }
-  ]
-};
-
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
-  private readonly apiUrl = 'http://localhost:5000/api/v1/dashboard/metrics';
+  private readonly apiUrl = '/api/v1/dashboard/metrics';
 
-  public metrics = signal<DashboardMetricsDto>(MOCK_METRICS);
+  public metrics = signal<DashboardMetricsDto>({ todaySales: 0, todayInvoiceCount: 0, totalItems: 0, lowStockCount: 0, totalJournalEntries: 0, totalInventoryValue: 0, totalCustomerDebt: 0, topSellingItems: [] });
+  public error = signal(false);
+  private request?: Subscription;
   public isLoading = signal<boolean>(false);
 
   constructor(private http: HttpClient) {}
 
   public loadMetrics(branchId?: number | null): void {
+    this.request?.unsubscribe();
+    this.error.set(false);
     this.isLoading.set(true);
     const url = branchId ? `${this.apiUrl}?branchId=${branchId}` : this.apiUrl;
-    this.http.get<{ success: boolean; data: DashboardMetricsDto }>(url)
-      .pipe(catchError(() => of({ success: true, data: MOCK_METRICS })))
-      .subscribe(res => {
+    this.request = this.http.get<{ success: boolean; data: DashboardMetricsDto }>(url)
+      .subscribe({ next: res => {
         if (res && res.success && res.data) {
           this.metrics.set(res.data);
         }
         this.isLoading.set(false);
-      });
+      }, error: () => { this.error.set(true); this.isLoading.set(false); } });
   }
 }

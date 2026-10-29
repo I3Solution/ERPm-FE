@@ -1,4 +1,5 @@
-<div class="app-layout">
+<div *ngIf="apiErrors.message() as message" class="api-error-banner" role="alert">{{ message | translate }} <button type="button" (click)="apiErrors.message.set(null)" [attr.aria-label]="'common.cancel' | translate">&times;</button></div>
+<div class="app-layout" *ngIf="auth.isAuthenticated(); else anonymous">
   <!-- Desktop Sidebar Navigation (>= 768px) -->
   <aside class="desktop-sidebar desktop-only">
     <!-- Brand Logo -->
@@ -16,7 +17,7 @@
 
     <!-- Navigation Menu Items -->
     <nav class="sidebar-nav">
-      <div class="nav-section-title">QUẢN TRỊ</div>
+      <div class="nav-section-title">{{ 'menu.dashboard' | translate }}</div>
       <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">📊</span>
         <span>{{ 'menu.dashboard' | translate }}</span>
@@ -27,7 +28,7 @@
         <span>{{ 'menu.catalog' | translate }}</span>
       </a>
 
-      <div class="nav-section-title">NGHIỆP VỤ</div>
+      <div class="nav-section-title">{{ 'menu.sales' | translate }}</div>
       <a routerLink="/sales" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🛒</span>
         <span>{{ 'menu.sales' | translate }}</span>
@@ -43,11 +44,11 @@
         <span>{{ 'menu.partners' | translate }}</span>
       </a>
 
-      <div class="nav-section-title">TÀI CHÍNH</div>
-      <a class="nav-item nav-item-disabled" title="Giai đoạn 3">
+      <div class="nav-section-title">{{ 'menu.accounting' | translate }}</div>
+      <a class="nav-item nav-item-disabled" >
         <span class="nav-icon">📖</span>
         <span>{{ 'menu.accounting' | translate }}</span>
-        <span class="coming-soon">GĐ 3</span>
+        <span class="coming-soon">{{ 'common.coming_soon' | translate }}</span>
       </a>
     </nav>
 
@@ -55,7 +56,7 @@
     <div class="sidebar-footer">
       <div class="system-status-indicator">
         <span class="status-dot-pulse"></span>
-        <span class="font-medium text-slate-600">.NET 8 & PostgreSQL</span>
+        <span class="font-medium text-slate-600">ERPm</span>
       </div>
     </div>
   </aside>
@@ -78,7 +79,7 @@
       </div>
 
       <!-- Header Actions: Theme Toggle, Language Switcher & Profile -->
-      <div class="header-actions">
+      <div class="header-actions"><button type="button" (click)="auth.logout()" routerLink="/login" class="erpm-btn erpm-btn-secondary">{{ 'auth.sign_out' | translate }}</button>
         <!-- Theme Mode Toggle Button -->
         <button
           type="button"
@@ -145,7 +146,7 @@
         <!-- User Profile Pill -->
         <div class="user-pill desktop-only">
           <div class="user-avatar">AD</div>
-          <span class="user-name">Admin</span>
+          <span class="user-name">{{ auth.account()?.displayName }}</span>
         </div>
       </div>
     </header>
@@ -184,3 +185,5 @@
     </nav>
   </div>
 </div>
+
+<ng-template #anonymous><router-outlet></router-outlet></ng-template>

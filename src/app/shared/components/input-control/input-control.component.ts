@@ -1,4 +1,4 @@
-import {
+import { ChangeDetectorRef, inject, ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
@@ -28,6 +28,7 @@ export type InputControlType =
   | 'boolean';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-input-control',
   standalone: true,
   imports: [CommonModule, FormsModule, CustomSelectComponent],
@@ -35,6 +36,8 @@ export type InputControlType =
   styleUrls: ['./input-control.component.scss']
 })
 export class InputControlComponent implements ControlValueAccessor {
+  private detector = inject(ChangeDetectorRef);
+  @Input() inputId = '';
   @Input() type: InputControlType = 'text';
   @Input() placeholder: string = '';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
@@ -44,7 +47,7 @@ export class InputControlComponent implements ControlValueAccessor {
   // Numeric constraints
   @Input() min?: number;
   @Input() max?: number;
-  @Input() step: number = 1;
+  @Input() step: number = 0.0001;
 
   // Textarea configuration
   @Input() rows: number = 3;
@@ -84,6 +87,7 @@ export class InputControlComponent implements ControlValueAccessor {
   }
 
   @Output() valueChange = new EventEmitter<any>();
+  @Output() searchChange = new EventEmitter<string>();
   @Output() selectionChange = new EventEmitter<SelectOption | null>();
   @Output() blurred = new EventEmitter<void>();
 
@@ -113,6 +117,7 @@ export class InputControlComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
+    this.detector.markForCheck();
   }
 
   // Handle native text, date, email, tel, textarea changes

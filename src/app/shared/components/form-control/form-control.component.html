@@ -1,6 +1,6 @@
 <div class="erpm-form-group" [class.compact]="compact" [class.has-error]="showError">
   <!-- Standardized Field Label -->
-  <label *ngIf="label" class="erpm-label" [class.text-xs]="compact">
+  <label *ngIf="label" class="erpm-label" [class.text-xs]="compact" [attr.for]="fieldId" [id]="fieldId + '-label'">
     <span>{{ label }}</span>
     <span *ngIf="unit" class="unit-badge">({{ unit }})</span>
     <span *ngIf="isRequired" class="required-star">*</span>
@@ -8,10 +8,12 @@
 
   <!-- Standardized Input Control Delegation -->
   <app-input-control
+    [inputId]="fieldId"
     [type]="type"
     [value]="internalValue()"
     (valueChange)="onInnerValueChange($event)"
     (selectionChange)="onInnerSelectionChange($event)"
+    (searchChange)="searchChange.emit($event)"
     (blurred)="onInnerBlur()"
     [placeholder]="placeholder"
     [size]="size"

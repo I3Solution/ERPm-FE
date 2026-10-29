@@ -12,7 +12,7 @@
     class="custom-select-trigger"
     (click)="toggle($event)"
     [attr.tabindex]="disabled ? -1 : 0"
-    role="button"
+    role="combobox" [id]="inputId" [attr.aria-expanded]="isOpen()" [attr.aria-label]="placeholder || ('common.select_placeholder' | translate)" aria-haspopup="listbox"
   >
     <!-- Left Icon (if selected item has icon) -->
     <span *ngIf="selectedOption()?.icon" class="trigger-icon">
@@ -25,7 +25,7 @@
         {{ selectedOption()?.label }}
       </span>
       <ng-template #placeholderTpl>
-        <span class="trigger-placeholder">{{ placeholder }}</span>
+        <span class="trigger-placeholder">{{ placeholder || ('common.select_placeholder' | translate) }}</span>
       </ng-template>
 
       <span *ngIf="selectedOption()?.sublabel" class="trigger-sublabel">
@@ -45,7 +45,7 @@
         type="button"
         class="clear-btn"
         (click)="clear($event)"
-        title="Xóa lựa chọn"
+        [title]="'common.cancel' | translate"
       >
         ✕
       </button>
@@ -69,8 +69,8 @@
       <span class="search-icon">🔍</span>
       <input
         type="text"
-        [(ngModel)]="searchKeyword"
-        placeholder="Tìm kiếm..."
+        [ngModel]="searchKeyword()" (ngModelChange)="searchKeyword.set($event); activeIndex.set(0); searchChange.emit($event)"
+        [placeholder]="'common.search' | translate"
         class="dropdown-search-input"
         autofocus
       />
@@ -85,10 +85,10 @@
     </div>
 
     <!-- Scrollable Options List -->
-    <div class="options-scroll-list">
+    <div class="options-scroll-list" role="listbox">
       <div
         *ngFor="let opt of filteredOptions()"
-        class="custom-select-option"
+        class="custom-select-option" role="option" [attr.aria-selected]="opt.value === currentValue()"
         [class.active]="opt.value === currentValue()"
         [class.disabled]="opt.disabled"
         (click)="select(opt, $event)"
@@ -111,7 +111,7 @@
       <!-- Empty State -->
       <div *ngIf="filteredOptions().length === 0" class="options-empty-state">
         <span class="empty-icon">📂</span>
-        <span class="empty-text">Không có lựa chọn phù hợp</span>
+        <span class="empty-text">{{ 'common.no_results' | translate }}</span>
       </div>
     </div>
   </div>

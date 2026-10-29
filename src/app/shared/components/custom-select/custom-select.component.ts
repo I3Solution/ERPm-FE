@@ -1,4 +1,4 @@
-import {
+import { ChangeDetectorRef, inject, ChangeDetectionStrategy,
   Component,
   ElementRef,
   EventEmitter,
@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 export interface SelectOption {
   value: any;
@@ -19,12 +20,14 @@ export interface SelectOption {
   sublabel?: string;
   badge?: string;
   disabled?: boolean;
+  searchText?: string;
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-custom-select',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './custom-select.component.html',
   styleUrls: ['./custom-select.component.scss'],
   providers: [
@@ -36,6 +39,9 @@ export interface SelectOption {
   ]
 })
 export class CustomSelectComponent implements ControlValueAccessor {
+  private detector = inject(ChangeDetectorRef);
+  @Input() inputId = '';
+  public activeIndex = signal(0);
   @Input() set options(val: SelectOption[]) {
     this._options.set(val || []);
   }
@@ -44,7 +50,7 @@ export class CustomSelectComponent implements ControlValueAccessor {
   }
   public _options = signal<SelectOption[]>([]);
 
-  @Input() placeholder: string = 'Chọn một mục...';
+  @Input() placeholder = '';
   @Input() searchable: boolean = false;
   @Input() allowClear: boolean = false;
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
@@ -59,6 +65,7 @@ export class CustomSelectComponent implements ControlValueAccessor {
   }
 
   @Output() valueChange = new EventEmitter<any>();
+  @Output() searchChange = new EventEmitter<string>();
   @Output() selectionChange = new EventEmitter<SelectOption | null>();
   @Output() change = new EventEmitter<any>();
 
@@ -82,7 +89,7 @@ export class CustomSelectComponent implements ControlValueAccessor {
     return opts.filter(
       opt =>
         opt.label.toLowerCase().includes(keyword) ||
-        (opt.sublabel && opt.sublabel.toLowerCase().includes(keyword))
+        (opt.sublabel && opt.sublabel.toLowerCase().includes(keyword)) || !!opt.searchText?.toLowerCase().includes(keyword)
     );
   });
 
@@ -103,6 +110,7 @@ export class CustomSelectComponent implements ControlValueAccessor {
 
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
+    this.detector.markForCheck();
   }
 
   public toggle(event: MouseEvent): void {
@@ -116,7 +124,7 @@ export class CustomSelectComponent implements ControlValueAccessor {
     }
   }
 
-  public select(option: SelectOption, event: MouseEvent): void {
+  public select(option: SelectOption, event: Event): void {
     event.stopPropagation();
     if (option.disabled) return;
 
@@ -156,6 +164,23 @@ export class CustomSelectComponent implements ControlValueAccessor {
     if (this.isOpen()) {
       this.isOpen.set(false);
       this.onTouched();
+    }
+  }
+
+  @HostListener('keydown', ['$event'])
+  public onKey(event: KeyboardEvent): void {
+    if (this.disabled) return;
+    const options = this.filteredOptions().filter(option => !option.disabled);
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      const wasOpen = this.isOpen(); this.isOpen.set(true);
+      const delta = event.key === 'ArrowDown' ? 1 : -1;
+      this.activeIndex.set(wasOpen ? Math.max(0, Math.min(options.length - 1, this.activeIndex() + delta)) : event.key === 'ArrowDown' ? 0 : Math.max(0, options.length - 1));
+    } else if (event.key === 'Enter' || event.key === ' ') {
+      if ((event.target as HTMLElement).tagName === 'INPUT' && event.key === ' ') return;
+      event.preventDefault();
+      if (!this.isOpen()) this.isOpen.set(true);
+      else if (options[this.activeIndex()]) this.select(options[this.activeIndex()], event);
     }
   }
 }

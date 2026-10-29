@@ -36,156 +36,21 @@ export const ALL_BRANCHES_OPTION: BranchDto = {
   children: []
 };
 
-const MOCK_BRANCH_TREE: BranchDto[] = [
-  {
-    id: 1,
-    code: 'root',
-    name: 'Tổng Công Ty (Tập đoàn)',
-    address: 'Tòa nhà Keangnam, Hà Nội',
-    isDefault: true,
-    isActive: true,
-    children: [
-      {
-        id: 10,
-        code: 'KMB',
-        name: 'Khối Miền Bắc',
-        parentId: 1,
-        isDefault: false,
-        isActive: true,
-        children: [
-          {
-            id: 11,
-            code: 'CN-HN',
-            name: 'Chi nhánh Hà Nội (HQ)',
-            parentId: 10,
-            address: 'Số 1 Phố Huế, Hoàn Kiếm',
-            isDefault: false,
-            isActive: true,
-            children: [
-              {
-                id: 12,
-                code: 'CH-HK',
-                name: 'Cửa hàng Hoàn Kiếm',
-                parentId: 11,
-                address: 'Tràng Tiền, Hoàn Kiếm',
-                isDefault: false,
-                isActive: true,
-                children: []
-              },
-              {
-                id: 13,
-                code: 'CH-CG',
-                name: 'Cửa hàng Cầu Giấy',
-                parentId: 11,
-                address: 'Xuân Thủy, Cầu Giấy',
-                isDefault: false,
-                isActive: true,
-                children: []
-              }
-            ]
-          },
-          {
-            id: 14,
-            code: 'CN-HP',
-            name: 'Chi nhánh Hải Phòng',
-            parentId: 10,
-            address: 'Lê Hồng Phong, Hải Phòng',
-            isDefault: false,
-            isActive: true,
-            children: []
-          }
-        ]
-      },
-      {
-        id: 20,
-        code: 'KMN',
-        name: 'Khối Miền Nam',
-        parentId: 1,
-        isDefault: false,
-        isActive: true,
-        children: [
-          {
-            id: 21,
-            code: 'CN-HCM',
-            name: 'Chi nhánh TP. Hồ Chí Minh',
-            parentId: 20,
-            address: 'Nguyễn Huệ, Quận 1',
-            isDefault: false,
-            isActive: true,
-            children: [
-              {
-                id: 22,
-                code: 'CH-Q1',
-                name: 'Cửa hàng Quận 1',
-                parentId: 21,
-                address: 'Lê Lợi, Quận 1',
-                isDefault: false,
-                isActive: true,
-                children: []
-              },
-              {
-                id: 23,
-                code: 'CH-TD',
-                name: 'Cửa hàng Thủ Đức',
-                parentId: 21,
-                address: 'Võ Văn Ngân, Thủ Đức',
-                isDefault: false,
-                isActive: true,
-                children: []
-              }
-            ]
-          },
-          {
-            id: 24,
-            code: 'CN-CT',
-            name: 'Chi nhánh Cần Thơ',
-            parentId: 20,
-            address: 'Ninh Kiều, Cần Thơ',
-            isDefault: false,
-            isActive: true,
-            children: []
-          }
-        ]
-      },
-      {
-        id: 30,
-        code: 'KMT',
-        name: 'Khối Miền Trung',
-        parentId: 1,
-        isDefault: false,
-        isActive: true,
-        children: [
-          {
-            id: 31,
-            code: 'CN-DN',
-            name: 'Chi nhánh Đà Nẵng',
-            parentId: 30,
-            address: 'Bạch Đằng, Đà Nẵng',
-            isDefault: false,
-            isActive: true,
-            children: []
-          }
-        ]
-      }
-    ]
-  }
-];
-
 @Injectable({
   providedIn: 'root'
 })
 export class BranchService {
-  private readonly apiUrl = 'http://localhost:5000/api/v1/branches';
+  private readonly apiUrl = '/api/v1/branches';
   private readonly STORAGE_KEY = 'erpm_selected_branch_id';
 
   public branches = signal<BranchDto[]>([]);
-  public branchTree = signal<BranchDto[]>(MOCK_BRANCH_TREE);
-  public currentBranch = signal<BranchDto | null>(MOCK_BRANCH_TREE[0]);
+  public branchTree = signal<BranchDto[]>([]);
+  public currentBranch = signal<BranchDto | null>(null);
   public isLoading = signal<boolean>(false);
 
   constructor(private http: HttpClient) {
     this.initSavedBranch();
-    this.loadBranches();
+
   }
 
   private initSavedBranch(): void {
@@ -236,12 +101,12 @@ export class BranchService {
               }
             }
             if (!this.currentBranch() || this.currentBranch()?.id !== ALL_BRANCHES_OPTION.id) {
-              this.currentBranch.set(res.data[0]);
+              this.currentBranch.set(res.data[0] ?? null);
             }
           }
         },
         error: () => {
-          // Keep mock tree if server is unreachable
+          // Keep the last confirmed scope; never invent branch IDs.
         }
       });
   }

@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, of, map, tap } from 'rxjs';
+import { Observable, Subscription, map, tap } from 'rxjs';
 
 export enum AttributeDataType {
   Text = 1,
@@ -69,73 +69,41 @@ export interface PagedResult<T> {
   totalPages: number;
 }
 
-const DEFAULT_ATTRIBUTES: ItemAttributeDto[] = [
-  {
-    id: 1,
-    code: 'color',
-    name: 'Màu sắc',
-    dataType: AttributeDataType.Select,
-    options: ['Xanh Dương', 'Đỏ', 'Đen', 'Trắng', 'Vàng'],
-    isRequired: false,
-    isFilterable: true,
-    sortOrder: 1
-  },
-  {
-    id: 2,
-    code: 'size',
-    name: 'Kích cỡ / Quy cách',
-    dataType: AttributeDataType.Select,
-    options: ['0.5mm', '0.7mm', 'A4', 'A3', 'S', 'M', 'L', 'XL'],
-    isRequired: false,
-    isFilterable: true,
-    sortOrder: 2
-  },
-  {
-    id: 3,
-    code: 'origin',
-    name: 'Xuất xứ',
-    dataType: AttributeDataType.Text,
-    options: [],
-    isRequired: false,
-    isFilterable: true,
-    sortOrder: 3
-  },
-  {
-    id: 4,
-    code: 'warranty_months',
-    name: 'Thời hạn bảo hành',
-    dataType: AttributeDataType.Number,
-    options: [],
-    unit: 'tháng',
-    isRequired: false,
-    isFilterable: true,
-    sortOrder: 4
-  }
-];
-
 @Injectable({
   providedIn: 'root'
 })
 export class ItemService {
-  private readonly apiUrl = 'http://localhost:5000/api/v1/items';
-  private readonly attributesApiUrl = 'http://localhost:5000/api/v1/wms/item-attributes';
+  private readonly apiUrl = '/api/v1/items';
+  private readonly attributesApiUrl = '/api/v1/wms/item-attributes';
 
   // Signals
   public items = signal<ItemDto[]>([]);
-  public attributes = signal<ItemAttributeDto[]>(DEFAULT_ATTRIBUTES);
+  public attributes = signal<ItemAttributeDto[]>([]);
   public isLoading = signal<boolean>(false);
 
+  public pageIndex = signal(1);
+  public totalCount = signal(0);
+  public totalPages = signal(0);
+  public categories = signal<{ id: number; name: string }[]>([]);
+  public units = signal<{ id: number; name: string }[]>([]);
+  private request?: Subscription;
   constructor(private http: HttpClient) {}
+  public loadReferenceData(): void {
+    this.http.get<{ data: PagedResult<{ id: number; name: string }> }>('/api/v1/wms/categories?pageSize=200').subscribe(r => this.categories.set(r.data.items));
+    this.http.get<{ data: PagedResult<{ id: number; name: string }> }>('/api/v1/wms/units-of-measure?pageSize=200').subscribe(r => this.units.set(r.data.items));
+  }
 
-  public loadItems(keyword?: string): void {
+  public loadItems(keyword = '', pageIndex = 1): void {
+    this.request?.unsubscribe();
     this.isLoading.set(true);
-    const url = keyword ? `${this.apiUrl}?keyword=${encodeURIComponent(keyword)}` : this.apiUrl;
+    const url = `${this.apiUrl}?keyword=${encodeURIComponent(keyword)}&pageIndex=${pageIndex}&pageSize=50&isActive=true`;
 
-    this.http.get<{ success: boolean; data: PagedResult<ItemDto> }>(url)
+    this.request = this.http.get<{ success: boolean; data: PagedResult<ItemDto> }>(url)
       .subscribe({
         next: (res) => {
           if (res && res.success && res.data) {
             this.items.set(res.data.items);
+            this.pageIndex.set(res.data.pageIndex); this.totalPages.set(res.data.totalPages); this.totalCount.set(res.data.totalCount);
           }
           this.isLoading.set(false);
         },
@@ -152,15 +120,13 @@ export class ItemService {
       : `${this.attributesApiUrl}/by-category`;
 
     this.http.get<{ success: boolean; data: ItemAttributeDto[] }>(url)
-      .pipe(
-        catchError(() => of({ success: true, data: DEFAULT_ATTRIBUTES }))
-      )
+
       .subscribe({
         next: (res) => {
           if (res && res.data && res.data.length > 0) {
             this.attributes.set(res.data);
           } else {
-            this.attributes.set(DEFAULT_ATTRIBUTES);
+            this.attributes.set([]);
           }
         }
       });

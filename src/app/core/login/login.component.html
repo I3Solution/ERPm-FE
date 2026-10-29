@@ -1,0 +1,6 @@
+<main class="login-page"><form class="erpm-card" [formGroup]="form" (ngSubmit)="submit()">
+  <h1>ERPm</h1><h2>{{ 'auth.sign_in' | translate }}</h2>
+  <app-form-control formControlName="userName" type="text" [label]="'auth.user_name' | translate"></app-form-control>
+  <app-form-control formControlName="password" type="password" [label]="'auth.password' | translate"></app-form-control>
+  <button class="erpm-btn erpm-btn-primary" type="submit" [disabled]="form.invalid || submitting()">{{ 'auth.sign_in' | translate }}</button>
+</form></main>

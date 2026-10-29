@@ -262,3 +262,6 @@ body {
               color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
               box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
+.api-error-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 20000; padding: 1rem; color: var(--erpm-danger-text); background: var(--erpm-danger-bg); border-bottom: 1px solid var(--erpm-danger-border); }
+@media print { body * { visibility: hidden; } #printable-receipt, #printable-receipt * { visibility: visible; color: #000 !important; background: #fff !important; } #printable-receipt { position: absolute; left: 0; top: 0; width: 76mm; } .print-actions { display: none !important; } }
+@page { size: auto; margin: 5mm; }

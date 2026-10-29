@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, of } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface TopSellingItemDto {

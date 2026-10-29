@@ -1,5 +1,5 @@
-// Local development settings used by `ng serve` and `ng build --configuration development`.
+// Local development settings for `ng serve`; empty apiBaseUrl uses proxy.conf.json to forward '/api' to http://localhost:5000.
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:5000'
+  apiBaseUrl: ''
 };

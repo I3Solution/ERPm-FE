@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, of, map, tap } from 'rxjs';
+import { Observable, Subscription, map, tap } from 'rxjs';
 import { environment }  from '../../../environments/environment';
 
 export enum AttributeDataType {

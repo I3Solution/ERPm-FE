@@ -23,5 +23,6 @@
 | **Design System & Tokens** | 100% | Hoàn thành |
 | **Multi-Branch Tree-Select & BFS** | 100% | Hoàn thành |
 | **CustomSelectComponent** | 100% | Hoàn thành |
+| **InputControlComponent & FormControlComponent (`FormGroup`)** | 100% | Hoàn thành |
 | **Đa ngôn ngữ (i18n)** | 100% | Hoàn thành |
 | **Build & Bundle Validation** | 100% | Hoàn thành (`ng build` 0 error) |

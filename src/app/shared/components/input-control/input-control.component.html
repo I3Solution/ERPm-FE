@@ -1,0 +1,137 @@
+<div
+  class="erpm-input-control-host"
+  [class.size-sm]="size === 'sm'"
+  [class.size-lg]="size === 'lg'"
+  [class.is-disabled]="disabled"
+  [class.is-invalid]="invalid"
+>
+  <ng-container [ngSwitch]="type">
+    <!-- 1. Select / Dropdown via CustomSelectComponent -->
+    <ng-container *ngSwitchCase="'select'">
+      <app-custom-select
+        [options]="dataSource"
+        [value]="internalValue()"
+        (valueChange)="onSelectValueChange($event)"
+        (selectionChange)="onSelectOptionChange($event)"
+        [placeholder]="placeholder"
+        [searchable]="searchable"
+        [allowClear]="allowClear"
+        [size]="size"
+        [minWidth]="minWidth"
+        [disabled]="disabled"
+      ></app-custom-select>
+    </ng-container>
+
+    <!-- 2. Multi-line Textarea -->
+    <ng-container *ngSwitchCase="'textarea'">
+      <textarea
+        class="erpm-input erpm-textarea"
+        [rows]="rows"
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [readOnly]="readonly"
+        [ngModel]="internalValue() ?? ''"
+        (ngModelChange)="onTextChange($event)"
+        (blur)="onBlur()"
+      ></textarea>
+    </ng-container>
+
+    <!-- 3. Checkbox / Boolean Toggle -->
+    <ng-container *ngSwitchCase="'checkbox'">
+      <label class="erpm-checkbox-wrap" [class.disabled]="disabled">
+        <input
+          type="checkbox"
+          class="erpm-checkbox-input"
+          [disabled]="disabled"
+          [ngModel]="!!internalValue()"
+          (ngModelChange)="onCheckboxChange($event)"
+          (blur)="onBlur()"
+        />
+        <span class="erpm-checkbox-text" *ngIf="checkboxLabel || placeholder">
+          {{ checkboxLabel || placeholder }}
+        </span>
+      </label>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'boolean'">
+      <label class="erpm-checkbox-wrap" [class.disabled]="disabled">
+        <input
+          type="checkbox"
+          class="erpm-checkbox-input"
+          [disabled]="disabled"
+          [ngModel]="!!internalValue()"
+          (ngModelChange)="onCheckboxChange($event)"
+          (blur)="onBlur()"
+        />
+        <span class="erpm-checkbox-text" *ngIf="checkboxLabel || placeholder">
+          {{ checkboxLabel || placeholder }}
+        </span>
+      </label>
+    </ng-container>
+
+    <!-- 4. Number & Currency Input -->
+    <ng-container *ngSwitchCase="'number'">
+      <div class="erpm-input-affix-wrap">
+        <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
+        <input
+          type="number"
+          class="erpm-input font-numeric"
+          [class.has-prefix]="!!prefix"
+          [class.has-suffix]="!!suffix"
+          [placeholder]="placeholder"
+          [disabled]="disabled"
+          [readOnly]="readonly"
+          [attr.min]="min ?? null"
+          [attr.max]="max ?? null"
+          [attr.step]="step"
+          [ngModel]="internalValue()"
+          (ngModelChange)="onNumberChange($event)"
+          (blur)="onBlur()"
+        />
+        <span *ngIf="suffix" class="input-affix suffix">{{ suffix }}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'currency'">
+      <div class="erpm-input-affix-wrap">
+        <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
+        <input
+          type="number"
+          class="erpm-input font-numeric font-bold"
+          [class.has-prefix]="!!prefix"
+          [class.has-suffix]="true"
+          [placeholder]="placeholder || '0'"
+          [disabled]="disabled"
+          [readOnly]="readonly"
+          [attr.min]="min ?? 0"
+          [attr.max]="max ?? null"
+          [attr.step]="step"
+          [ngModel]="internalValue()"
+          (ngModelChange)="onNumberChange($event)"
+          (blur)="onBlur()"
+        />
+        <span class="input-affix suffix">{{ suffix || 'đ' }}</span>
+      </div>
+    </ng-container>
+
+    <!-- 5. Default Standard Input (text, date, email, tel, password) -->
+    <ng-container *ngSwitchDefault>
+      <div class="erpm-input-affix-wrap">
+        <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
+        <input
+          [type]="type"
+          class="erpm-input"
+          [class.has-prefix]="!!prefix"
+          [class.has-suffix]="!!suffix"
+          [placeholder]="placeholder"
+          [disabled]="disabled"
+          [readOnly]="readonly"
+          [ngModel]="internalValue() ?? ''"
+          (ngModelChange)="onTextChange($event)"
+          (blur)="onBlur()"
+        />
+        <span *ngIf="suffix" class="input-affix suffix">{{ suffix }}</span>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

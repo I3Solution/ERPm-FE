@@ -1,0 +1,42 @@
+<div class="erpm-form-group" [class.compact]="compact" [class.has-error]="showError">
+  <!-- Standardized Field Label -->
+  <label *ngIf="label" class="erpm-label" [class.text-xs]="compact">
+    <span>{{ label }}</span>
+    <span *ngIf="unit" class="unit-badge">({{ unit }})</span>
+    <span *ngIf="isRequired" class="required-star">*</span>
+  </label>
+
+  <!-- Standardized Input Control Delegation -->
+  <app-input-control
+    [type]="type"
+    [value]="internalValue()"
+    (valueChange)="onInnerValueChange($event)"
+    (selectionChange)="onInnerSelectionChange($event)"
+    (blurred)="onInnerBlur()"
+    [placeholder]="placeholder"
+    [size]="size"
+    [disabled]="disabled"
+    [readonly]="readonly"
+    [min]="min"
+    [max]="max"
+    [step]="step"
+    [rows]="rows"
+    [prefix]="prefix"
+    [suffix]="suffix"
+    [checkboxLabel]="checkboxLabel || ((type === 'checkbox' || type === 'boolean') ? label : undefined)"
+    [dataSource]="dataSource"
+    [searchable]="searchable"
+    [allowClear]="allowClear"
+    [minWidth]="minWidth"
+    [invalid]="showError"
+  ></app-input-control>
+
+  <!-- Hint or Validation Error Message -->
+  <div *ngIf="showError" class="erpm-field-error">
+    {{ resolvedErrorMessage }}
+  </div>
+  <div *ngIf="!showError && hint" class="erpm-field-hint">
+    {{ hint }}
+  </div>
+</div>
+

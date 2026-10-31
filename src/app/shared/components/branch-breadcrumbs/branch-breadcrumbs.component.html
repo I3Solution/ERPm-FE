@@ -1,0 +1,28 @@
+@if (path().length > 0) {
+  <nav class="bc" aria-label="breadcrumb" [attr.title]="fullText()">
+    <ol class="bc-list">
+      @for (crumb of view().head; track crumb.id; let first = $first) {
+        <li class="bc-item" [class.is-company]="crumb.company" [class.is-last]="!view().hidden && !view().tail.length && $last">
+          @if (!first) { <span class="bc-sep" aria-hidden="true">›</span> }
+          <span class="bc-label">{{ crumb.label }}</span>
+        </li>
+      }
+      @if (view().hidden > 0) {
+        <li class="bc-item">
+          <span class="bc-sep" aria-hidden="true">›</span>
+          <button type="button" class="bc-more" (click)="toggle($event)" [attr.aria-label]="fullText()" [attr.aria-expanded]="expanded()">…</button>
+        </li>
+        @for (crumb of view().tail; track crumb.id; let last = $last) {
+          <li class="bc-item" [class.is-company]="crumb.company" [class.is-last]="last">
+            <span class="bc-sep" aria-hidden="true">›</span>
+            <span class="bc-label">{{ crumb.label }}</span>
+          </li>
+        }
+      } @else if (view().collapsible) {
+        <li class="bc-item">
+          <button type="button" class="bc-more" (click)="toggle($event)" [attr.aria-label]="fullText()" [attr.aria-expanded]="expanded()">«</button>
+        </li>
+      }
+    </ol>
+  </nav>
+}

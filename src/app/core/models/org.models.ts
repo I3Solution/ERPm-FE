@@ -56,7 +56,7 @@ export interface CreateEmployeeRequest {
 export interface UpdateEmployeeRequest {
   code: string; fullName: string; email?: string | null; phone?: string | null; hireDate?: string | null; userId?: number | null;
 }
-export interface EmployeeFilter extends ListFilter { withoutAccount?: boolean; }
+export interface EmployeeFilter extends ListFilter { withoutAccount?: boolean; branchId?: number; }
 
 export interface PolicyStatement {
   sid?: string; effect: 'Allow' | 'Deny'; actions: string[]; resources?: string[];

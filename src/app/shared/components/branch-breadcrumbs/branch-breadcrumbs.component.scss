@@ -1,0 +1,41 @@
+:host { display: block; min-width: 0; }
+
+.bc-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--erpm-text-muted, #64748b);
+}
+
+.bc-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+
+  &.is-company .bc-label { color: var(--erpm-primary-700, #4338ca); }
+  &.is-last .bc-label { color: var(--erpm-text-body, #1e293b); font-weight: 600; }
+}
+
+.bc-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 14rem; }
+.bc-sep { color: var(--erpm-text-subtle, #94a3b8); }
+
+.bc-more {
+  padding: 0 0.4rem;
+  border: 1px solid var(--erpm-border, #e2e8f0);
+  border-radius: 6px;
+  background: var(--erpm-bg-surface-subtle, #f1f5f9);
+  color: var(--erpm-text-muted, #64748b);
+  font: inherit;
+  line-height: 1.2;
+  cursor: pointer;
+
+  &:hover { color: var(--erpm-primary-700, #4338ca); border-color: var(--erpm-primary-400, #818cf8); }
+  &:focus-visible { outline: 2px solid var(--erpm-primary-600, #4f46e5); outline-offset: 1px; }
+}

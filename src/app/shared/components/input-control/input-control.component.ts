@@ -9,6 +9,8 @@ import { ChangeDetectorRef, inject, ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
+import { BranchSelectComponent } from '../branch-select/branch-select.component';
+import { OrgBranch, OrgUnitType } from '../../../core/models/org.models';
 import {
   CustomSelectComponent,
   SelectOption
@@ -24,6 +26,7 @@ export type InputControlType =
   | 'password'
   | 'textarea'
   | 'select'
+  | 'branch-tree'
   | 'checkbox'
   | 'boolean';
 
@@ -31,7 +34,7 @@ export type InputControlType =
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-input-control',
   standalone: true,
-  imports: [CommonModule, FormsModule, CustomSelectComponent],
+  imports: [CommonModule, FormsModule, CustomSelectComponent, BranchSelectComponent],
   templateUrl: './input-control.component.html',
   styleUrls: ['./input-control.component.scss']
 })
@@ -74,6 +77,13 @@ export class InputControlComponent implements ControlValueAccessor {
 
   public _dataSource = signal<SelectOption[]>([]);
 
+  // Organization tree picker (type 'branch-tree'): nested GET /branches/tree data and optional restrictions
+  @Input() branchTree: OrgBranch[] = [];
+  @Input() nodeTypeFilter: readonly OrgUnitType[] | null = null;
+  @Input() scopeRootId: number | null = null;
+  @Input() scopeMode: 'all' | 'selfAndChildren' = 'all';
+  @Input() excludeSubtreeOf: number | null = null;
+
   @Input() searchable: boolean = false;
   @Input() allowClear: boolean = false;
   @Input() minWidth: string = '100%';
@@ -90,6 +100,7 @@ export class InputControlComponent implements ControlValueAccessor {
   @Output() searchChange = new EventEmitter<string>();
   @Output() selectionChange = new EventEmitter<SelectOption | null>();
   @Output() blurred = new EventEmitter<void>();
+  @Output() branchSelectionChange = new EventEmitter<OrgBranch | null>();
 
   public internalValue = signal<any>(null);
 
@@ -160,6 +171,10 @@ export class InputControlComponent implements ControlValueAccessor {
 
   public onSelectOptionChange(opt: SelectOption | null): void {
     this.selectionChange.emit(opt);
+  }
+
+  public onBranchSelectionChange(branch: OrgBranch | null): void {
+    this.branchSelectionChange.emit(branch);
   }
 
   public onBlur(): void {

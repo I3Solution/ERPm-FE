@@ -19,28 +19,28 @@
     <!-- Navigation Menu Items -->
     <nav class="sidebar-nav">
       <div class="nav-section-title">{{ 'menu.dashboard' | translate }}</div>
-      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+      <a *ngIf="auth.can('dashboard:metrics:view')" routerLink="/dashboard" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">📊</span>
         <span>{{ 'menu.dashboard' | translate }}</span>
       </a>
 
-      <a routerLink="/catalog" routerLinkActive="active" class="nav-item">
+      <a *ngIf="auth.can('wms:item:view')" routerLink="/catalog" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🏷️</span>
         <span>{{ 'menu.catalog' | translate }}</span>
       </a>
 
       <div class="nav-section-title">{{ 'menu.sales' | translate }}</div>
-      <a routerLink="/sales" routerLinkActive="active" class="nav-item">
+      <a *ngIf="auth.can('sd:invoice:view')" routerLink="/sales" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🛒</span>
         <span>{{ 'menu.sales' | translate }}</span>
       </a>
 
-      <a routerLink="/inventory" routerLinkActive="active" class="nav-item">
+      <a *ngIf="auth.can('wms:stock:view')" routerLink="/inventory" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">📦</span>
         <span>{{ 'menu.inventory' | translate }}</span>
       </a>
 
-      <a routerLink="/partners" routerLinkActive="active" class="nav-item">
+      <a *ngIf="auth.can('crm:partner:view')" routerLink="/partners" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">👥</span>
         <span>{{ 'menu.partners' | translate }}</span>
       </a>
@@ -161,27 +161,27 @@
 
     <!-- Mobile Bottom Navigation Bar (< 768px) -->
     <nav class="mobile-bottom-bar mobile-only">
-      <a routerLink="/dashboard" routerLinkActive="active" class="bottom-tab">
+      <a *ngIf="auth.can('dashboard:metrics:view')" routerLink="/dashboard" routerLinkActive="active" class="bottom-tab">
         <span class="tab-icon">📊</span>
         <span class="tab-label">{{ 'menu.dashboard' | translate }}</span>
       </a>
 
-      <a routerLink="/catalog" routerLinkActive="active" class="bottom-tab">
+      <a *ngIf="auth.can('wms:item:view')" routerLink="/catalog" routerLinkActive="active" class="bottom-tab">
         <span class="tab-icon">🏷️</span>
         <span class="tab-label">{{ 'menu.catalog' | translate }}</span>
       </a>
 
-      <a routerLink="/sales" routerLinkActive="active" class="bottom-tab">
+      <a *ngIf="auth.can('sd:invoice:view')" routerLink="/sales" routerLinkActive="active" class="bottom-tab">
         <span class="tab-icon">🛒</span>
         <span class="tab-label">{{ 'menu.sales' | translate }}</span>
       </a>
 
-      <a routerLink="/inventory" routerLinkActive="active" class="bottom-tab">
+      <a *ngIf="auth.can('wms:stock:view')" routerLink="/inventory" routerLinkActive="active" class="bottom-tab">
         <span class="tab-icon">📦</span>
         <span class="tab-label">{{ 'menu.inventory' | translate }}</span>
       </a>
 
-      <a routerLink="/partners" routerLinkActive="active" class="bottom-tab">
+      <a *ngIf="auth.can('crm:partner:view')" routerLink="/partners" routerLinkActive="active" class="bottom-tab">
         <span class="tab-icon">👥</span>
         <span class="tab-label">{{ 'menu.partners' | translate }}</span>
       </a>

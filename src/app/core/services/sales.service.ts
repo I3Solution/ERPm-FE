@@ -17,7 +17,7 @@ export interface SalesInvoiceItemRequest {
 }
 
 export interface CreateSalesInvoiceRequest {
-  requestId: string;
+  requestId?: string;
   branchId?: number;
   customerId?: number;
   customerName?: string;
@@ -90,7 +90,11 @@ export class SalesService {
   }
 
   public checkout(request: CreateSalesInvoiceRequest): Observable<SalesInvoiceDto> {
-    return this.http.post<{ success: boolean; data: SalesInvoiceDto }>(`${this.apiUrl}/pos-checkout`, request)
+    const payload = {
+      ...request,
+      requestId: request.requestId || crypto.randomUUID()
+    };
+    return this.http.post<{ success: boolean; data: SalesInvoiceDto }>(`${this.apiUrl}/pos-checkout`, payload)
       .pipe(
         map(res => res.data),
         tap(created => {

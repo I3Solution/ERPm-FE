@@ -11,6 +11,7 @@ export const routes: Routes = [
   { path: 'inventory', loadComponent: () => import('./modules/WMS/inventory.component').then(m => m.InventoryComponent), canActivate: [permissionGuard('wms:stock:view')] },
   { path: 'partners', loadComponent: () => import('./modules/CRM/partners.component').then(m => m.PartnersComponent), canActivate: [permissionGuard('crm:partner:view')] },
   { path: 'org', loadComponent: () => import('./modules/HRM/org-tree.component').then(m => m.OrgTreeComponent), canActivate: [permissionGuard('hrm:department:view')] },
+  { path: 'job-positions', loadComponent: () => import('./modules/HRM/job-positions.component').then(m => m.JobPositionsComponent), canActivate: [permissionGuard('hrm:job-position:view')] },
   { path: 'notifications', loadComponent: () => import('./modules/SYS/notifications/notifications.component').then(m => m.NotificationsComponent), canActivate: [authGuard] },
   { path: 'notifications/preferences', loadComponent: () => import('./modules/SYS/notifications/notification-preferences.component').then(m => m.NotificationPreferencesComponent), canActivate: [authGuard] },
   { path: 'forbidden', loadComponent: () => import('./core/forbidden/forbidden.component').then(m => m.ForbiddenComponent), canActivate: [authGuard] },

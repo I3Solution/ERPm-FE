@@ -45,10 +45,14 @@
         <span>{{ 'menu.partners' | translate }}</span>
       </a>
 
-      <div *ngIf="auth.can('hrm:department:view')" class="nav-section-title">{{ 'menu.admin' | translate }}</div>
+      <div *ngIf="auth.canAny(['hrm:department:view', 'hrm:job-position:view'])" class="nav-section-title">{{ 'menu.admin' | translate }}</div>
       <a *ngIf="auth.can('hrm:department:view')" routerLink="/org" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🏢</span>
         <span>{{ 'menu.org' | translate }}</span>
+      </a>
+      <a *ngIf="auth.can('hrm:job-position:view')" routerLink="/job-positions" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">🎖️</span>
+        <span>{{ 'menu.job_positions' | translate }}</span>
       </a>
 
       <div class="nav-section-title">{{ 'menu.accounting' | translate }}</div>

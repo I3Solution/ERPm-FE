@@ -4,6 +4,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { LocalizationService } from '../../../core/services/localization.service';
 import { OrgAdminService } from '../../../core/services/org-admin.service';
 import { Employee, OrgBranch, OrgUnitType, UserAccount } from '../../../core/models/org.models';
+import { flattenBranches } from '../../../core/models/org-tree.util';
 import { FormControlComponent } from '../form-control/form-control.component';
 import { SelectOption } from '../custom-select/custom-select.component';
 import { TranslatePipe } from '../../pipes/translate.pipe';
@@ -32,7 +33,7 @@ export class UserFormDialogComponent implements OnInit {
   @Input() user: UserAccount | null = null;
   /** Employee to link (locked) when opened from an employee row. */
   @Input() employee: DialogEmployee | null = null;
-  @Input() set branchTree(tree: OrgBranch[]) { this._branches.set(flatten(tree)); }
+  @Input() set branchTree(tree: OrgBranch[]) { this._branches.set(flattenBranches(tree)); }
   /** Only a super administrator may grant the Admin role or create an account without an employee. */
   @Input() isSuperAdmin = false;
   @Output() saved = new EventEmitter<UserAccount>();
@@ -104,11 +105,4 @@ export class UserFormDialogComponent implements OnInit {
   }
 
   public close(): void { this.closed.emit(); }
-}
-
-function flatten(tree: OrgBranch[]): OrgBranch[] {
-  const out: OrgBranch[] = [];
-  const walk = (nodes: OrgBranch[]) => nodes.forEach(n => { out.push(n); walk(n.children ?? []); });
-  walk(tree);
-  return out;
 }

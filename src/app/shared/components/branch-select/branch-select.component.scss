@@ -1,0 +1,33 @@
+/* Tree-specific additions only. Trigger, dropdown, options, tokens and dark mode come from custom-select.component.scss. */
+.bs-row {
+  padding-right: 0.75rem;
+
+  &.is-keyboard-active:not(.active) { background-color: var(--erpm-bg-surface-subtle, #f1f5f9); }
+
+  /* Locked nodes (type filter) stay readable and keep their expand button, but cannot be picked. */
+  &.is-locked {
+    opacity: 0.55;
+    cursor: default !important;
+    * { cursor: default !important; }
+  }
+}
+
+/* The list grows with the room left on screen (set by the component), unlike the fixed 240px of a plain select. */
+.custom-select-dropdown .options-scroll-list { max-height: var(--bs-list-max, 240px); }
+
+.bs-toggle {
+  flex: 0 0 1.2rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--erpm-text-muted, #64748b);
+  font-size: 0.75rem;
+  line-height: 1;
+  cursor: pointer !important;
+
+  &:hover:not(:disabled) { color: var(--erpm-primary-700, #4338ca); }
+  &:disabled { opacity: 0.35; cursor: default !important; }
+  &.is-hidden { visibility: hidden; }
+}

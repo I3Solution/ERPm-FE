@@ -25,6 +25,7 @@ import {
   InputControlType
 } from '../input-control/input-control.component';
 import { SelectOption } from '../custom-select/custom-select.component';
+import { OrgBranch, OrgUnitType } from '../../../core/models/org.models';
 
 @Component({
   selector: 'app-form-control',
@@ -78,6 +79,14 @@ export class FormControlComponent implements ControlValueAccessor {
   }
 
   public _dataSource = signal<SelectOption[]>([]);
+
+  // Organization tree picker (type 'branch-tree')
+  @Input() branchTree: OrgBranch[] = [];
+  @Input() nodeTypeFilter: readonly OrgUnitType[] | null = null;
+  @Input() scopeRootId: number | null = null;
+  @Input() scopeMode: 'all' | 'selfAndChildren' = 'all';
+  @Input() excludeSubtreeOf: number | null = null;
+  @Output() branchSelectionChange = new EventEmitter<OrgBranch | null>();
 
   @Input() searchable: boolean = false;
   @Input() allowClear: boolean = false;

@@ -23,6 +23,25 @@
       ></app-custom-select>
     </ng-container>
 
+    <!-- 1b. Organization tree picker -->
+    <ng-container *ngSwitchCase="'branch-tree'">
+      <app-branch-select [inputId]="inputId"
+        [tree]="branchTree"
+        [nodeTypeFilter]="nodeTypeFilter"
+        [scopeRootId]="scopeRootId"
+        [scopeMode]="scopeMode"
+        [excludeSubtreeOf]="excludeSubtreeOf"
+        [value]="internalValue()"
+        (valueChange)="onSelectValueChange($event)"
+        (selectionChange)="onBranchSelectionChange($event)"
+        [placeholder]="placeholder"
+        [allowClear]="allowClear"
+        [size]="size"
+        [minWidth]="minWidth"
+        [disabled]="disabled || readonly"
+      ></app-branch-select>
+    </ng-container>
+
     <!-- 2. Multi-line Textarea -->
     <ng-container *ngSwitchCase="'textarea'">
       <textarea [id]="inputId"

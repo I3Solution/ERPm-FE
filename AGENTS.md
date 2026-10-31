@@ -47,6 +47,7 @@ Chào bạn AI Assistant, bạn đang làm việc trên repository **ERPm-FE** -
      - `[refactor]`: Tái cấu trúc component/service không làm thay đổi hành vi.
      - `[db]`: Cập nhật mock data hoặc local storage schema.
      - `[docs]`: Cập nhật tài liệu (`PROJECT_MASTER.md`, `AGENTS.md`, `.ai/`).
+   - **Bắt buộc:** trước khi push `ERPm-FE` hoặc bất kỳ `ERPm-FE-<MODULE>` nào, chạy một lần `git config push.recurseSubmodules check` trong `ERPm-FE`. Lệnh này chặn push nếu con trỏ submodule (SD, CRM, WMS, HRM…) trỏ tới commit submodule đó chưa push lên remote của chính nó. Thứ tự đúng: **push submodule con trước**, rồi mới push `ERPm-FE`. Đã xảy ra nhiều lần (SD/CRM lúc merge, CRM, WMS) khiến CI đỏ ở bước checkout với lỗi `not our ref` / `repository not found`.
 
 6. **Quy tắc ghi chép theo loại Task** (Step / change / bug / refactor / db / spike / review): theo mục 6 `AGENTS.md` của repo gốc `ERPm`. File task đặt ở `.ai/tasks/` của repo gốc, theo mẫu `.ai/tasks/_TEMPLATE.md`.
 

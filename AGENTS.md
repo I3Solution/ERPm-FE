@@ -47,3 +47,10 @@ Chào bạn AI Assistant, bạn đang làm việc trên repository **ERPm-FE** -
      - `[refactor]`: Tái cấu trúc component/service không làm thay đổi hành vi.
      - `[db]`: Cập nhật mock data hoặc local storage schema.
      - `[docs]`: Cập nhật tài liệu (`PROJECT_MASTER.md`, `AGENTS.md`, `.ai/`).
+
+6. **Quy tắc ghi chép theo loại Task** (Step / change / bug / refactor / db / spike / review): theo mục 6 `AGENTS.md` của repo gốc `ERPm`. File task đặt ở `.ai/tasks/` của repo gốc, theo mẫu `.ai/tasks/_TEMPLATE.md`.
+
+7. **Quy tắc tạo card Trello:** theo mục 7 `AGENTS.md` của repo gốc `ERPm`.
+   - Tên card: `[tag](MODULE) <MÃ> <tiêu đề>`.
+   - Cột: Backlog / Todo / Doing / Blocked / Review / Done.
+   - Mỗi card link tới plan hoặc file task, kèm checklist build và test.

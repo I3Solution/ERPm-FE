@@ -1,0 +1,7 @@
+.usr-container { padding: 1.5rem; max-width: 1400px; margin: 0 auto; }
+@media (max-width: 700px) { .usr-container { padding: 1rem; } }
+
+.usr-toolbar { padding: 0.75rem 1rem; }
+.usr-search { max-width: 22rem; }
+.usr-inactive td { opacity: 0.6; }
+.usr-empty { color: var(--erpm-text-muted); margin: 0; padding: 1rem; }

@@ -72,7 +72,7 @@ export interface DepartmentRoleGrant { roleId: number; applyToChildren: boolean;
 
 export interface UserAccount {
   id: number; userName: string; displayName: string; role: string; branchIds: number[];
-  employeeId?: number | null; employeeCode?: string | null; employeeName?: string | null;
+  employeeId?: number | null; employeeCode?: string | null; employeeName?: string | null; isActive: boolean;
 }
 export interface CreateUserRequest {
   userName: string; displayName: string; password: string; role: string; branchIds: number[]; employeeId?: number | null;

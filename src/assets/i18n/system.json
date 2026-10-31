@@ -237,7 +237,20 @@
     "error.sales.cancelled": "Hóa đơn đã bị hủy hoặc không thể hủy.",
     "dashboard.title": "Tổng quan kinh doanh",
     "common.saved": "Đã lưu.",
-    "error.item.in_use": "Mặt hàng đã phát sinh giao dịch; hãy ngừng sử dụng thay vì xóa hoặc đổi loại hàng/đơn vị tính."
+    "error.item.in_use": "Mặt hàng đã phát sinh giao dịch; hãy ngừng sử dụng thay vì xóa hoặc đổi loại hàng/đơn vị tính.",
+    "notifications.title": "Thông báo",
+    "notifications.center_title": "Trung tâm Thông báo",
+    "notifications.center_subtitle": "Quản lý và theo dõi toàn bộ các sự kiện cảnh báo nghiệp vụ và thông báo hệ thống.",
+    "notifications.mark_all_read": "Đánh dấu tất cả đã đọc",
+    "notifications.empty": "Không có thông báo mới",
+    "notifications.view_all": "Xem tất cả thông báo",
+    "notifications.preferences": "Cài đặt thông báo",
+    "notifications.preferences_title": "Cấu hình Thông báo",
+    "notifications.preferences_subtitle": "Tùy chỉnh kênh nhận tin và khung giờ yên tĩnh cho tài khoản của bạn.",
+    "notifications.back_to_center": "Quay lại Trung tâm thông báo",
+    "notifications.filter_module": "Phân hệ nghiệp vụ",
+    "notifications.filter_severity": "Mức độ quan trọng",
+    "notifications.filter_status": "Trạng thái đọc"
   },
   "en": {
     "common.app_name": "ERPm - Sales & Inventory Management",
@@ -477,6 +490,19 @@
     "branch.no_results": "No matching branches",
     "error.sales.price_override": "Only administrators may override the catalogue sale price.",
     "common.saved": "Saved.",
-    "error.item.in_use": "This item has transactions. Deactivate it instead of deleting it or changing its type or unit."
+    "error.item.in_use": "This item has transactions. Deactivate it instead of deleting it or changing its type or unit.",
+    "notifications.title": "Notifications",
+    "notifications.center_title": "Notification Center",
+    "notifications.center_subtitle": "Manage and track all business alerts and system notifications.",
+    "notifications.mark_all_read": "Mark all as read",
+    "notifications.empty": "No new notifications",
+    "notifications.view_all": "View all notifications",
+    "notifications.preferences": "Notification Preferences",
+    "notifications.preferences_title": "Notification Preferences",
+    "notifications.preferences_subtitle": "Customize delivery channels and quiet hours for your account.",
+    "notifications.back_to_center": "Back to Notification Center",
+    "notifications.filter_module": "Business Module",
+    "notifications.filter_severity": "Severity Level",
+    "notifications.filter_status": "Read Status"
   }
 }

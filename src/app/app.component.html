@@ -1,3 +1,4 @@
+<app-notification-toast></app-notification-toast>
 <div *ngIf="apiErrors.message() as message" class="api-error-banner" role="alert">{{ message | translate }} <button type="button" (click)="apiErrors.message.set(null)" [attr.aria-label]="'common.cancel' | translate">&times;</button></div>
 <div class="app-layout" *ngIf="auth.isAuthenticated(); else anonymous">
   <!-- Desktop Sidebar Navigation (>= 768px) -->
@@ -78,8 +79,10 @@
         <app-branch-tree-select></app-branch-tree-select>
       </div>
 
-      <!-- Header Actions: Theme Toggle, Language Switcher & Profile -->
-      <div class="header-actions"><button type="button" (click)="auth.logout()" routerLink="/login" class="erpm-btn erpm-btn-secondary">{{ 'auth.sign_out' | translate }}</button>
+      <!-- Header Actions: Notifications, Sign Out, Theme Toggle, Language Switcher & Profile -->
+      <div class="header-actions">
+        <app-notification-bell></app-notification-bell>
+        <button type="button" (click)="auth.logout()" routerLink="/login" class="erpm-btn erpm-btn-secondary">{{ 'auth.sign_out' | translate }}</button>
         <!-- Theme Mode Toggle Button -->
         <button
           type="button"

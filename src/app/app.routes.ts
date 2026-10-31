@@ -9,5 +9,7 @@ export const routes: Routes = [
   { path: 'sales', loadComponent: () => import('./modules/SD/pos.component').then(m => m.PosComponent), canActivate: [authGuard] },
   { path: 'inventory', loadComponent: () => import('./modules/WMS/inventory.component').then(m => m.InventoryComponent), canActivate: [authGuard] },
   { path: 'partners', loadComponent: () => import('./modules/CRM/partners.component').then(m => m.PartnersComponent), canActivate: [authGuard] },
+  { path: 'notifications', loadComponent: () => import('./modules/SYS/notifications/notifications.component').then(m => m.NotificationsComponent), canActivate: [authGuard] },
+  { path: 'notifications/preferences', loadComponent: () => import('./modules/SYS/notifications/notification-preferences.component').then(m => m.NotificationPreferencesComponent), canActivate: [authGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];

@@ -1,0 +1,176 @@
+<div class="notifications-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-titles">
+      <h1 class="page-title">{{ 'notifications.center_title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'notifications.center_subtitle' | translate }}</p>
+    </div>
+    <div class="header-toolbar">
+      <button
+        *ngIf="notifState.hasUnread()"
+        type="button"
+        class="erpm-btn erpm-btn-secondary"
+        (click)="markAllAsRead()"
+      >
+        ✓ {{ 'notifications.mark_all_read' | translate }}
+      </button>
+      <a routerLink="/notifications/preferences" class="erpm-btn erpm-btn-secondary">
+        ⚙️ {{ 'notifications.preferences' | translate }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filter-card">
+    <div class="filter-group">
+      <label class="filter-label">{{ 'notifications.filter_module' | translate }}</label>
+      <select class="filter-select" [ngModel]="filterCategory()" (ngModelChange)="filterCategory.set($event); onFilterChange()">
+        <option *ngFor="let cat of categories" [value]="cat.code">{{ cat.label }}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label">{{ 'notifications.filter_severity' | translate }}</label>
+      <select class="filter-select" [ngModel]="filterSeverity()" (ngModelChange)="filterSeverity.set($event); onFilterChange()">
+        <option *ngFor="let sev of severities" [value]="sev.code">{{ sev.label }}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label">{{ 'notifications.filter_status' | translate }}</label>
+      <select class="filter-select" [ngModel]="filterReadStatus()" (ngModelChange)="filterReadStatus.set($event); onFilterChange()">
+        <option value="ALL">Tất cả trạng thái</option>
+        <option value="UNREAD">Chưa đọc</option>
+        <option value="READ">Đã đọc</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Content List / Table Area -->
+  <div class="content-card">
+    <div *ngIf="isLoading()" class="loading-state">
+      <div class="spinner"></div>
+      <span>Đang tải thông báo...</span>
+    </div>
+
+    <div *ngIf="!isLoading() && items().length === 0" class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h3>Không có thông báo nào</h3>
+      <p>Bạn không có thông báo nào trong bộ lọc hiện tại.</p>
+    </div>
+
+    <!-- Desktop Table View -->
+    <div *ngIf="!isLoading() && items().length > 0" class="desktop-only table-responsive">
+      <table class="erpm-table">
+        <thead>
+          <tr>
+            <th style="width: 48px;"></th>
+            <th style="width: 110px;">Phân hệ</th>
+            <th>Nội dung thông báo</th>
+            <th style="width: 140px;">Mức độ</th>
+            <th style="width: 140px;">Thời gian</th>
+            <th style="width: 100px; text-align: right;">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let item of items()"
+            [class.row-unread]="!item.isRead"
+            (click)="onItemClick(item)"
+            class="clickable-row"
+          >
+            <td class="text-center font-lg">
+              {{ getCategoryIcon(item.category) }}
+            </td>
+            <td>
+              <span class="module-badge">{{ item.category }}</span>
+            </td>
+            <td>
+              <div class="notif-cell-content">
+                <span class="cell-title">{{ item.title }}</span>
+                <span class="cell-body">{{ item.body }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="severity-badge" [ngClass]="'badge-' + item.severity.toLowerCase()">
+                {{ item.severity }}
+              </span>
+            </td>
+            <td class="cell-time">
+              {{ item.createdAtUtc | relativeTime }}
+            </td>
+            <td class="text-right" (click)="$event.stopPropagation()">
+              <button
+                *ngIf="!item.isRead"
+                type="button"
+                class="icon-action-btn"
+                title="Đánh dấu đã đọc"
+                (click)="markAsRead(item)"
+              >
+                ✓
+              </button>
+              <button
+                type="button"
+                class="icon-action-btn"
+                title="Lưu trữ"
+                (click)="archiveItem(item, $event)"
+              >
+                📥
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile Card View -->
+    <div *ngIf="!isLoading() && items().length > 0" class="mobile-only mobile-cards-list">
+      <div
+        *ngFor="let item of items()"
+        class="mobile-card"
+        [class.card-unread]="!item.isRead"
+        (click)="onItemClick(item)"
+      >
+        <div class="card-icon-box">
+          {{ getCategoryIcon(item.category) }}
+        </div>
+        <div class="card-details">
+          <div class="card-meta">
+            <span class="module-badge">{{ item.category }}</span>
+            <span class="severity-badge" [ngClass]="'badge-' + item.severity.toLowerCase()">
+              {{ item.severity }}
+            </span>
+            <span class="cell-time ml-auto">{{ item.createdAtUtc | relativeTime }}</span>
+          </div>
+          <h4 class="card-title">{{ item.title }}</h4>
+          <p class="card-body-text">{{ item.body }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="totalPages() > 1" class="pagination-footer">
+      <span class="page-counter">
+        Trang {{ pageIndex() }} / {{ totalPages() }} (Tổng {{ totalCount() }} mục)
+      </span>
+      <div class="pagination-btns">
+        <button
+          type="button"
+          class="erpm-btn erpm-btn-secondary btn-sm"
+          [disabled]="pageIndex() === 1"
+          (click)="setPage(pageIndex() - 1)"
+        >
+          Trước
+        </button>
+        <button
+          type="button"
+          class="erpm-btn erpm-btn-secondary btn-sm"
+          [disabled]="pageIndex() === totalPages()"
+          (click)="setPage(pageIndex() + 1)"
+        >
+          Sau
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -45,6 +45,12 @@
         <span>{{ 'menu.partners' | translate }}</span>
       </a>
 
+      <div *ngIf="auth.can('hrm:department:view')" class="nav-section-title">{{ 'menu.admin' | translate }}</div>
+      <a *ngIf="auth.can('hrm:department:view')" routerLink="/org" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">🏢</span>
+        <span>{{ 'menu.org' | translate }}</span>
+      </a>
+
       <div class="nav-section-title">{{ 'menu.accounting' | translate }}</div>
       <a class="nav-item nav-item-disabled" >
         <span class="nav-icon">📖</span>

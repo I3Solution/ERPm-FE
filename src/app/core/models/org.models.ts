@@ -33,7 +33,7 @@ export interface SaveDepartmentRequest {
   code: string; name: string; translations?: Record<string, string>;
   companyId: number; branchId: number; parentId: number | null; levelId: number | null; isActive: boolean;
 }
-export interface DepartmentFilter extends ListFilter { levelCode?: string; underId?: number; }
+export interface DepartmentFilter extends ListFilter { companyId?: number; levelCode?: string; underId?: number; }
 
 export interface JobPosition {
   id: number; code: string; name: string; translations: Record<string, string>;

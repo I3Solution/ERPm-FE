@@ -12,6 +12,8 @@ export const routes: Routes = [
   { path: 'partners', loadComponent: () => import('./modules/CRM/partners.component').then(m => m.PartnersComponent), canActivate: [permissionGuard('crm:partner:view')] },
   { path: 'org', loadComponent: () => import('./modules/HRM/org-tree.component').then(m => m.OrgTreeComponent), canActivate: [permissionGuard('hrm:department:view')] },
   { path: 'job-positions', loadComponent: () => import('./modules/HRM/job-positions.component').then(m => m.JobPositionsComponent), canActivate: [permissionGuard('hrm:job-position:view')] },
+  { path: 'employees', loadComponent: () => import('./modules/HRM/employees.component').then(m => m.EmployeesComponent), canActivate: [permissionGuard('hrm:employee:view')] },
+  { path: 'users', loadComponent: () => import('./modules/SYS/users/users.component').then(m => m.UsersComponent), canActivate: [permissionGuard('sys:user:view')] },
   { path: 'notifications', loadComponent: () => import('./modules/SYS/notifications/notifications.component').then(m => m.NotificationsComponent), canActivate: [authGuard] },
   { path: 'notifications/preferences', loadComponent: () => import('./modules/SYS/notifications/notification-preferences.component').then(m => m.NotificationPreferencesComponent), canActivate: [authGuard] },
   { path: 'forbidden', loadComponent: () => import('./core/forbidden/forbidden.component').then(m => m.ForbiddenComponent), canActivate: [authGuard] },

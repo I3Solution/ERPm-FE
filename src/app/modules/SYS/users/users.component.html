@@ -1,0 +1,54 @@
+<div class="usr-container">
+  <div class="erpm-page-header">
+    <div>
+      <h1 class="erpm-page-title">{{ 'usr.title' | translate }}</h1>
+      <p class="erpm-page-subtitle">{{ 'usr.subtitle' | translate }}</p>
+    </div>
+    @if (auth.can('sys:user:create')) {
+      <button type="button" class="erpm-btn erpm-btn-primary" (click)="openCreate()">{{ 'usr.add' | translate }}</button>
+    }
+  </div>
+
+  <div class="erpm-table-container">
+    <div class="usr-toolbar">
+      <app-form-control class="usr-search" [formControl]="keywordControl" type="text" [placeholder]="'common.search' | translate"></app-form-control>
+    </div>
+    <div class="erpm-table-scroll">
+      <table class="erpm-table">
+        <thead>
+          <tr>
+            <th>{{ 'acc.user_name' | translate }}</th>
+            <th>{{ 'acc.display_name' | translate }}</th>
+            <th>{{ 'acc.role_label' | translate }}</th>
+            <th>{{ 'acc.employee' | translate }}</th>
+            <th class="text-center">{{ 'common.status' | translate }}</th>
+            <th class="text-right">{{ 'common.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.id) {
+            <tr [class.usr-inactive]="!row.isActive">
+              <td>{{ row.userName }}</td>
+              <td>{{ row.displayName }}</td>
+              <td>{{ ('acc.role.' + row.role) | translate }}</td>
+              <td>{{ row.employeeLabel }}</td>
+              <td class="text-center">{{ (row.isActive ? 'common.active' : 'common.inactive') | translate }}</td>
+              <td class="text-right">
+                @if (auth.can('sys:user:edit')) {
+                  <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="openEdit(row)">{{ 'common.edit' | translate }}</button>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="6"><p class="usr-empty">{{ loading() ? ('common.loading' | translate) : ('usr.empty' | translate) }}</p></td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+@if (dialogUser() !== undefined) {
+  <app-user-form-dialog [user]="dialogUser() ?? null" [branchTree]="branchTree()" [isSuperAdmin]="isSuperAdmin()"
+    (saved)="onSaved()" (closed)="closeDialog()"></app-user-form-dialog>
+}

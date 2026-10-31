@@ -1,0 +1,43 @@
+<div class="erpm-modal-backdrop" (click)="close()">
+  <div class="erpm-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+    <div class="erpm-modal-header">
+      <h2 class="modal-title">{{ (isEdit ? 'acc.edit_title' : 'acc.new_title') | translate }}</h2>
+      <button type="button" class="modal-close-btn" (click)="close()" [title]="'common.cancel' | translate">✕</button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="erpm-modal-body space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <app-form-control formControlName="userName" type="text" [label]="'acc.user_name' | translate"></app-form-control>
+          <app-form-control formControlName="displayName" type="text" [label]="'acc.display_name' | translate"></app-form-control>
+          <app-form-control formControlName="password" type="password" [label]="'acc.password' | translate"
+            [hint]="(isEdit ? 'acc.password_hint_edit' : 'acc.password_hint') | translate"></app-form-control>
+          <app-form-control formControlName="role" type="select" [label]="'acc.role_label' | translate" [dataSource]="roleOptions()"></app-form-control>
+        </div>
+        <app-form-control formControlName="employeeId" type="select" [label]="'acc.employee' | translate"
+          [dataSource]="employeeOptions()" [searchable]="true" [allowClear]="isSuperAdmin"
+          [hint]="'acc.employee_hint' | translate"></app-form-control>
+
+        @if (selectableBranches().length > 0) {
+          <fieldset class="acc-branches" [formGroup]="branchForm">
+            <legend>{{ 'acc.branches' | translate }}</legend>
+            <p class="acc-hint">{{ 'acc.branches_hint' | translate }}</p>
+            <div class="acc-branch-grid">
+              @for (branch of selectableBranches(); track branch.id) {
+                <app-form-control [formControlName]="'b_' + branch.id" type="checkbox" [checkboxLabel]="branch.name"></app-form-control>
+              }
+            </div>
+          </fieldset>
+        }
+
+        @if (isEdit) {
+          <app-form-control formControlName="isActive" type="checkbox" [checkboxLabel]="'common.active' | translate"></app-form-control>
+        }
+      </div>
+      <div class="erpm-modal-footer acc-footer">
+        <button type="button" class="erpm-btn erpm-btn-secondary" (click)="close()">{{ 'common.cancel' | translate }}</button>
+        <button type="submit" class="erpm-btn erpm-btn-primary" [disabled]="saving()">{{ (saving() ? 'common.saving' : 'common.save') | translate }}</button>
+      </div>
+    </form>
+  </div>
+</div>

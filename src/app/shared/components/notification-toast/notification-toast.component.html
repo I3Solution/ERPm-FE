@@ -1,0 +1,28 @@
+<div class="toast-viewport" *ngIf="notifState.activeToasts().length > 0">
+  <div
+    *ngFor="let toast of notifState.activeToasts()"
+    class="toast-card"
+    [ngClass]="'toast-' + toast.severity.toLowerCase()"
+    (click)="onToastClick(toast)"
+  >
+    <div class="toast-icon-wrap">
+      <span class="toast-category-icon">{{ getCategoryIcon(toast.category) }}</span>
+    </div>
+    <div class="toast-content">
+      <div class="toast-header">
+        <span class="toast-category-tag">{{ toast.category }}</span>
+        <span class="toast-time">{{ toast.createdAtUtc | relativeTime }}</span>
+      </div>
+      <h4 class="toast-title">{{ toast.title }}</h4>
+      <p class="toast-body">{{ toast.body }}</p>
+    </div>
+    <button
+      type="button"
+      class="toast-close-btn"
+      (click)="$event.stopPropagation(); notifState.dismissToast(toast.id)"
+      aria-label="Close"
+    >
+      ✕
+    </button>
+  </div>
+</div>

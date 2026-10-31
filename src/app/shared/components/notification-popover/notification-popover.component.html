@@ -1,0 +1,57 @@
+<div class="popover-backdrop" *ngIf="notifState.isPopoverOpen()">
+  <div class="popover-card" (click)="$event.stopPropagation()">
+    <!-- Popover Header -->
+    <div class="popover-header">
+      <div class="header-left">
+        <h3 class="header-title">{{ 'notifications.title' | translate }}</h3>
+        <span *ngIf="notifState.unreadCount() > 0" class="unread-pill">
+          {{ notifState.badgeText() }}
+        </span>
+      </div>
+      <button
+        *ngIf="notifState.unreadCount() > 0"
+        type="button"
+        class="action-link-btn"
+        (click)="notifState.markAllAsRead()"
+      >
+        {{ 'notifications.mark_all_read' | translate }}
+      </button>
+    </div>
+
+    <!-- Notification List -->
+    <div class="popover-body">
+      <div *ngIf="notifState.recentNotifications().length === 0" class="empty-state">
+        <div class="empty-icon">🔕</div>
+        <p class="empty-text">{{ 'notifications.empty' | translate }}</p>
+      </div>
+
+      <div
+        *ngFor="let item of notifState.recentNotifications()"
+        class="notif-item"
+        [class.unread]="!item.isRead"
+        [ngClass]="'severity-' + item.severity.toLowerCase()"
+        (click)="onItemClick(item)"
+      >
+        <div class="item-icon-box">
+          <span>{{ getCategoryIcon(item.category) }}</span>
+        </div>
+        <div class="item-main">
+          <div class="item-top">
+            <span class="item-category">{{ item.category }}</span>
+            <span class="item-time">{{ item.createdAtUtc | relativeTime }}</span>
+          </div>
+          <h4 class="item-title">{{ item.title }}</h4>
+          <p class="item-body">{{ item.body }}</p>
+        </div>
+        <span *ngIf="!item.isRead" class="unread-dot"></span>
+      </div>
+    </div>
+
+    <!-- Popover Footer -->
+    <div class="popover-footer">
+      <button type="button" class="view-all-btn" (click)="onViewAll()">
+        {{ 'notifications.view_all' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

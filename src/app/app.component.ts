@@ -8,6 +8,8 @@ import { TranslatePipe } from './shared/pipes/translate.pipe';
 import { LocalizationService } from './core/services/localization.service';
 import { ThemeService } from './core/services/theme.service';
 import { BranchTreeSelectComponent } from './shared/components/branch-tree-select/branch-tree-select.component';
+import { NotificationBellComponent } from './shared/components/notification-bell/notification-bell.component';
+import { NotificationToastComponent } from './shared/components/notification-toast/notification-toast.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,7 +21,9 @@ import { BranchTreeSelectComponent } from './shared/components/branch-tree-selec
     RouterLink,
     RouterLinkActive,
     TranslatePipe,
-    BranchTreeSelectComponent
+    BranchTreeSelectComponent,
+    NotificationBellComponent,
+    NotificationToastComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']

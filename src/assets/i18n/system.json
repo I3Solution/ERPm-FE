@@ -238,6 +238,11 @@
     "dashboard.title": "Tổng quan kinh doanh",
     "common.saved": "Đã lưu.",
     "error.item.in_use": "Mặt hàng đã phát sinh giao dịch; hãy ngừng sử dụng thay vì xóa hoặc đổi loại hàng/đơn vị tính.",
+    "error.iam.policy_invalid": "Tài liệu phân quyền không hợp lệ (Effect, Action hoặc phạm vi dữ liệu không đúng danh mục).",
+    "error.iam.escalation": "Bạn không thể cấp quyền hoặc phạm vi dữ liệu vượt quá quyền của chính mình.",
+    "error.iam.company_scope": "Bạn chỉ được quản lý vai trò, chức danh và tài khoản thuộc công ty của mình.",
+    "error.iam.system_role": "Vai trò hệ thống không được sửa hoặc xóa.",
+    "error.hrm.user_linked": "Tài khoản này đã gắn với một nhân viên khác.",
     "notifications.title": "Thông báo",
     "notifications.center_title": "Trung tâm Thông báo",
     "notifications.center_subtitle": "Quản lý và theo dõi toàn bộ các sự kiện cảnh báo nghiệp vụ và thông báo hệ thống.",
@@ -250,7 +255,8 @@
     "notifications.back_to_center": "Quay lại Trung tâm thông báo",
     "notifications.filter_module": "Phân hệ nghiệp vụ",
     "notifications.filter_severity": "Mức độ quan trọng",
-    "notifications.filter_status": "Trạng thái đọc"
+    "notifications.filter_status": "Trạng thái đọc",
+    "error.hrm.department_level_order": "Cấp của phòng ban con phải thấp hơn (sâu hơn) cấp của phòng ban cha."
   },
   "en": {
     "common.app_name": "ERPm - Sales & Inventory Management",
@@ -491,6 +497,11 @@
     "error.sales.price_override": "Only administrators may override the catalogue sale price.",
     "common.saved": "Saved.",
     "error.item.in_use": "This item has transactions. Deactivate it instead of deleting it or changing its type or unit.",
+    "error.iam.policy_invalid": "Invalid policy document (unknown effect, action or data scope).",
+    "error.iam.escalation": "You cannot grant permissions or data ranges beyond your own.",
+    "error.iam.company_scope": "You can only manage roles, job positions and accounts of your own company.",
+    "error.iam.system_role": "System roles cannot be edited or deleted.",
+    "error.hrm.user_linked": "This account is already linked to another employee.",
     "notifications.title": "Notifications",
     "notifications.center_title": "Notification Center",
     "notifications.center_subtitle": "Manage and track all business alerts and system notifications.",
@@ -503,6 +514,7 @@
     "notifications.back_to_center": "Back to Notification Center",
     "notifications.filter_module": "Business Module",
     "notifications.filter_severity": "Severity Level",
-    "notifications.filter_status": "Read Status"
+    "notifications.filter_status": "Read Status",
+    "error.hrm.department_level_order": "A sub-department must be on a deeper level than its parent department."
   }
 }

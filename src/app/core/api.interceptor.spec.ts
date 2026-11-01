@@ -44,6 +44,27 @@ describe('apiInterceptor error banner', () => {
     expect(errors.message()).toBe('error.connection');
   });
 
+  it('keeps a real error visible when requests that started before it succeed afterwards', () => {
+    http.get('/api/v1/branches/tree').subscribe({ error: () => undefined });
+    http.get('/api/v1/hrm/departments').subscribe();
+    http.get('/api/v1/hrm/job-positions').subscribe();
+    backend.expectOne('/api/v1/branches/tree').flush({}, { status: 500, statusText: 'Server Error' });
+    backend.expectOne('/api/v1/hrm/departments').flush({ data: [] });
+    backend.expectOne('/api/v1/hrm/job-positions').flush({ data: [] });
+    expect(errors.message()).toBe('error.connection');
+  });
+
+  it('clears the banner for a request that started after the error even if an older one is still pending', () => {
+    http.get('/api/v1/old').subscribe();
+    http.get('/api/v1/failing').subscribe({ error: () => undefined });
+    backend.expectOne('/api/v1/failing').flush({}, { status: 403, statusText: 'Forbidden' });
+    expect(errors.message()).toBe('error.access.denied');
+    http.get('/api/v1/after').subscribe();
+    backend.expectOne('/api/v1/after').flush({ data: [] });
+    expect(errors.message()).toBeNull();
+    backend.expectOne('/api/v1/old').flush({ data: [] });
+  });
+
   it('ignores requests that are not API calls', () => {
     errors.message.set('error.connection');
     http.get('/assets/i18n/system.json').subscribe();

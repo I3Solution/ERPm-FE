@@ -21,6 +21,17 @@ describe('policy matrix conversion', () => {
     expect(fromMatrix(converted.model, catalog)).toEqual(policy);
   });
 
+  it('reads a policy exactly as the server returns it (resources ["*"], no data scope)', () => {
+    const stored = {
+      version: '1',
+      statements: [{ sid: 'Allow', effect: 'Allow' as const, actions: ['sd:order:view'], resources: ['*'], dataScope: null }]
+    };
+    const converted = toMatrix(stored, catalog);
+    expect(converted.editable).toBeTrue();
+    expect(converted.model.scope).toBeNull();
+    expect([...converted.model.allow]).toEqual(['sd:order:view']);
+  });
+
   it('merges allow statements that share one range', () => {
     const converted = toMatrix({
       version: '1',

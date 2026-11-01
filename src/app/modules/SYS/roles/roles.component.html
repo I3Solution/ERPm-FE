@@ -126,6 +126,7 @@
                   <app-form-control formControlName="scopeMode" type="select" [label]="'role.field.scope' | translate" [dataSource]="scopeOptions()"></app-form-control>
                   <app-form-control formControlName="includeDescendants" type="checkbox" [checkboxLabel]="'role.field.descendants' | translate"></app-form-control>
                 </div>
+                @if (scopeError()) { <p class="role-error" role="alert">{{ scopeError() }}</p> }
                 @if (showCustomBranches()) {
                   <div class="role-branches">
                     @if (!readOnly()) {
@@ -145,6 +146,10 @@
               @if (jsonError()) { <p class="role-error" role="alert">{{ jsonError() }}</p> }
             }
 
+            @if (conflict()) {
+              <p class="role-note" role="alert">{{ 'role.conflict_hint' | translate }}
+                <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="reloadSelected()">{{ 'role.reload' | translate }}</button></p>
+            }
             @if (!readOnly()) {
               <div class="role-actions">
                 <button type="button" class="erpm-btn erpm-btn-secondary" (click)="cancelDraft()">{{ 'common.cancel' | translate }}</button>

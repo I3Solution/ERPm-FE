@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { RolesComponent } from './roles.component';
 import { Account, AuthService } from '../../../core/services/auth.service';
 import { LocalizationService } from '../../../core/services/localization.service';
@@ -86,6 +86,41 @@ describe('RolesComponent', () => {
     component.save();
     expect(api.createRole).toHaveBeenCalled();
     expect(api.createRole.calls.mostRecent().args[0].version).toBeNull();
+  });
+
+  it('opens a role as the server stores it in the matrix, not in JSON', () => {
+    const component = create().componentInstance;
+    component.select(role({ policyDocument: { version: '1', statements: [{ sid: 'Allow', effect: 'Allow', actions: ['sd:order:view'], resources: ['*'], dataScope: null }] } }));
+    expect(component.mode()).toBe('matrix');
+    expect(component.matrixEditable()).toBeTrue();
+  });
+
+  it('refuses CUSTOM_BRANCHES without any unit and saves once one is picked', () => {
+    const component = create().componentInstance;
+    component.select(component.roles()[0]);
+    component.form.controls.scopeMode.setValue('CUSTOM_BRANCHES');
+    component.save();
+    expect(component.scopeError()).toBe('role.scope.custom_required');
+    expect(api.updateRole).not.toHaveBeenCalled();
+    component.setCustomBranch(3);
+    component.save();
+    expect(api.updateRole.calls.mostRecent().args[1].policyDocument.statements[0].dataScope?.customBranchIds).toEqual([3]);
+  });
+
+  it('labels the CUSTOM_BRANCHES range with its own translation key', () => {
+    const labels = create().componentInstance.scopeOptions().map(option => option.label);
+    expect(labels).toContain('role.scope.CUSTOM_BRANCHES');
+    expect(labels).not.toContain('jp.scope.CUSTOM_BRANCHES');
+  });
+
+  it('shows the conflict note after a stale save and clears it by reloading', () => {
+    api.updateRole.and.returnValue(throwError(() => ({ status: 409 })));
+    const component = create().componentInstance;
+    component.select(component.roles()[0]);
+    component.save();
+    expect(component.conflict()).toBeTrue();
+    component.reloadSelected();
+    expect(component.conflict()).toBeFalse();
   });
 
   it('does not allow editing a system role', () => {

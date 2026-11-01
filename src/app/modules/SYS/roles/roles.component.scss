@@ -35,11 +35,12 @@
 .role-form { display: flex; flex-direction: column; gap: 1rem; }
 .role-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.75rem; align-items: end; }
 .role-note { background: rgba(255, 170, 0, 0.12); border-left: 3px solid orange; padding: 0.5rem 0.75rem; margin: 0 0 0.75rem; }
-.role-hint, .role-legend { color: var(--erpm-text-muted); font-size: 0.85rem; margin: 0 0 0.5rem; }
+.role-hint, .role-legend { overflow-wrap: anywhere; color: var(--erpm-text-muted); font-size: 0.85rem; margin: 0 0 0.5rem; }
 .role-empty { color: var(--erpm-text-muted); padding: 1rem; margin: 0; }
 .role-error { color: var(--erpm-danger, #c0392b); margin: 0; }
 
 .role-area {
+  min-width: 0; // a fieldset otherwise grows to its widest child and clips on narrow screens
   border: 1px solid var(--erpm-border); border-radius: 8px; padding: 0.75rem 1rem;
   legend { font-weight: 600; padding: 0 0.5rem; }
 }

@@ -38,7 +38,9 @@ export function toMatrix(policy: PolicyDocument, catalog: PermissionCatalogItem[
   const model: MatrixModel = { allow: new Set(), deny: new Set(), scope: null };
   let scopeSeen = false;
   for (const statement of policy.statements) {
-    const simple = (statement.resources ?? []).length === 0 && statement.actions.every(action => known.has(action));
+    // The server stores an unrestricted statement as resources ["*"], so empty and ["*"] both count as plain.
+    const plainResources = (statement.resources ?? []).every(resource => resource === '*');
+    const simple = plainResources && statement.actions.every(action => known.has(action));
     if (!simple) return { editable: false, model };
     if (statement.effect === 'Deny') {
       if (statement.dataScope) return { editable: false, model };

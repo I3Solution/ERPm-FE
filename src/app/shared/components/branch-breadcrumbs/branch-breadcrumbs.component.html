@@ -2,7 +2,6 @@
   <span class="bc" tabindex="0" role="button" [attr.aria-expanded]="open()" [attr.aria-label]="fullText()"
     (mouseenter)="show()" (mouseleave)="hide()" (focus)="show()" (blur)="hide()" (click)="toggle($event)">
     <span class="bc-name" [class.is-company]="node.company">{{ node.label }}</span>
-    @if (parentHint()) { <span class="bc-hint">‹ {{ parentHint() }}</span> }
   </span>
   @if (open()) {
     <ol class="bc-pop" role="tooltip" [style.top.px]="popTop()" [style.left.px]="popLeft()">

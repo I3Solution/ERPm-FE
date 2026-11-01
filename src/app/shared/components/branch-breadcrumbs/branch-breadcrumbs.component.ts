@@ -6,7 +6,7 @@ import { branchIndex, branchPath } from '../../../core/models/org-tree.util';
 interface Crumb { id: number; label: string; company: boolean; }
 
 /**
- * Where an organization node sits. The cell shows the node name (with its parent as a muted hint); hovering or
+ * Where an organization node sits. The cell shows the node name; hovering or
  * focusing it opens a popover listing every level from the root down, indented, like the old ERP's collapsed
  * breadcrumb. The popover is fixed-positioned so scrolling table containers cannot clip it. The tree index is cached
  * per tree array, so a table of rows sharing one `tree` costs one pass in total.
@@ -43,8 +43,6 @@ export class BranchBreadcrumbsComponent {
   });
 
   public leaf = computed(() => this.path().at(-1) ?? null);
-  /** Direct parent shown as a muted hint next to the name, when the path has more than one level. */
-  public parentHint = computed(() => this.path().length > 1 ? this.path().at(-2)!.label : '');
   public fullText = computed(() => this.path().map(c => c.label).join(' › '));
 
   public show(): void {

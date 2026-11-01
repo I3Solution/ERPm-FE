@@ -12,7 +12,6 @@
 
 .bc-name { font-weight: 600; color: var(--erpm-text-body, #1e293b); white-space: nowrap; text-decoration: underline dotted var(--erpm-text-subtle, #94a3b8); text-underline-offset: 3px; }
 .bc-name.is-company { color: var(--erpm-primary-700, #4338ca); }
-.bc-hint { font-size: 0.75rem; color: var(--erpm-text-muted, #64748b); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .bc-pop {
   position: fixed;

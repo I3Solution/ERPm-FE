@@ -29,10 +29,10 @@ describe('BranchBreadcrumbsComponent', () => {
 
   beforeEach(() => TestBed.configureTestingModule({ imports: [BranchBreadcrumbsComponent] }));
 
-  it('shows the node name with its parent as a hint and no popover until hovered', () => {
+  it('shows only the node name and no popover until hovered', () => {
     render(4);
     expect(el().querySelector('.bc-name')!.textContent!.trim()).toBe('Store 01');
-    expect(el().querySelector('.bc-hint')!.textContent).toContain('Hanoi');
+    expect(el().querySelector('.bc')!.textContent!.trim()).toBe('Store 01');
     expect(el().querySelector('.bc-pop')).toBeNull();
   });
 

@@ -1,0 +1,476 @@
+<div class="templates-page">
+  <!-- Toast Notification Alert Banner -->
+  <div *ngIf="toastMessage()" class="toast-banner" role="alert">
+    {{ toastMessage() }}
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-titles">
+      <div class="breadcrumb">
+        <a routerLink="/notifications">← {{ 'notifications.back_to_center' | translate }}</a>
+      </div>
+      <h1 class="page-title">Quản lý Mẫu Thông Báo (Templates)</h1>
+      <p class="page-subtitle">
+        Tùy chỉnh định dạng thông báo, câu từ song ngữ Anh - Việt, placeholder biến động và kênh phân phối cho toàn hệ thống.
+      </p>
+    </div>
+    <div class="header-actions">
+      <button type="button" class="erpm-btn erpm-btn-primary" (click)="openCreateModal()">
+        + Thêm Mẫu Thông Báo
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter & Search Toolbar -->
+  <div class="filter-card">
+    <div class="filter-group search-group">
+      <label class="filter-label">Tìm kiếm mẫu</label>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Tìm theo mã, tên hoặc nội dung mẫu..."
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label">Phân hệ</label>
+      <select
+        class="filter-select"
+        [ngModel]="filterCategory()"
+        (ngModelChange)="filterCategory.set($event)"
+      >
+        <option *ngFor="let cat of categories" [value]="cat.code">{{ cat.label }}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label">Trạng thái</label>
+      <select
+        class="filter-select"
+        [ngModel]="filterStatus()"
+        (ngModelChange)="filterStatus.set($event)"
+      >
+        <option value="ALL">Tất cả trạng thái</option>
+        <option value="ACTIVE">Đang hoạt động</option>
+        <option value="INACTIVE">Tạm dừng</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Templates Data Grid -->
+  <div class="content-card">
+    <div *ngIf="isLoading()" class="loading-state">
+      <div class="spinner"></div>
+      <span>Đang tải danh sách mẫu...</span>
+    </div>
+
+    <div *ngIf="!isLoading() && filteredTemplates().length === 0" class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h3>Không tìm thấy mẫu thông báo nào</h3>
+      <p>Thử thay đổi bộ lọc hoặc bấm "+ Thêm Mẫu Thông Báo" để tạo mới.</p>
+    </div>
+
+    <div *ngIf="!isLoading() && filteredTemplates().length > 0" class="table-responsive">
+      <table class="erpm-table">
+        <thead>
+          <tr>
+            <th style="width: 50px;"></th>
+            <th style="width: 170px;">Mã Mẫu (Code)</th>
+            <th style="width: 180px;">Tên Gợi Nhớ</th>
+            <th>Nội Dung Mẫu (Tiếng Việt)</th>
+            <th style="width: 120px;">Mức Độ</th>
+            <th style="width: 140px;">Kênh Hỗ Trợ</th>
+            <th style="width: 100px; text-align: center;">Kích Hoạt</th>
+            <th style="width: 150px; text-align: right;">Thao Tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tpl of filteredTemplates()" class="table-row">
+            <td class="text-center font-lg">
+              {{ getCategoryIcon(tpl.category) }}
+            </td>
+            <td>
+              <span class="code-badge">{{ tpl.code }}</span>
+            </td>
+            <td>
+              <span class="font-medium text-slate-800">{{ tpl.name }}</span>
+            </td>
+            <td>
+              <div class="tpl-content-cell">
+                <span class="tpl-title-preview">{{ tpl.titleTemplate }}</span>
+                <span class="tpl-body-preview">{{ tpl.bodyTemplate }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="severity-badge" [ngClass]="'badge-' + tpl.defaultSeverity.toLowerCase()">
+                {{ tpl.defaultSeverity }}
+              </span>
+            </td>
+            <td>
+              <div class="channels-cell">
+                <span *ngIf="tpl.supportedChannels?.includes('IN_APP')" class="channel-pill" title="In-App">🔔</span>
+                <span *ngIf="tpl.supportedChannels?.includes('PUSH_MOBILE')" class="channel-pill" title="Push Mobile">📱</span>
+                <span *ngIf="tpl.supportedChannels?.includes('EMAIL')" class="channel-pill" title="Email">✉️</span>
+                <span *ngIf="tpl.supportedChannels?.includes('SMS')" class="channel-pill" title="SMS">💬</span>
+              </div>
+            </td>
+            <td class="text-center">
+              <label class="switch switch-sm" (click)="$event.stopPropagation()">
+                <input
+                  type="checkbox"
+                  [checked]="tpl.isActive"
+                  (change)="toggleActive(tpl, $event)"
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td class="text-right">
+              <div class="actions-group">
+                <button
+                  type="button"
+                  class="btn-icon"
+                  (click)="testSend(tpl.id)"
+                  title="Bắn thử nghiệm thông báo này"
+                >
+                  🚀
+                </button>
+                <button
+                  type="button"
+                  class="erpm-btn erpm-btn-secondary btn-sm"
+                  (click)="openEditModal(tpl)"
+                >
+                  ✏️ Sửa
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Slide-over Drawer / Modal Editor -->
+  <div class="drawer-backdrop" *ngIf="isDrawerOpen()" (click)="closeDrawer()">
+    <div class="drawer-panel" (click)="$event.stopPropagation()">
+      <div class="drawer-header">
+        <div>
+          <h2 class="drawer-title">
+            {{ isEditing() ? 'Chỉnh Sửa Mẫu Thông Báo' : 'Tạo Mới Mẫu Thông Báo' }}
+          </h2>
+          <p class="drawer-subtitle">
+            Cấu hình nội dung template, tham số placeholder động và bản dịch song ngữ.
+          </p>
+        </div>
+        <button type="button" class="close-btn" (click)="closeDrawer()">&times;</button>
+      </div>
+
+      <div class="drawer-body">
+        <!-- Basic Information -->
+        <div class="form-section">
+          <h4 class="section-title">1. Thông tin cơ bản</h4>
+          <div class="form-grid">
+            <div class="form-field">
+              <label class="field-label">Mã mẫu (Code) *</label>
+              <input
+                type="text"
+                class="form-input code-input"
+                placeholder="VD: SD_ORDER_CONFIRMED"
+                [disabled]="isEditing()"
+                [ngModel]="formCode()"
+                (ngModelChange)="formCode.set($event)"
+              />
+              <span class="field-hint">Mã duy nhất viết hoa, dùng để kích hoạt từ sự kiện Backend</span>
+            </div>
+
+            <div class="form-field">
+              <label class="field-label">Tên gợi nhớ *</label>
+              <input
+                type="text"
+                class="form-input"
+                placeholder="VD: Thông báo đơn hàng đã xác nhận"
+                [ngModel]="formName()"
+                (ngModelChange)="formName.set($event)"
+              />
+            </div>
+
+            <div class="form-field">
+              <label class="field-label">Phân hệ (Category)</label>
+              <select
+                class="form-select"
+                [ngModel]="formCategory()"
+                (ngModelChange)="formCategory.set($event)"
+              >
+                <option value="SD">🛒 Bán hàng & POS (SD)</option>
+                <option value="WMS">📦 Kho & Tồn kho (WMS)</option>
+                <option value="PUR">📥 Mua hàng & NCC (PUR)</option>
+                <option value="ACC">💰 Kế toán & Sổ quỹ (ACC)</option>
+                <option value="CRM">👥 Khách hàng (CRM)</option>
+                <option value="HRM">👤 Nhân sự & IAM (HRM)</option>
+                <option value="SYS">⚙️ Hệ thống chung (SYS)</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label class="field-label">Mức độ cảnh báo (Severity)</label>
+              <select
+                class="form-select"
+                [ngModel]="formSeverity()"
+                (ngModelChange)="formSeverity.set($event)"
+              >
+                <option *ngFor="let s of severities" [value]="s.code">{{ s.label }}</option>
+              </select>
+            </div>
+
+            <div class="form-field full-width">
+              <label class="field-label">Đường dẫn điều hướng (Action URL Pattern)</label>
+              <input
+                type="text"
+                class="form-input"
+                placeholder="VD: /sales/orders/{order_code}"
+                [ngModel]="formActionUrl()"
+                (ngModelChange)="formActionUrl.set($event)"
+              />
+              <span class="field-hint">Trang sẽ mở khi người dùng click vào thông báo Toast hoặc Popover</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Channels Selection -->
+        <div class="form-section">
+          <h4 class="section-title">2. Kênh phân phối hỗ trợ</h4>
+          <div class="channels-checkbox-grid">
+            <label class="checkbox-card" [class.selected]="channelInApp()">
+              <input
+                type="checkbox"
+                [ngModel]="channelInApp()"
+                (ngModelChange)="channelInApp.set($event)"
+              />
+              <div class="checkbox-content">
+                <span class="channel-icon">🔔</span>
+                <span class="channel-label">Chuông In-App</span>
+                <span class="channel-desc">Hiển thị trong app thời gian thực</span>
+              </div>
+            </label>
+
+            <label class="checkbox-card" [class.selected]="channelPush()">
+              <input
+                type="checkbox"
+                [ngModel]="channelPush()"
+                (ngModelChange)="channelPush.set($event)"
+              />
+              <div class="checkbox-content">
+                <span class="channel-icon">📱</span>
+                <span class="channel-label">Mobile Push</span>
+                <span class="channel-desc">Đẩy qua Firebase FCM / APNs</span>
+              </div>
+            </label>
+
+            <label class="checkbox-card" [class.selected]="channelEmail()">
+              <input
+                type="checkbox"
+                [ngModel]="channelEmail()"
+                (ngModelChange)="channelEmail.set($event)"
+              />
+              <div class="checkbox-content">
+                <span class="channel-icon">✉️</span>
+                <span class="channel-label">Email</span>
+                <span class="channel-desc">Gửi qua hàng đợi Outbox</span>
+              </div>
+            </label>
+
+            <label class="checkbox-card" [class.selected]="channelSms()">
+              <input
+                type="checkbox"
+                [ngModel]="channelSms()"
+                (ngModelChange)="channelSms.set($event)"
+              />
+              <div class="checkbox-content">
+                <span class="channel-icon">💬</span>
+                <span class="channel-label">SMS / ZNS</span>
+                <span class="channel-desc">Tin nhắn thương hiệu viễn thông</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Parameter Helper Chips -->
+        <div class="form-section">
+          <div class="flex items-center justify-between">
+            <h4 class="section-title">3. Trợ lý tham số động (Placeholder Tokens)</h4>
+            <span class="text-xs text-slate-500">Bấm chip để chèn nhanh vào ô nhập</span>
+          </div>
+          <div class="chips-container">
+            <button
+              *ngFor="let entry of sampleVariables | keyvalue"
+              type="button"
+              class="param-chip"
+              (click)="insertPlaceholder('body', entry.key)"
+              [title]="'Giá trị mẫu: ' + entry.value"
+            >
+              {{ getChipDisplay(entry.key) }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Bilingual Tabs Content -->
+        <div class="form-section">
+          <div class="tabs-header">
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'vi'"
+              (click)="activeTab.set('vi')"
+            >
+              🇻🇳 Tiếng Việt (Bắt buộc)
+            </button>
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'en'"
+              (click)="activeTab.set('en')"
+            >
+              🇺🇸 English Translation
+            </button>
+          </div>
+
+          <div class="tab-content" *ngIf="activeTab() === 'vi'">
+            <div class="form-field mb-3">
+              <label class="field-label">Tiêu đề mẫu (Tiếng Việt) *</label>
+              <input
+                type="text"
+                class="form-input"
+                placeholder="VD: Đơn hàng mới: {order_code}"
+                [ngModel]="formTitleVi()"
+                (ngModelChange)="formTitleVi.set($event)"
+              />
+            </div>
+
+            <div class="form-field">
+              <label class="field-label">Nội dung chi tiết (Tiếng Việt) *</label>
+              <textarea
+                class="form-textarea"
+                rows="3"
+                placeholder="VD: Khách hàng {customer_name} vừa đặt đơn {order_code} với tổng tiền {amount}."
+                [ngModel]="formBodyVi()"
+                (ngModelChange)="formBodyVi.set($event)"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="tab-content" *ngIf="activeTab() === 'en'">
+            <div class="form-field mb-3">
+              <label class="field-label">Title Template (English)</label>
+              <input
+                type="text"
+                class="form-input"
+                placeholder="e.g. New order confirmed: {order_code}"
+                [ngModel]="formTitleEn()"
+                (ngModelChange)="formTitleEn.set($event)"
+              />
+            </div>
+
+            <div class="form-field">
+              <label class="field-label">Body Template (English)</label>
+              <textarea
+                class="form-textarea"
+                rows="3"
+                placeholder="e.g. Customer {customer_name} has placed order {order_code} for {amount}."
+                [ngModel]="formBodyEn()"
+                (ngModelChange)="formBodyEn.set($event)"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-time Live Preview Box -->
+        <div class="form-section">
+          <h4 class="section-title">4. Xem trước hiển thị trực tiếp (Live Preview)</h4>
+          <div class="preview-toast-card" [ngClass]="'toast-' + formSeverity().toLowerCase()">
+            <div class="toast-icon">
+              {{ getCategoryIcon(formCategory()) }}
+            </div>
+            <div class="toast-body">
+              <div class="toast-top">
+                <span class="toast-category">{{ formCategory() }}</span>
+                <span class="toast-time">Vừa xong</span>
+              </div>
+              <h5 class="toast-title">
+                {{ previewTitle() || '(Chưa nhập tiêu đề)' }}
+              </h5>
+              <p class="toast-message">
+                {{ previewBody() || '(Chưa nhập nội dung chi tiết)' }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Batching / Digest Settings -->
+        <div class="form-section">
+          <h4 class="section-title">5. Cấu hình Gom tin (Batching / Digest)</h4>
+          <div class="flex items-center justify-between mb-2">
+            <div>
+              <span class="font-medium text-slate-800 text-sm">Cho phép gom tin khi tần suất cao</span>
+              <p class="text-xs text-slate-500 m-0">
+                Gom nhiều sự kiện xảy ra liên tục thành một thông báo tổng hợp để chống bão tin nhắn.
+              </p>
+            </div>
+            <label class="switch">
+              <input
+                type="checkbox"
+                [ngModel]="formIsDigest()"
+                (ngModelChange)="formIsDigest.set($event)"
+              />
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div *ngIf="formIsDigest()" class="digest-window-field mt-3">
+            <label class="field-label">Khung thời gian gom tin (giây):</label>
+            <input
+              type="number"
+              class="form-input"
+              style="max-width: 150px;"
+              min="10"
+              max="3600"
+              [ngModel]="formDigestWindow()"
+              (ngModelChange)="formDigestWindow.set($event)"
+            />
+            <span class="field-hint">Mặc định 300 giây (5 phút)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drawer Actions Footer -->
+      <div class="drawer-footer">
+        <div class="footer-left">
+          <button
+            *ngIf="isEditing()"
+            type="button"
+            class="erpm-btn erpm-btn-secondary"
+            [disabled]="isTesting()"
+            (click)="testSend()"
+          >
+            {{ isTesting() ? 'Đang bắn...' : '🚀 Bắn thử nghiệm' }}
+          </button>
+        </div>
+
+        <div class="footer-right">
+          <button type="button" class="erpm-btn erpm-btn-secondary" (click)="closeDrawer()">
+            Hủy bỏ
+          </button>
+          <button
+            type="button"
+            class="erpm-btn erpm-btn-primary"
+            [disabled]="isSaving()"
+            (click)="saveTemplate()"
+          >
+            {{ isSaving() ? 'Đang lưu...' : (isEditing() ? 'Cập nhật mẫu' : 'Tạo mẫu mới') }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -38,3 +38,69 @@ export interface NotificationPreference {
   quietHoursStart?: string;
   quietHoursEnd?: string;
 }
+
+export interface NotificationTemplateTranslation {
+  title: string;
+  body: string;
+}
+
+export interface NotificationTemplate {
+  id: number;
+  externalId: string;
+  code: string;
+  name: string;
+  category: string;
+  defaultSeverity: 'INFO' | 'SUCCESS' | 'WARNING' | 'DANGER';
+  supportedChannels: string[];
+  titleTemplate: string;
+  bodyTemplate: string;
+  translations: Record<string, NotificationTemplateTranslation>;
+  actionUrlPattern?: string;
+  isDigestAllowed: boolean;
+  digestWindowSeconds: number;
+  isActive: boolean;
+  createdAtUtc: string;
+  updatedAtUtc?: string;
+}
+
+export interface CreateNotificationTemplateRequest {
+  code: string;
+  name: string;
+  category: string;
+  defaultSeverity: string;
+  supportedChannels: string[];
+  titleTemplate: string;
+  bodyTemplate: string;
+  translations: Record<string, NotificationTemplateTranslation>;
+  actionUrlPattern?: string;
+  isDigestAllowed: boolean;
+  digestWindowSeconds: number;
+  isActive: boolean;
+}
+
+export interface UpdateNotificationTemplateRequest {
+  name: string;
+  category: string;
+  defaultSeverity: string;
+  supportedChannels: string[];
+  titleTemplate: string;
+  bodyTemplate: string;
+  translations: Record<string, NotificationTemplateTranslation>;
+  actionUrlPattern?: string;
+  isDigestAllowed: boolean;
+  digestWindowSeconds: number;
+  isActive: boolean;
+}
+
+export interface PreviewNotificationTemplateRequest {
+  titleTemplate: string;
+  bodyTemplate: string;
+  translations: Record<string, NotificationTemplateTranslation>;
+  sampleData: Record<string, any>;
+}
+
+export interface PreviewNotificationTemplateResponse {
+  renderedTitleDefault: string;
+  renderedBodyDefault: string;
+  renderedTranslations: Record<string, NotificationTemplateTranslation>;
+}

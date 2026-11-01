@@ -46,6 +46,11 @@ export class NotificationPopoverComponent {
     this.router.navigateByUrl('/notifications');
   }
 
+  public onOpenPreferences(): void {
+    this.notifState.isPopoverOpen.set(false);
+    this.router.navigateByUrl('/notifications/preferences');
+  }
+
   public getCategoryIcon(category: string): string {
     switch (category?.toUpperCase()) {
       case 'SD': return '🛒';

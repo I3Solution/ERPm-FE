@@ -14,9 +14,9 @@ export const routes: Routes = [
   { path: 'job-positions', loadComponent: () => import('./modules/HRM/job-positions.component').then(m => m.JobPositionsComponent), canActivate: [permissionGuard('hrm:job-position:view')] },
   { path: 'employees', loadComponent: () => import('./modules/HRM/employees.component').then(m => m.EmployeesComponent), canActivate: [permissionGuard('hrm:employee:view')] },
   { path: 'users', loadComponent: () => import('./modules/SYS/users/users.component').then(m => m.UsersComponent), canActivate: [permissionGuard('sys:user:view')] },
-  { path: 'notifications', loadComponent: () => import('./modules/SYS/notifications/notifications.component').then(m => m.NotificationsComponent), canActivate: [authGuard] },
-  { path: 'notifications/preferences', loadComponent: () => import('./modules/SYS/notifications/notification-preferences.component').then(m => m.NotificationPreferencesComponent), canActivate: [authGuard] },
-  { path: 'notifications/templates', loadComponent: () => import('./modules/SYS/notifications/notification-templates.component').then(m => m.NotificationTemplatesComponent), canActivate: [permissionGuard('sys:notification:view')] },
+  { path: 'notifications', loadComponent: () => import('./modules/SYS/notifications/notification-center/notification-center.component').then(m => m.NotificationCenterComponent), canActivate: [authGuard] },
+  { path: 'notifications/preferences', loadComponent: () => import('./modules/SYS/notifications/notification-preferences/notification-preferences.component').then(m => m.NotificationPreferencesComponent), canActivate: [authGuard] },
+  { path: 'notifications/templates', loadComponent: () => import('./modules/SYS/notifications/notification-templates/notification-templates.component').then(m => m.NotificationTemplatesComponent), canActivate: [permissionGuard('sys:notification:view')] },
   { path: 'forbidden', loadComponent: () => import('./core/forbidden/forbidden.component').then(m => m.ForbiddenComponent), canActivate: [authGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];

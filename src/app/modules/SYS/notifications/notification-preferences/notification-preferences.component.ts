@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
-import { NotificationPreference } from '../../../core/models/notification.model';
-import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+import { environment } from '../../../../../environments/environment';
+import { NotificationPreference } from '../../../../core/models/notification.model';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-notification-preferences',

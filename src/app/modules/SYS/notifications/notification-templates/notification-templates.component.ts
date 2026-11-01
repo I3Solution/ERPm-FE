@@ -3,15 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
+import { environment } from '../../../../../environments/environment';
 import {
   NotificationTemplate,
   CreateNotificationTemplateRequest,
   UpdateNotificationTemplateRequest,
   PreviewNotificationTemplateResponse
-} from '../../../core/models/notification.model';
-import { NotificationStateService } from '../../../core/services/notification-state.service';
-import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+} from '../../../../core/models/notification.model';
+import { NotificationStateService } from '../../../../core/services/notification-state.service';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-notification-templates',

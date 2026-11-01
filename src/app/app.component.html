@@ -24,6 +24,11 @@
         <span>{{ 'menu.dashboard' | translate }}</span>
       </a>
 
+      <a routerLink="/notifications" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">🔔</span>
+        <span>{{ 'menu.notifications' | translate }}</span>
+      </a>
+
       <a *ngIf="auth.can('wms:item:view')" routerLink="/catalog" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🏷️</span>
         <span>{{ 'menu.catalog' | translate }}</span>
@@ -45,7 +50,7 @@
         <span>{{ 'menu.partners' | translate }}</span>
       </a>
 
-      <div *ngIf="auth.canAny(['hrm:department:view', 'hrm:job-position:view', 'hrm:employee:view', 'sys:user:view'])" class="nav-section-title">{{ 'menu.admin' | translate }}</div>
+      <div *ngIf="auth.canAny(['hrm:department:view', 'hrm:job-position:view', 'hrm:employee:view', 'sys:user:view', 'sys:notification:view'])" class="nav-section-title">{{ 'menu.admin' | translate }}</div>
       <a *ngIf="auth.can('hrm:department:view')" routerLink="/org" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🏢</span>
         <span>{{ 'menu.org' | translate }}</span>
@@ -61,6 +66,10 @@
       <a *ngIf="auth.can('sys:user:view')" routerLink="/users" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🔑</span>
         <span>{{ 'menu.users' | translate }}</span>
+      </a>
+      <a *ngIf="auth.can('sys:notification:view')" routerLink="/notifications/templates" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📝</span>
+        <span>{{ 'menu.notification_templates' | translate }}</span>
       </a>
 
       <div class="nav-section-title">{{ 'menu.accounting' | translate }}</div>

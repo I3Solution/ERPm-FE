@@ -4,7 +4,7 @@ import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   CreateBranchRequest, CreateEmployeeRequest, CreateUserRequest, Department, DepartmentFilter, DepartmentLevel, DepartmentRoleGrant,
-  Employee, EmployeeFilter, JobPosition, ListFilter, OrgBranch, PagedResult, PermissionCatalogItem, Role, SaveBranchRequest,
+  EffectivePermission, Employee, EmployeeFilter, JobPosition, ListFilter, OrgBranch, PagedResult, PermissionCatalogItem, Role, SaveBranchRequest, SaveRoleRequest, UserAccessPolicy,
   SaveDepartmentRequest, SaveJobPositionRequest, UpdateEmployeeRequest, UpdateUserRequest, UserAccount
 } from '../models/org.models';
 
@@ -50,6 +50,12 @@ export class OrgAdminService {
 
   // Roles
   roles(): Observable<Role[]> { return this.get('/sys/roles'); }
+  createRole(request: SaveRoleRequest): Observable<Role> { return this.post('/sys/roles', request); }
+  updateRole(id: number, request: SaveRoleRequest): Observable<Role> { return this.put(`/sys/roles/${id}`, request); }
+  deleteRole(id: number): Observable<boolean> { return this.delete(`/sys/roles/${id}`); }
+  userAccess(userId: number): Observable<UserAccessPolicy> { return this.get(`/sys/roles/users/${userId}`); }
+  setUserAccess(userId: number, request: UserAccessPolicy): Observable<UserAccessPolicy> { return this.put(`/sys/roles/users/${userId}`, request); }
+  userEffective(userId: number): Observable<EffectivePermission[]> { return this.get(`/sys/roles/users/${userId}/effective`); }
   departmentRoles(departmentId: number): Observable<DepartmentRoleGrant[]> { return this.get(`/sys/roles/departments/${departmentId}`); }
   setDepartmentRoles(departmentId: number, grants: DepartmentRoleGrant[]): Observable<DepartmentRoleGrant[]> { return this.put(`/sys/roles/departments/${departmentId}`, grants); }
   permissionCatalog(): Observable<PermissionCatalogItem[]> { return this.get('/sys/permissions/catalog'); }

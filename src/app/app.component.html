@@ -67,6 +67,10 @@
         <span class="nav-icon">🔑</span>
         <span>{{ 'menu.users' | translate }}</span>
       </a>
+      <a *ngIf="auth.can('sys:role:view')" routerLink="/roles" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">🛡️</span>
+        <span>{{ 'menu.roles' | translate }}</span>
+      </a>
       <a *ngIf="auth.can('sys:notification:view')" routerLink="/notifications/templates" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">📝</span>
         <span>{{ 'menu.notification_templates' | translate }}</span>

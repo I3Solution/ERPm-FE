@@ -1,0 +1,230 @@
+<div class="role-container">
+  <div class="erpm-page-header">
+    <div>
+      <h1 class="erpm-page-title">{{ 'role.title' | translate }}</h1>
+      <p class="erpm-page-subtitle">{{ 'role.subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  <div class="role-tabs" role="tablist">
+    <button type="button" role="tab" [class.active]="tab() === 'roles'" [attr.aria-selected]="tab() === 'roles'" (click)="tab.set('roles')">{{ 'role.tab.roles' | translate }}</button>
+    <button type="button" role="tab" [class.active]="tab() === 'accounts'" [attr.aria-selected]="tab() === 'accounts'" (click)="tab.set('accounts')">{{ 'role.tab.accounts' | translate }}</button>
+  </div>
+
+  @if (tab() === 'roles') {
+    <div class="role-layout">
+      <!-- Role list -->
+      <aside class="role-list erpm-table-container">
+        <div class="role-list-head">
+          <app-form-control class="role-search" [formControl]="keywordControl" type="text" [placeholder]="'common.search' | translate"></app-form-control>
+          @if (auth.can('sys:role:create')) {
+            <button type="button" class="erpm-btn erpm-btn-primary erpm-btn-sm" (click)="startNew()">{{ 'role.add' | translate }}</button>
+          }
+        </div>
+        <ul>
+          @for (role of visibleRoles(); track role.id) {
+            <li [class.selected]="role.id === selectedId()" [class.inactive]="!role.isActive">
+              <button type="button" class="role-pick" (click)="select(role)">
+                <strong>{{ role.name }}</strong>
+                <small>{{ role.code }}@if (role.isSystemRole) { · {{ 'role.system' | translate }} }@if (role.companyId == null) { · {{ 'role.template' | translate }} }</small>
+              </button>
+              <span class="role-row-actions">
+                @if (auth.can('sys:role:create')) {
+                  <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="copy(role)">{{ 'role.copy' | translate }}</button>
+                }
+                @if (!role.isSystemRole && auth.can('sys:role:delete')) {
+                  <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="remove(role)">{{ 'common.delete' | translate }}</button>
+                }
+              </span>
+            </li>
+          } @empty {
+            <li class="role-empty">{{ loading() ? ('common.loading' | translate) : ('role.empty' | translate) }}</li>
+          }
+        </ul>
+      </aside>
+
+      <!-- Designer -->
+      <section class="role-designer erpm-table-container">
+        @if (draft(); as role) {
+          @if (role.isSystemRole) {
+            <p class="role-note">{{ 'error.iam.system_role' | translate }}</p>
+          }
+          <form [formGroup]="form" (ngSubmit)="save()" class="role-form">
+            <div class="role-fields">
+              <app-form-control formControlName="code" type="text" [label]="'role.field.code' | translate" [required]="true"></app-form-control>
+              <app-form-control formControlName="name" type="text" [label]="'role.field.name' | translate" [required]="true"></app-form-control>
+              <app-form-control formControlName="description" type="text" [label]="'role.field.description' | translate"></app-form-control>
+              <app-form-control formControlName="isActive" type="checkbox" [checkboxLabel]="'common.active' | translate"></app-form-control>
+            </div>
+
+            <div class="role-modes" role="tablist">
+              <button type="button" role="tab" [class.active]="mode() === 'matrix'" [attr.aria-selected]="mode() === 'matrix'" (click)="switchMode('matrix')">{{ 'role.mode.matrix' | translate }}</button>
+              <button type="button" role="tab" [class.active]="mode() === 'json'" [attr.aria-selected]="mode() === 'json'" (click)="switchMode('json')">{{ 'role.mode.json' | translate }}</button>
+            </div>
+
+            @if (mode() === 'matrix') {
+              @if (!matrixEditable()) {
+                <p class="role-note">{{ 'role.json.not_matrix' | translate }}</p>
+              }
+              <!-- Area 1: what can be done -->
+              <fieldset class="role-area">
+                <legend>{{ 'role.area.actions' | translate }}</legend>
+                <div class="role-matrix-tools">
+                  <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="expandAll(true)">{{ 'role.expand_all' | translate }}</button>
+                  <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="expandAll(false)">{{ 'role.collapse_all' | translate }}</button>
+                  <span class="role-legend">{{ 'role.legend' | translate }}</span>
+                </div>
+                @for (group of modules(); track group.module) {
+                  <div class="role-module">
+                    <div class="role-module-head">
+                      <button type="button" class="role-module-toggle" [attr.aria-expanded]="!collapsed().has(group.module)" (click)="toggleModule(group.module)">
+                        <span class="role-caret" [class.open]="!collapsed().has(group.module)">▸</span>
+                        <strong>{{ group.module | uppercase }}</strong>
+                      </button>
+                      <span class="role-count">{{ allowedCount(group.module) }} / {{ group.count }}</span>
+                      @if (!readOnly()) {
+                        <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="setModule(group.module, true)">{{ 'role.select_all' | translate }}</button>
+                        <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="setModule(group.module, false)">{{ 'role.clear_all' | translate }}</button>
+                      }
+                    </div>
+                    @if (!collapsed().has(group.module)) {
+                      <div class="erpm-table-scroll">
+                        <table class="erpm-table role-grid">
+                          <tbody>
+                            @for (resource of group.resources; track resource.resource) {
+                              <tr>
+                                <th scope="row">{{ resource.resource }}</th>
+                                @for (item of resource.items; track item.action) {
+                                  <td>
+                                    <span class="role-cell" [class.deny]="isDenied(item.action)">
+                                      <label class="role-check" [title]="item.action">
+                                        <input type="checkbox" [checked]="isAllowed(item.action)" [disabled]="readOnly()" (change)="toggleAllow(item.action)">
+                                        <span>{{ ('role.verb.' + item.verb) | translate: item.verb }}</span>
+                                      </label>
+                                      <label class="role-deny" [title]="'role.deny_hint' | translate">
+                                        <input type="checkbox" [checked]="isDenied(item.action)" [disabled]="readOnly()" (change)="toggleDeny(item.action)">
+                                        <span>{{ 'role.deny' | translate }}</span>
+                                      </label>
+                                    </span>
+                                  </td>
+                                }
+                              </tr>
+                            }
+                          </tbody>
+                        </table>
+                      </div>
+                    }
+                  </div>
+                }
+              </fieldset>
+
+              <!-- Area 2: whose data is visible -->
+              <fieldset class="role-area">
+                <legend>{{ 'role.area.scope' | translate }}</legend>
+                <p class="role-hint">{{ 'role.area.scope_hint' | translate }}</p>
+                <div class="role-fields">
+                  <app-form-control formControlName="scopeMode" type="select" [label]="'role.field.scope' | translate" [dataSource]="scopeOptions()"></app-form-control>
+                  <app-form-control formControlName="includeDescendants" type="checkbox" [checkboxLabel]="'role.field.descendants' | translate"></app-form-control>
+                </div>
+                @if (showCustomBranches()) {
+                  <div class="role-branches">
+                    @if (!readOnly()) {
+                      <app-branch-select [tree]="branchTree()" [placeholder]="'role.add_branch' | translate" (valueChange)="setCustomBranch($event)"></app-branch-select>
+                    }
+                    <ul class="role-chips">
+                      @for (id of customBranchIds(); track id) {
+                        <li>{{ branchName(id) }} @if (!readOnly()) { <button type="button" [attr.aria-label]="'common.delete' | translate" (click)="removeCustomBranch(id)">&times;</button> }</li>
+                      }
+                    </ul>
+                  </div>
+                }
+              </fieldset>
+            } @else {
+              <app-form-control formControlName="json" type="textarea" [rows]="18" [label]="'role.json.label' | translate"
+                [errorMessage]="jsonError() ?? undefined"></app-form-control>
+              @if (jsonError()) { <p class="role-error" role="alert">{{ jsonError() }}</p> }
+            }
+
+            @if (!readOnly()) {
+              <div class="role-actions">
+                <button type="button" class="erpm-btn erpm-btn-secondary" (click)="cancelDraft()">{{ 'common.cancel' | translate }}</button>
+                <button type="submit" class="erpm-btn erpm-btn-primary" [disabled]="saving()">{{ 'common.save' | translate }}</button>
+              </div>
+            }
+          </form>
+        } @else {
+          <p class="role-empty">{{ 'role.pick' | translate }}</p>
+        }
+      </section>
+    </div>
+  } @else {
+    <!-- Accounts: extra roles, inline policy and effective access preview -->
+    <div class="role-accounts erpm-table-container">
+      <div class="role-fields">
+        <app-form-control [formControl]="accountControl" type="select" [label]="'role.account.pick' | translate" [dataSource]="accountOptions()"></app-form-control>
+      </div>
+      @if (access(); as grant) {
+        <div class="role-account-grid">
+          <section>
+            <h2>{{ 'role.account.extra_roles' | translate }}</h2>
+            <p class="role-hint">{{ 'role.account.extra_hint' | translate }}</p>
+            <ul class="role-checks">
+              @for (role of roles(); track role.id) {
+                <li>
+                  <label>
+                    <input type="checkbox" [checked]="hasExtraRole(role.id)" [disabled]="!auth.can('sys:role:edit') || !role.isActive" (change)="toggleExtraRole(role.id)">
+                    <span>{{ role.name }} <small>{{ role.code }}</small></span>
+                  </label>
+                </li>
+              }
+            </ul>
+            <h2>{{ 'role.account.inline' | translate }}</h2>
+            <app-form-control [formControl]="inlineControl" type="textarea" [rows]="8" [errorMessage]="inlineError() ?? undefined"
+              [hint]="'role.account.inline_hint' | translate"></app-form-control>
+            @if (auth.can('sys:role:edit')) {
+              <div class="role-actions">
+                <button type="button" class="erpm-btn erpm-btn-primary" [disabled]="saving()" (click)="saveAccess()">{{ 'common.save' | translate }}</button>
+              </div>
+            }
+          </section>
+
+          <section>
+            <h2>{{ 'role.preview.title' | translate }}</h2>
+            <p class="role-hint">{{ 'role.preview.hint' | translate }}</p>
+            <div class="role-preview-bar">
+              <span class="role-badge allowed">{{ 'role.status.Allowed' | translate }}: {{ effectiveCounts().allowed }}</span>
+              <span class="role-badge denied">{{ 'role.status.Denied' | translate }}: {{ effectiveCounts().denied }}</span>
+              <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" [class.active]="effectiveFilter() === 'all'" (click)="effectiveFilter.set('all')">{{ 'role.filter.all' | translate }}</button>
+              <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" [class.active]="effectiveFilter() === 'Allowed'" (click)="effectiveFilter.set('Allowed')">{{ 'role.status.Allowed' | translate }}</button>
+              <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" [class.active]="effectiveFilter() === 'Denied'" (click)="effectiveFilter.set('Denied')">{{ 'role.status.Denied' | translate }}</button>
+            </div>
+            @for (group of effectiveGroups(); track group.module) {
+              <details class="role-effective-module">
+                <summary>{{ group.module | uppercase }} <small>({{ group.items.length }})</small></summary>
+                <table class="erpm-table">
+                  <tbody>
+                    @for (row of group.items; track row.action) {
+                      <tr>
+                        <td><code>{{ row.action }}</code></td>
+                        <td><span class="role-badge" [ngClass]="row.status.toLowerCase()">{{ ('role.status.' + row.status) | translate }}</span></td>
+                        <td>
+                          @for (source of row.sources; track $index) {
+                            <span class="role-source" [class.deny]="source.effect === 'Deny'">{{ sourceLabel(source.source) }}@if (source.sid) { · {{ source.sid }} }</span>
+                          }
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </details>
+            } @empty {
+              <p class="role-empty">{{ 'role.preview.empty' | translate }}</p>
+            }
+          </section>
+        </div>
+      } @else {
+        <p class="role-empty">{{ 'role.account.none' | translate }}</p>
+      }
+    </div>
+  }
+</div>

@@ -67,6 +67,19 @@ export interface PolicyDocument { version: string; statements: PolicyStatement[]
 export interface Role {
   id: number; code: string; name: string; description?: string | null; translations: Record<string, string>;
   companyId: number | null; isSystemRole: boolean; policyDocument: PolicyDocument; isActive: boolean;
+  /** Concurrency token (PostgreSQL xmin); send it back on update. */
+  version: number;
+}
+export interface SaveRoleRequest {
+  code: string; name: string; description?: string | null; translations: Record<string, string>;
+  companyId: number | null; policyDocument: PolicyDocument; isActive: boolean; version?: number | null;
+}
+export interface UserRoleGrant { roleId: number; scopeOverride?: PolicyStatement['dataScope']; }
+export interface UserAccessPolicy { userId: number; roles: UserRoleGrant[]; inlinePolicy: PolicyDocument | null; }
+export type EffectiveStatus = 'Allowed' | 'Denied' | 'NotGranted';
+export interface EffectiveSource { source: string; sid?: string | null; effect: 'Allow' | 'Deny'; }
+export interface EffectivePermission {
+  action: string; module: string; resource: string; verb: string; status: EffectiveStatus; sources: EffectiveSource[];
 }
 export interface DepartmentRoleGrant { roleId: number; applyToChildren: boolean; }
 

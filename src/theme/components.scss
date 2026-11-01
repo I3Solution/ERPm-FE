@@ -584,3 +584,37 @@
 .form-input { @extend .erpm-input; }
 .badge-active { @extend .erpm-badge, .erpm-badge-success; }
 .badge-inactive { @extend .erpm-badge, .erpm-badge-neutral; }
+
+
+/* Severity Badges (Notifications, Alerts, Logs) */
+.severity-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  border-radius: var(--erpm-radius-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.25;
+
+  &.badge-info {
+    background: var(--erpm-info-bg);
+    color: var(--erpm-info-text);
+    border: 1px solid var(--erpm-info-border);
+  }
+  &.badge-success {
+    background: var(--erpm-success-bg);
+    color: var(--erpm-success-text);
+    border: 1px solid var(--erpm-success-border);
+  }
+  &.badge-warning {
+    background: var(--erpm-warning-bg);
+    color: var(--erpm-warning-text);
+    border: 1px solid var(--erpm-warning-border);
+  }
+  &.badge-danger {
+    background: var(--erpm-danger-bg);
+    color: var(--erpm-danger-text);
+    border: 1px solid var(--erpm-danger-border);
+  }
+}

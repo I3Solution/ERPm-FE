@@ -31,19 +31,19 @@
   }
 
   &.toast-info {
-    border-left-color: #3b82f6;
+    border-left-color: var(--erpm-info-core);
   }
 
   &.toast-success {
-    border-left-color: #10b981;
+    border-left-color: var(--erpm-success-core);
   }
 
   &.toast-warning {
-    border-left-color: #f59e0b;
+    border-left-color: var(--erpm-warning-core);
   }
 
   &.toast-danger {
-    border-left-color: #ef4444;
+    border-left-color: var(--erpm-danger-core);
   }
 }
 
@@ -75,13 +75,13 @@
   font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: #64748b;
+  color: var(--erpm-text-muted);
   letter-spacing: 0.05em;
 }
 
 .toast-time {
   font-size: 0.6875rem;
-  color: #94a3b8;
+  color: var(--erpm-text-subtle);
 }
 
 .toast-title {
@@ -98,7 +98,7 @@
 .toast-body {
   margin: 0.25rem 0 0;
   font-size: 0.8125rem;
-  color: #475569;
+  color: var(--erpm-text-body);
   line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -111,15 +111,14 @@
   background: transparent;
   border: none;
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: var(--erpm-text-subtle);
   cursor: pointer;
   padding: 0.25rem;
   border-radius: 0.25rem;
   line-height: 1;
 
   &:hover {
-    color: #334155;
-    background: #f1f5f9;
+    color: var(--erpm-text-heading); background: var(--erpm-bg-surface-active);
   }
 }
 

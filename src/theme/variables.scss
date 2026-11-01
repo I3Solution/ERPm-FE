@@ -159,6 +159,16 @@
   --ion-card-background: var(--erpm-bg-surface);
   --ion-toolbar-background: var(--erpm-bg-surface);
   --ion-tab-bar-background: var(--erpm-bg-surface);
+
+  /* Design System Global Aliases in Dark Mode */
+  --surface-ground: var(--erpm-bg-canvas);
+  --surface-card: var(--erpm-bg-surface);
+  --surface-hover: var(--erpm-bg-surface-active);
+  --border-color: var(--erpm-border);
+  --text-color: var(--erpm-text-heading);
+  --text-body: var(--erpm-text-body);
+  --text-muted: var(--erpm-text-muted);
+  --erpm-text-primary: var(--erpm-text-heading);
 }
 
 

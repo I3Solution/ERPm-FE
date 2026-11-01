@@ -9,10 +9,10 @@
 .popover-card {
   width: 24rem;
   max-width: calc(100vw - 2rem);
-  background: var(--surface-card, #ffffff);
+  background: var(--erpm-bg-surface);
   border-radius: 1rem;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.08);
-  border: 1px solid var(--border-color, #e2e8f0);
+  border: 1px solid var(--erpm-border);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -24,8 +24,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border-color, #e2e8f0);
-  background: var(--surface-ground, #f8fafc);
+  border-bottom: 1px solid var(--erpm-border);
+  background: var(--erpm-bg-surface-subtle);
 }
 
 .header-left {
@@ -38,7 +38,7 @@
   margin: 0;
   font-size: 0.9375rem;
   font-weight: 700;
-  color: var(--text-color, #0f172a);
+  color: var(--erpm-text-heading);
 }
 
 .unread-pill {
@@ -121,13 +121,13 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--border-color, #f1f5f9);
+  border-bottom: 1px solid var(--erpm-border-subtle);
   cursor: pointer;
   transition: background 0.15s ease;
   position: relative;
 
   &:hover {
-    background: var(--surface-hover, #f8fafc);
+    background: var(--erpm-bg-surface-active);
   }
 
   &.unread {
@@ -193,7 +193,7 @@
   margin: 0;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--text-color, #0f172a);
+  color: var(--erpm-text-heading);
   line-height: 1.25;
   white-space: nowrap;
   overflow: hidden;
@@ -223,8 +223,8 @@
 
 .popover-footer {
   padding: 0.625rem 1rem;
-  border-top: 1px solid var(--border-color, #e2e8f0);
-  background: var(--surface-ground, #f8fafc);
+  border-top: 1px solid var(--erpm-border);
+  background: var(--erpm-bg-surface-subtle);
   text-align: center;
 }
 

@@ -3,21 +3,21 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
-import { NotificationItem, NotificationListResponse } from '../../../core/models/notification.model';
-import { NotificationStateService } from '../../../core/services/notification-state.service';
-import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
-import { RelativeTimePipe } from '../../../shared/pipes/relative-time.pipe';
+import { environment } from '../../../../../environments/environment';
+import { NotificationItem, NotificationListResponse } from '../../../../core/models/notification.model';
+import { NotificationStateService } from '../../../../core/services/notification-state.service';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { RelativeTimePipe } from '../../../../shared/pipes/relative-time.pipe';
 
 @Component({
-  selector: 'app-notifications',
+  selector: 'app-notification-center',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, TranslatePipe, RelativeTimePipe],
-  templateUrl: './notifications.component.html',
-  styleUrls: ['./notifications.component.scss'],
+  templateUrl: './notification-center.component.html',
+  styleUrls: ['./notification-center.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NotificationsComponent implements OnInit {
+export class NotificationCenterComponent implements OnInit {
   private http = inject(HttpClient);
   public router = inject(Router);
   public notifState = inject(NotificationStateService);
@@ -145,3 +145,6 @@ export class NotificationsComponent implements OnInit {
     return Math.ceil(this.totalCount() / this.pageSize()) || 1;
   }
 }
+
+
+export { NotificationCenterComponent as NotificationsComponent };

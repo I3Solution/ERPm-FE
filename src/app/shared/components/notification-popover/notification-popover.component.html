@@ -8,14 +8,25 @@
           {{ notifState.badgeText() }}
         </span>
       </div>
-      <button
-        *ngIf="notifState.unreadCount() > 0"
-        type="button"
-        class="action-link-btn"
-        (click)="notifState.markAllAsRead()"
-      >
-        {{ 'notifications.mark_all_read' | translate }}
-      </button>
+      <div class="header-right">
+        <button
+          *ngIf="notifState.unreadCount() > 0"
+          type="button"
+          class="action-link-btn"
+          (click)="notifState.markAllAsRead()"
+        >
+          {{ 'notifications.mark_all_read' | translate }}
+        </button>
+        <button
+          type="button"
+          class="icon-settings-btn"
+          (click)="onOpenPreferences()"
+          [title]="'notifications.preferences' | translate"
+          [attr.aria-label]="'notifications.preferences' | translate"
+        >
+          ⚙️
+        </button>
+      </div>
     </div>
 
     <!-- Notification List -->

@@ -17,10 +17,10 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.875rem 1rem;
-  background: var(--surface-card, #ffffff);
+  background: var(--erpm-bg-surface);
   border-radius: 0.75rem;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--border-color, #e2e8f0);
+  border: 1px solid var(--erpm-border);
   border-left-width: 4px;
   cursor: pointer;
   transition: transform 0.2s ease, opacity 0.2s ease;
@@ -31,19 +31,19 @@
   }
 
   &.toast-info {
-    border-left-color: #3b82f6;
+    border-left-color: var(--erpm-info-core);
   }
 
   &.toast-success {
-    border-left-color: #10b981;
+    border-left-color: var(--erpm-success-core);
   }
 
   &.toast-warning {
-    border-left-color: #f59e0b;
+    border-left-color: var(--erpm-warning-core);
   }
 
   &.toast-danger {
-    border-left-color: #ef4444;
+    border-left-color: var(--erpm-danger-core);
   }
 }
 
@@ -54,7 +54,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--surface-ground, #f1f5f9);
+  background: var(--erpm-bg-surface-subtle);
   border-radius: 0.5rem;
   font-size: 1.125rem;
 }
@@ -75,20 +75,20 @@
   font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: #64748b;
+  color: var(--erpm-text-muted);
   letter-spacing: 0.05em;
 }
 
 .toast-time {
   font-size: 0.6875rem;
-  color: #94a3b8;
+  color: var(--erpm-text-subtle);
 }
 
 .toast-title {
   margin: 0;
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--text-color, #1e293b);
+  color: var(--erpm-text-heading);
   line-height: 1.25;
   white-space: nowrap;
   overflow: hidden;
@@ -98,7 +98,7 @@
 .toast-body {
   margin: 0.25rem 0 0;
   font-size: 0.8125rem;
-  color: #475569;
+  color: var(--erpm-text-body);
   line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -111,15 +111,14 @@
   background: transparent;
   border: none;
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: var(--erpm-text-subtle);
   cursor: pointer;
   padding: 0.25rem;
   border-radius: 0.25rem;
   line-height: 1;
 
   &:hover {
-    color: #334155;
-    background: #f1f5f9;
+    color: var(--erpm-text-heading); background: var(--erpm-bg-surface-active);
   }
 }
 

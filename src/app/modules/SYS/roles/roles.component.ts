@@ -52,6 +52,9 @@ export class RolesComponent implements OnInit {
   public matrix = signal<MatrixModel>({ allow: new Set(), deny: new Set(), scope: null });
   public matrixEditable = signal(true);
   public jsonError = signal<string | null>(null);
+  public scopeError = signal<string | null>(null);
+  /** Set when the server refused a save because someone else changed the role first (409). */
+  public conflict = signal(false);
   public collapsed = signal<ReadonlySet<string>>(new Set());
   public keyword = signal('');
   public keywordControl = new FormControl('');
@@ -80,7 +83,7 @@ export class RolesComponent implements OnInit {
   public modules = computed(() => groupCatalog(this.catalog()));
   public scopeOptions = computed<SelectOption[]>(() => [
     { value: '', label: this.i18n.translate('role.scope.default') },
-    ...SCOPE_MODES.map(mode => ({ value: mode, label: this.i18n.translate('jp.scope.' + mode) }))
+    ...SCOPE_MODES.map(mode => ({ value: mode, label: this.i18n.translate((mode === 'CUSTOM_BRANCHES' ? 'role.scope.' : 'jp.scope.') + mode) }))
   ]);
   public accountOptions = computed<SelectOption[]>(() => this.users().map(u => ({ value: u.id, label: `${u.userName} - ${u.displayName}` })));
   public customBranchIds = signal<number[]>([]);
@@ -162,6 +165,8 @@ export class RolesComponent implements OnInit {
     this.matrixEditable.set(converted.editable);
     this.mode.set(converted.editable ? 'matrix' : 'json');
     this.jsonError.set(null);
+    this.scopeError.set(null);
+    this.conflict.set(false);
     this.collapsed.set(new Set(this.modules().map(m => m.module)));
     this.customBranchIds.set(converted.model.scope?.customBranchIds ?? []);
     this.form.reset({
@@ -289,6 +294,11 @@ export class RolesComponent implements OnInit {
     if (!role || this.readOnly() || this.saving()) return;
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
+    if (this.mode() === 'matrix' && this.form.controls.scopeMode.value === 'CUSTOM_BRANCHES' && this.customBranchIds().length === 0) {
+      this.scopeError.set(this.i18n.translate('role.scope.custom_required'));
+      return;
+    }
+    this.scopeError.set(null);
     const policy = this.mode() === 'json' ? this.parseJson() : this.currentPolicy();
     if (!policy) return;
     const value = this.form.getRawValue();
@@ -300,10 +310,13 @@ export class RolesComponent implements OnInit {
     this.saving.set(true);
     const call = role.id === 0 ? this.api.createRole(request) : this.api.updateRole(role.id, request);
     call.subscribe({
-      next: saved => { this.saving.set(false); this.reload(saved.id); },
-      error: () => this.saving.set(false)
+      next: saved => { this.saving.set(false); this.conflict.set(false); this.reload(saved.id); },
+      error: (error: { status?: number }) => { this.saving.set(false); this.conflict.set(error?.status === 409); }
     });
   }
+
+  /** Drops the unsaved edits and reopens the latest stored version of the role. */
+  public reloadSelected(): void { this.conflict.set(false); this.reload(this.selectedId()); }
 
   public remove(role: Role): void {
     if (role.isSystemRole || !this.auth.can('sys:role:delete')) return;

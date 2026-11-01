@@ -30,16 +30,16 @@ describe('MVP regression checks', () => {
     expect(fixture.componentInstance.filteredOptions()[0].value).toBe(51);
   });
   it('keeps a new login when a request from the previous session returns 401', () => {
-    const token = signal('old-token'); const logout = jasmine.createSpy('logout'); const message = signal('');
+    const token = signal('old-token'); const logout = jasmine.createSpy('logout');
     TestBed.configureTestingModule({ providers: [provideHttpClient(withInterceptors([apiInterceptor])), provideHttpClientTesting(),
-      { provide: AuthService, useValue: { token, logout } }, { provide: ApiErrorService, useValue: { message } },
+      { provide: AuthService, useValue: { token, logout } }, 
       { provide: Router, useValue: { navigateByUrl: jasmine.createSpy('navigateByUrl') } }
     ] });
     TestBed.inject(HttpClient).get('/api/v1/items').subscribe({ error: () => {} });
     const request = TestBed.inject(HttpTestingController).expectOne('/api/v1/items');
     expect(request.request.headers.get('Authorization')).toBe('Bearer old-token');
     token.set('new-token'); request.flush({}, { status: 401, statusText: 'Unauthorized' });
-    expect(logout).not.toHaveBeenCalled(); expect(message()).toBe('');
+    expect(logout).not.toHaveBeenCalled(); expect(TestBed.inject(ApiErrorService).message()).toBeNull();
   });
   it('rounds line amounts to four decimal places and sums decimal values', () => {
     expect(lineAmount(0.25, 12.3456)).toBe(3.0864);

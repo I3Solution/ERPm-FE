@@ -11,6 +11,8 @@ export const routes: Routes = [
   { path: 'inventory', loadComponent: () => import('./modules/WMS/inventory.component').then(m => m.InventoryComponent), canActivate: [permissionGuard('wms:stock:view')] },
   { path: 'partners', loadComponent: () => import('./modules/CRM/partners.component').then(m => m.PartnersComponent), canActivate: [permissionGuard('crm:partner:view')] },
   { path: 'org', loadComponent: () => import('./modules/HRM/org-tree.component').then(m => m.OrgTreeComponent), canActivate: [permissionGuard('hrm:department:view')] },
+  { path: 'employees/:id/work-history', loadComponent: () => import('./modules/HRM/work-histories/work-histories.component').then(m => m.WorkHistoriesComponent), canActivate: [permissionGuard('hrm:work-history:view')] },
+  { path: 'department-levels', loadComponent: () => import('./modules/HRM/department-levels/department-levels.component').then(m => m.DepartmentLevelsComponent), canActivate: [permissionGuard('hrm:department:view')] },
   { path: 'job-positions', loadComponent: () => import('./modules/HRM/job-positions.component').then(m => m.JobPositionsComponent), canActivate: [permissionGuard('hrm:job-position:view')] },
   { path: 'employees', loadComponent: () => import('./modules/HRM/employees.component').then(m => m.EmployeesComponent), canActivate: [permissionGuard('hrm:employee:view')] },
   { path: 'users', loadComponent: () => import('./modules/SYS/users/users.component').then(m => m.UsersComponent), canActivate: [permissionGuard('sys:user:view')] },

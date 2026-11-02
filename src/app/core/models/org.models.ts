@@ -25,6 +25,18 @@ export interface DepartmentLevel {
   sortOrder: number; companyId: number | null; standardLevelCode?: string | null; isActive: boolean;
 }
 
+export interface SaveDepartmentLevelRequest {
+  code: string; name: string; translations: Record<string, string>; sortOrder: number; companyId: number | null;
+  standardLevelCode?: string | null; isActive: boolean;
+}
+
+/** One row of an employee's work history (QTCT); the approved row in effect today decides the current position. */
+export interface WorkHistory {
+  id: number; employeeId: number; dateEffective: string; companyId: number; branchId: number; departmentId: number | null;
+  jobPositionId: number; isTermination: boolean; isApproved: boolean; notes?: string | null;
+}
+export type SaveWorkHistoryRequest = Omit<WorkHistory, 'id'>;
+
 export interface Department {
   id: number; code: string; name: string; translations: Record<string, string>;
   companyId: number; branchId: number; parentId: number | null; levelId: number; path: string; depth: number; isActive: boolean;

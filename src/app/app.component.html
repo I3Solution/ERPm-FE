@@ -35,9 +35,25 @@
       </a>
 
       <div class="nav-section-title">{{ 'menu.sales' | translate }}</div>
-      <a *ngIf="auth.can('sd:invoice:view')" routerLink="/sales" routerLinkActive="active" class="nav-item">
+      <a *ngIf="auth.can('sd:invoice:view')" routerLink="/sales" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🛒</span>
-        <span>{{ 'menu.sales' | translate }}</span>
+        <span>{{ 'menu.sales_pos' | translate }}</span>
+      </a>
+      <a *ngIf="auth.can('sd:pricelist:view')" routerLink="/sales/price-lists" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">🏷️</span>
+        <span>{{ 'menu.price_lists' | translate }}</span>
+      </a>
+      <a *ngIf="auth.can('sd:quotation:view')" routerLink="/sales/quotations" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📝</span>
+        <span>{{ 'menu.quotations' | translate }}</span>
+      </a>
+      <a *ngIf="auth.can('sd:order:view')" routerLink="/sales/orders" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📦</span>
+        <span>{{ 'menu.orders' | translate }}</span>
+      </a>
+      <a *ngIf="auth.can('sd:return:view')" routerLink="/sales/returns" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">🔄</span>
+        <span>{{ 'menu.returns' | translate }}</span>
       </a>
 
       <a *ngIf="auth.can('wms:stock:view')" routerLink="/inventory" routerLinkActive="active" class="nav-item">

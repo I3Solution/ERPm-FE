@@ -59,6 +59,10 @@
         <span class="nav-icon">🎖️</span>
         <span>{{ 'menu.job_positions' | translate }}</span>
       </a>
+      <a *ngIf="auth.can('hrm:department:view')" routerLink="/department-levels" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">🗂️</span>
+        <span>{{ 'menu.department_levels' | translate }}</span>
+      </a>
       <a *ngIf="auth.can('hrm:employee:view')" routerLink="/employees" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🧑‍💼</span>
         <span>{{ 'menu.employees' | translate }}</span>

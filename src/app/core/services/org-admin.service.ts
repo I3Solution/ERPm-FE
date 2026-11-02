@@ -4,7 +4,7 @@ import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   CreateBranchRequest, CreateEmployeeRequest, CreateUserRequest, Department, DepartmentFilter, DepartmentLevel, DepartmentRoleGrant,
-  EffectivePermission, Employee, EmployeeFilter, JobPosition, ListFilter, OrgBranch, PagedResult, PermissionCatalogItem, Role, SaveBranchRequest, SaveRoleRequest, UserAccessPolicy,
+  EffectivePermission, Employee, SaveDepartmentLevelRequest, SaveWorkHistoryRequest, WorkHistory, EmployeeFilter, JobPosition, ListFilter, OrgBranch, PagedResult, PermissionCatalogItem, Role, SaveBranchRequest, SaveRoleRequest, UserAccessPolicy,
   SaveDepartmentRequest, SaveJobPositionRequest, UpdateEmployeeRequest, UpdateUserRequest, UserAccount
 } from '../models/org.models';
 
@@ -33,6 +33,17 @@ export class OrgAdminService {
   createDepartment(request: SaveDepartmentRequest): Observable<Department> { return this.post('/hrm/departments', request); }
   updateDepartment(id: number, request: SaveDepartmentRequest): Observable<Department> { return this.put(`/hrm/departments/${id}`, request); }
   deleteDepartment(id: number): Observable<boolean> { return this.delete(`/hrm/departments/${id}`); }
+
+  createDepartmentLevel(request: SaveDepartmentLevelRequest): Observable<DepartmentLevel> { return this.post('/hrm/department-levels', request); }
+  updateDepartmentLevel(id: number, request: SaveDepartmentLevelRequest): Observable<DepartmentLevel> { return this.put(`/hrm/department-levels/${id}`, request); }
+  deleteDepartmentLevel(id: number): Observable<boolean> { return this.delete(`/hrm/department-levels/${id}`); }
+
+  // Work history (QTCT) of one employee
+  employee(id: number): Observable<Employee> { return this.get(`/hrm/employees/${id}`); }
+  workHistories(employeeId: number): Observable<PagedResult<WorkHistory>> { return this.get('/hrm/work-histories', { employeeId, pageSize: 200 }); }
+  createWorkHistory(request: SaveWorkHistoryRequest): Observable<WorkHistory> { return this.post('/hrm/work-histories', request); }
+  updateWorkHistory(id: number, request: SaveWorkHistoryRequest): Observable<WorkHistory> { return this.put(`/hrm/work-histories/${id}`, request); }
+  deleteWorkHistory(id: number): Observable<boolean> { return this.delete(`/hrm/work-histories/${id}`); }
 
   // Job positions and their default roles
   jobPositions(filter: ListFilter = { pageSize: 200 }): Observable<PagedResult<JobPosition>> { return this.get('/hrm/job-positions', filter); }

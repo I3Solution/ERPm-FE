@@ -50,7 +50,7 @@
         <span>{{ 'menu.partners' | translate }}</span>
       </a>
 
-      <div *ngIf="auth.canAny(['hrm:department:view', 'hrm:job-position:view', 'hrm:employee:view', 'sys:user:view', 'sys:notification:view'])" class="nav-section-title">{{ 'menu.admin' | translate }}</div>
+      <div *ngIf="auth.canAny(['hrm:department:view', 'hrm:job-position:view', 'hrm:employee:view', 'sys:user:view', 'sys:role:view', 'sys:notification:view'])" class="nav-section-title">{{ 'menu.admin' | translate }}</div>
       <a *ngIf="auth.can('hrm:department:view')" routerLink="/org" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🏢</span>
         <span>{{ 'menu.org' | translate }}</span>
@@ -86,6 +86,7 @@
         <span>{{ 'menu.accounting' | translate }}</span>
         <span class="coming-soon">{{ 'common.coming_soon' | translate }}</span>
       </a>
+
     </nav>
 
     <!-- Sidebar Footer -->
@@ -219,6 +220,13 @@
       <a *ngIf="auth.can('crm:partner:view')" routerLink="/partners" routerLinkActive="active" class="bottom-tab">
         <span class="tab-icon">👥</span>
         <span class="tab-label">{{ 'menu.partners' | translate }}</span>
+      </a>
+
+      <a *ngIf="auth.canAny(['hrm:department:view', 'hrm:job-position:view', 'hrm:employee:view', 'sys:user:view', 'sys:role:view', 'sys:notification:view'])"
+         routerLink="/admin" routerLinkActive="active" [class.active]="isAdminRouteActive()" class="bottom-tab admin-tab"
+         data-testid="bottom-tab-more">
+        <span class="tab-icon">⚙️</span>
+        <span class="tab-label">{{ 'menu.more' | translate }}</span>
       </a>
     </nav>
   </div>

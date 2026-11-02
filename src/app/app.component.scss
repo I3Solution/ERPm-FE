@@ -335,20 +335,27 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: center;
     text-decoration: none;
     color: var(--erpm-text-muted);
-    padding: 0.4rem 0.85rem;
+    padding: 0.35rem 0.25rem;
     border-radius: var(--erpm-radius-sm);
     transition: var(--erpm-transition-fast);
 
     .tab-icon {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       transition: transform 0.15s ease;
     }
     .tab-label {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-weight: 600;
-      margin-top: 0.2rem;
+      margin-top: 0.15rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
     }
 
     &.active {

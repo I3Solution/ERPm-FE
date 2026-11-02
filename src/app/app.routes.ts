@@ -17,6 +17,8 @@ export const routes: Routes = [
   { path: 'employees', loadComponent: () => import('./modules/HRM/employees/employees.component').then(m => m.EmployeesComponent), canActivate: [permissionGuard('hrm:employee:view')] },
   { path: 'users', loadComponent: () => import('./modules/SYS/users/users.component').then(m => m.UsersComponent), canActivate: [permissionGuard('sys:user:view')] },
   { path: 'roles', loadComponent: () => import('./modules/SYS/roles/roles.component').then(m => m.RolesComponent), canActivate: [permissionGuard('sys:role:view')] },
+  { path: 'admin', loadComponent: () => import('./modules/SYS/admin-hub/admin-hub.component').then(m => m.AdminHubComponent), canActivate: [authGuard] },
+  { path: 'more', redirectTo: 'admin', pathMatch: 'full' },
   { path: 'notifications', loadComponent: () => import('./modules/SYS/notifications/notification-center/notification-center.component').then(m => m.NotificationCenterComponent), canActivate: [authGuard] },
   { path: 'notifications/preferences', loadComponent: () => import('./modules/SYS/notifications/notification-preferences/notification-preferences.component').then(m => m.NotificationPreferencesComponent), canActivate: [authGuard] },
   { path: 'notifications/templates', loadComponent: () => import('./modules/SYS/notifications/notification-templates/notification-templates.component').then(m => m.NotificationTemplatesComponent), canActivate: [permissionGuard('sys:notification:view')] },

@@ -3,7 +3,7 @@ import { ApiErrorService } from './core/services/api-error.service';
 import { BranchService } from './core/services/branch.service';
 import { ChangeDetectionStrategy, Component, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { TranslatePipe } from './shared/pipes/translate.pipe';
 import { LocalizationService } from './core/services/localization.service';
 import { ThemeService } from './core/services/theme.service';
@@ -32,9 +32,24 @@ export class AppComponent {
   constructor(
     private localizationService: LocalizationService,
     public auth: AuthService, public apiErrors: ApiErrorService, private branches: BranchService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private router: Router
   ) {
     effect(() => { const signedIn = this.auth.isAuthenticated(); untracked(() => { if (signedIn) this.branches.loadBranches(); else { this.branches.branches.set([]); this.branches.branchTree.set([]); this.branches.currentBranch.set(null); } }); });
+  }
+
+  /**
+   * Returns true when the active route belongs to an administration module.
+   */
+  public isAdminRouteActive(): boolean {
+    const url = this.router?.url ?? '';
+    return url.startsWith('/admin') ||
+      url.startsWith('/org') ||
+      url.startsWith('/department-levels') ||
+      url.startsWith('/job-positions') ||
+      url.startsWith('/employees') ||
+      url.startsWith('/users') ||
+      url.startsWith('/roles');
   }
 
   public get currentLang() {

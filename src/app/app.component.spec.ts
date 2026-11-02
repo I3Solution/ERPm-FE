@@ -13,6 +13,8 @@ import { ApiErrorService } from './core/services/api-error.service';
 import { apiInterceptor } from './core/api.interceptor';
 import { Router } from '@angular/router';
 
+import { AppComponent } from './app.component';
+
 describe('MVP regression checks', () => {
   afterEach(() => TestBed.resetTestingModule());
   it('searches barcode metadata and emits a remote lookup query', async () => {
@@ -78,5 +80,44 @@ describe('MVP regression checks', () => {
     expect(() => fixture.componentInstance.displayedTree()).not.toThrow();
     expect(fixture.componentInstance.displayedTree()[0].children?.[0].id).toBe(2);
     expect(fixture.componentInstance.isExpanded(1)).toBeTrue();
+  });
+
+  it('correctly identifies administration routes as active in AppComponent', () => {
+    const mockRouter = { url: '/admin' } as any;
+    TestBed.configureTestingModule({});
+    const app = TestBed.runInInjectionContext(() => new AppComponent(
+      { currentLang: signal('vi') } as any,
+      { isAuthenticated: signal(false) } as any,
+      {} as any,
+      { branches: signal([]), branchTree: signal([]), currentBranch: signal(null), loadBranches: () => {} } as any,
+      { isDarkMode: signal(false) } as any,
+      mockRouter
+    ));
+
+    expect(app.isAdminRouteActive()).toBeTrue();
+
+    mockRouter.url = '/org';
+    expect(app.isAdminRouteActive()).toBeTrue();
+
+    mockRouter.url = '/department-levels';
+    expect(app.isAdminRouteActive()).toBeTrue();
+
+    mockRouter.url = '/job-positions';
+    expect(app.isAdminRouteActive()).toBeTrue();
+
+    mockRouter.url = '/employees';
+    expect(app.isAdminRouteActive()).toBeTrue();
+
+    mockRouter.url = '/users';
+    expect(app.isAdminRouteActive()).toBeTrue();
+
+    mockRouter.url = '/roles';
+    expect(app.isAdminRouteActive()).toBeTrue();
+
+    mockRouter.url = '/dashboard';
+    expect(app.isAdminRouteActive()).toBeFalse();
+
+    mockRouter.url = '/sales';
+    expect(app.isAdminRouteActive()).toBeFalse();
   });
 });

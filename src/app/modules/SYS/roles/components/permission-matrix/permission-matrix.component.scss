@@ -1,0 +1,28 @@
+.role-matrix-tools { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; }
+.role-legend { overflow-wrap: anywhere; color: var(--erpm-text-muted); font-size: 0.85rem; margin: 0 0 0.5rem; }
+
+.role-module {
+  border-top: 1px solid var(--erpm-border);
+  &:first-of-type { border-top: 0; }
+}
+.role-module-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; padding: 0.5rem 0; }
+.role-module-toggle {
+  background: none; border: 0; cursor: pointer; display: flex; gap: 0.5rem; align-items: center; color: inherit; min-width: 7rem;
+}
+.role-caret { display: inline-block; transition: transform 0.15s; &.open { transform: rotate(90deg); } }
+.role-count { color: var(--erpm-text-muted); font-size: 0.85rem; margin-right: auto; }
+
+.role-grid {
+  th { text-align: left; white-space: nowrap; font-weight: 500; color: var(--erpm-text-muted); }
+  td { padding: 0.35rem 0.5rem; }
+}
+.role-cell {
+  display: inline-flex; flex-direction: column; gap: 0.1rem; padding: 0.15rem 0.4rem; border-radius: 6px;
+  &.deny { background: rgba(192, 57, 43, 0.14); }
+}
+.role-check, .role-deny { display: inline-flex; align-items: center; gap: 0.3rem; cursor: pointer; }
+.role-deny { font-size: 0.75rem; color: var(--erpm-danger, #c0392b); }
+
+:host-context([data-theme='dark']), :host-context(.dark) {
+  .role-deny { color: #ff8a7a; }
+}

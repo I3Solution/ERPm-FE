@@ -1,0 +1,31 @@
+<h2>{{ 'role.preview.title' | translate }}</h2>
+<p class="role-hint">{{ 'role.preview.hint' | translate }}</p>
+<div class="role-preview-bar">
+  <span class="role-badge allowed">{{ 'role.status.Allowed' | translate }}: {{ counts().allowed }}</span>
+  <span class="role-badge denied">{{ 'role.status.Denied' | translate }}: {{ counts().denied }}</span>
+  <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" [class.active]="filter() === 'all'" (click)="filter.set('all')">{{ 'role.filter.all' | translate }}</button>
+  <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" [class.active]="filter() === 'Allowed'" (click)="filter.set('Allowed')">{{ 'role.status.Allowed' | translate }}</button>
+  <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" [class.active]="filter() === 'Denied'" (click)="filter.set('Denied')">{{ 'role.status.Denied' | translate }}</button>
+</div>
+@for (group of groups(); track group.module) {
+  <details class="role-effective-module">
+    <summary>{{ group.module | uppercase }} <small>({{ group.items.length }})</small></summary>
+    <table class="erpm-table">
+      <tbody>
+        @for (row of group.items; track row.action) {
+          <tr>
+            <td><code>{{ row.action }}</code></td>
+            <td><span class="role-badge" [ngClass]="row.status.toLowerCase()">{{ ('role.status.' + row.status) | translate }}</span></td>
+            <td>
+              @for (source of row.sources; track $index) {
+                <span class="role-source" [class.deny]="source.effect === 'Deny'">{{ sourceLabel(source.source) }}@if (source.sid) { · {{ source.sid }} }</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </details>
+} @empty {
+  <p class="role-empty">{{ 'role.preview.empty' | translate }}</p>
+}

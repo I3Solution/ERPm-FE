@@ -4,14 +4,15 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../../core/services/auth.service';
 import { LocalizationService } from '../../../core/services/localization.service';
 import { OrgAdminService } from '../../../core/services/org-admin.service';
-import {
-  EffectivePermission, OrgBranch, PermissionCatalogItem, PolicyDocument, Role, SaveRoleRequest, UserAccessPolicy, UserAccount
-} from '../../../core/models/org.models';
-import { BranchSelectComponent } from '../../../shared/components/branch-select/branch-select.component';
+import { OrgBranch, PermissionCatalogItem, PolicyDocument, Role, SaveRoleRequest } from '../../../core/models/org.models';
 import { SelectOption } from '../../../shared/components/custom-select/custom-select.component';
 import { FormControlComponent } from '../../../shared/components/form-control/form-control.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
-import { EMPTY_POLICY, MatrixModel, SCOPE_MODES, DataScope, fromMatrix, groupCatalog, toMatrix } from './policy-matrix.util';
+import { AccountAccessComponent } from './components/account-access/account-access.component';
+import { DataScopeComponent } from './components/data-scope/data-scope.component';
+import { PermissionMatrixComponent } from './components/permission-matrix/permission-matrix.component';
+import { PolicyJsonEditorComponent } from './components/policy-json-editor/policy-json-editor.component';
+import { EMPTY_POLICY, MatrixModel, SCOPE_MODES, DataScope, fromMatrix, toMatrix } from './policy-matrix.util';
 
 type DesignerMode = 'matrix' | 'json';
 type PageTab = 'roles' | 'accounts';
@@ -19,14 +20,16 @@ type PageTab = 'roles' | 'accounts';
 /**
  * Role designer (IAM). Left: the roles of the caller's company plus the group templates. Right: one role edited
  * either as a module-grouped permission matrix ("what can be done") with a separate data range ("whose data is
- * visible"), or as raw policy JSON for rules the matrix cannot express. The Accounts tab assigns extra roles and an
- * inline policy to one account and previews what that account may actually do, with the role or statement that
- * grants or denies each action.
+ * visible"), or as raw policy JSON for rules the matrix cannot express. This component owns the role list, the draft
+ * and the save; the matrix, data range, JSON box and the Accounts tab are child components under `components/`.
  */
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, FormControlComponent, BranchSelectComponent],
+  imports: [
+    CommonModule, ReactiveFormsModule, TranslatePipe, FormControlComponent, PermissionMatrixComponent, DataScopeComponent,
+    PolicyJsonEditorComponent, AccountAccessComponent
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.scss']
@@ -40,7 +43,6 @@ export class RolesComponent implements OnInit {
   public roles = signal<Role[]>([]);
   public catalog = signal<PermissionCatalogItem[]>([]);
   public branchTree = signal<OrgBranch[]>([]);
-  public users = signal<UserAccount[]>([]);
   public loading = signal(false);
   public saving = signal(false);
 
@@ -55,7 +57,8 @@ export class RolesComponent implements OnInit {
   public scopeError = signal<string | null>(null);
   /** Set when the server refused a save because someone else changed the role first (409). */
   public conflict = signal(false);
-  public collapsed = signal<ReadonlySet<string>>(new Set());
+  /** Bumped each time a role is opened so the matrix folds all its modules back. */
+  public openCount = signal(0);
   public keyword = signal('');
   public keywordControl = new FormControl('');
 
@@ -69,23 +72,12 @@ export class RolesComponent implements OnInit {
     json: new FormControl('', { nonNullable: true })
   });
 
-  // Accounts tab state
-  public accountControl = new FormControl<number | null>(null);
-  public accountId = signal<number | null>(null);
-  public access = signal<UserAccessPolicy | null>(null);
-  public effective = signal<EffectivePermission[]>([]);
-  public inlineControl = new FormControl('', { nonNullable: true });
-  public inlineError = signal<string | null>(null);
-  public effectiveFilter = signal<'all' | 'Allowed' | 'Denied'>('all');
-
   public canEdit = computed(() => this.auth.can('sys:role:edit') || this.auth.can('sys:role:create'));
   public readOnly = computed(() => !!this.draft()?.isSystemRole || !this.canEdit());
-  public modules = computed(() => groupCatalog(this.catalog()));
   public scopeOptions = computed<SelectOption[]>(() => [
     { value: '', label: this.i18n.translate('role.scope.default') },
     ...SCOPE_MODES.map(mode => ({ value: mode, label: this.i18n.translate((mode === 'CUSTOM_BRANCHES' ? 'role.scope.' : 'jp.scope.') + mode) }))
   ]);
-  public accountOptions = computed<SelectOption[]>(() => this.users().map(u => ({ value: u.id, label: `${u.userName} - ${u.displayName}` })));
   public customBranchIds = signal<number[]>([]);
   public showCustomBranches = computed(() => this.scopeModeValue() === 'CUSTOM_BRANCHES');
   private scopeModeValue = signal('');
@@ -95,30 +87,15 @@ export class RolesComponent implements OnInit {
     return this.roles().filter(r => !keyword || r.code.toLowerCase().includes(keyword) || r.name.toLowerCase().includes(keyword));
   });
 
-  /** Effective rows grouped by module, optionally limited to allowed or denied actions. */
-  public effectiveGroups = computed(() => {
-    const filter = this.effectiveFilter();
-    const rows = this.effective().filter(row => filter === 'all' || row.status === filter);
-    const groups = new Map<string, EffectivePermission[]>();
-    for (const row of rows) groups.set(row.module, [...(groups.get(row.module) ?? []), row]);
-    return [...groups].map(([module, items]) => ({ module, items }));
-  });
-  public effectiveCounts = computed(() => {
-    const rows = this.effective();
-    return { allowed: rows.filter(r => r.status === 'Allowed').length, denied: rows.filter(r => r.status === 'Denied').length };
-  });
-
   constructor() {
     this.keywordControl.valueChanges.subscribe(text => this.keyword.set(text ?? ''));
     this.form.controls.scopeMode.valueChanges.subscribe(value => this.scopeModeValue.set(value));
-    this.accountControl.valueChanges.subscribe(id => this.selectAccount(id));
   }
 
   ngOnInit(): void {
     this.reload();
     this.api.permissionCatalog().subscribe(catalog => this.catalog.set(catalog));
     this.api.branchTree().subscribe(tree => this.branchTree.set(tree));
-    if (this.auth.can('sys:user:view')) this.api.users().subscribe(users => this.users.set(users));
   }
 
   public reload(selectId?: number | null): void {
@@ -167,7 +144,7 @@ export class RolesComponent implements OnInit {
     this.jsonError.set(null);
     this.scopeError.set(null);
     this.conflict.set(false);
-    this.collapsed.set(new Set(this.modules().map(m => m.module)));
+    this.openCount.update(n => n + 1);
     this.customBranchIds.set(converted.model.scope?.customBranchIds ?? []);
     this.form.reset({
       code: role.code, name: role.name, description: role.description ?? '', isActive: role.isActive,
@@ -182,66 +159,8 @@ export class RolesComponent implements OnInit {
     }
   }
 
-  public toggleModule(module: string): void {
-    const next = new Set(this.collapsed());
-    next.has(module) ? next.delete(module) : next.add(module);
-    this.collapsed.set(next);
-  }
-
-  public expandAll(open: boolean): void { this.collapsed.set(open ? new Set() : new Set(this.modules().map(m => m.module))); }
-
-  public isAllowed(action: string): boolean { return this.matrix().allow.has(action); }
-  public isDenied(action: string): boolean { return this.matrix().deny.has(action); }
-
-  /** Ticking an action allows it; a denied action is cleared first so one action never sits in both sets. */
-  public toggleAllow(action: string): void {
-    if (this.readOnly()) return;
-    const model = this.matrix();
-    const allow = new Set(model.allow);
-    const deny = new Set(model.deny);
-    allow.has(action) ? allow.delete(action) : (allow.add(action), deny.delete(action));
-    this.matrix.set({ ...model, allow, deny });
-  }
-
-  public toggleDeny(action: string): void {
-    if (this.readOnly()) return;
-    const model = this.matrix();
-    const allow = new Set(model.allow);
-    const deny = new Set(model.deny);
-    deny.has(action) ? deny.delete(action) : (deny.add(action), allow.delete(action));
-    this.matrix.set({ ...model, allow, deny });
-  }
-
-  public allowedCount(module: string): number {
-    return this.catalog().filter(i => i.module === module && this.matrix().allow.has(i.action)).length;
-  }
-
-  /** Allows or clears every action of a module at once. */
-  public setModule(module: string, on: boolean): void {
-    if (this.readOnly()) return;
-    const model = this.matrix();
-    const allow = new Set(model.allow);
-    const deny = new Set(model.deny);
-    for (const item of this.catalog().filter(i => i.module === module)) {
-      if (on) { allow.add(item.action); deny.delete(item.action); } else allow.delete(item.action);
-    }
-    this.matrix.set({ ...model, allow, deny });
-  }
-
-  public setCustomBranch(id: number | null): void {
-    if (id == null || this.customBranchIds().includes(id)) return;
-    this.customBranchIds.set([...this.customBranchIds(), id]);
-  }
-  public removeCustomBranch(id: number): void { this.customBranchIds.set(this.customBranchIds().filter(b => b !== id)); }
-  public branchName(id: number): string { return this.findBranch(this.branchTree(), id)?.name ?? String(id); }
-  private findBranch(nodes: OrgBranch[], id: number): OrgBranch | null {
-    for (const node of nodes) {
-      if (node.id === id) return node;
-      const found = this.findBranch(node.children ?? [], id);
-      if (found) return found;
-    }
-    return null;
-  }
+  public onMatrixChange(model: MatrixModel): void { this.matrix.set(model); }
+  public onCustomBranchesChange(ids: number[]): void { this.customBranchIds.set(ids); }
 
   /** Switching to JSON writes the matrix out; switching back parses the JSON and refuses what the matrix cannot show. */
   public switchMode(next: DesignerMode): void {
@@ -331,61 +250,5 @@ export class RolesComponent implements OnInit {
     const id = this.selectedId();
     const role = this.roles().find(r => r.id === id);
     role ? this.select(role) : this.draft.set(null);
-  }
-
-  // ----- Accounts tab -----
-
-  private selectAccount(id: number | null): void {
-    this.accountId.set(id);
-    this.access.set(null);
-    this.effective.set([]);
-    this.inlineError.set(null);
-    if (id == null) return;
-    this.api.userAccess(id).subscribe(access => {
-      this.access.set(access);
-      this.inlineControl.setValue(access.inlinePolicy ? JSON.stringify(access.inlinePolicy, null, 2) : '');
-    });
-    this.loadEffective(id);
-  }
-
-  private loadEffective(id: number): void { this.api.userEffective(id).subscribe(rows => this.effective.set(rows)); }
-
-  public hasExtraRole(roleId: number): boolean { return !!this.access()?.roles.some(r => r.roleId === roleId); }
-
-  public toggleExtraRole(roleId: number): void {
-    const access = this.access();
-    if (!access || !this.auth.can('sys:role:edit')) return;
-    const roles = this.hasExtraRole(roleId) ? access.roles.filter(r => r.roleId !== roleId) : [...access.roles, { roleId }];
-    this.access.set({ ...access, roles });
-  }
-
-  public saveAccess(): void {
-    const access = this.access();
-    const id = this.accountId();
-    if (!access || id == null || this.saving()) return;
-    let inlinePolicy: PolicyDocument | null = null;
-    const text = this.inlineControl.value.trim();
-    if (text) {
-      try {
-        inlinePolicy = JSON.parse(text) as PolicyDocument;
-        if (!Array.isArray(inlinePolicy.statements)) throw new Error('statements');
-      } catch {
-        this.inlineError.set(this.i18n.translate('role.json.invalid'));
-        return;
-      }
-    }
-    this.inlineError.set(null);
-    this.saving.set(true);
-    this.api.setUserAccess(id, { ...access, userId: id, inlinePolicy }).subscribe({
-      next: saved => { this.saving.set(false); this.access.set(saved); this.loadEffective(id); },
-      error: () => this.saving.set(false)
-    });
-  }
-
-  /** Human readable origin of a matched statement, e.g. "Position role: SALES_ACCOUNTANT". */
-  public sourceLabel(source: string): string {
-    const [kind, code] = source.split(':');
-    const label = this.i18n.translate('role.source.' + kind);
-    return code ? `${label}: ${code}` : label;
   }
 }

@@ -1,0 +1,18 @@
+<div class="role-accounts erpm-table-container">
+  <div class="role-fields">
+    <app-form-control [formControl]="accountControl" type="select" [label]="'role.account.pick' | translate" [dataSource]="accountOptions()"></app-form-control>
+  </div>
+  @if (access(); as grant) {
+    <div class="role-account-grid">
+      <section>
+        <app-user-role-assignment [roles]="roles()" [access]="grant" [inlineControl]="inlineControl" [inlineError]="inlineError()"
+          [saving]="saving()" [canEdit]="auth.can('sys:role:edit')" (roleToggle)="toggleExtraRole($event)" (save)="saveAccess()"></app-user-role-assignment>
+      </section>
+      <section>
+        <app-effective-permission-preview [rows]="effective()" [(filter)]="effectiveFilter"></app-effective-permission-preview>
+      </section>
+    </div>
+  } @else {
+    <p class="role-empty">{{ 'role.account.none' | translate }}</p>
+  }
+</div>

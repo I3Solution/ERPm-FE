@@ -1,0 +1,3 @@
+<app-form-control [formControl]="control()" type="textarea" [rows]="rows()" [label]="label()" [hint]="hint()"
+  [errorMessage]="error() ?? undefined"></app-form-control>
+@if (alert() && error()) { <p class="role-error" role="alert">{{ error() }}</p> }

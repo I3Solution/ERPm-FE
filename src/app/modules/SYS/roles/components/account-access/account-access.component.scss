@@ -1,0 +1,4 @@
+.role-accounts { padding: 1rem; }
+.role-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.75rem; align-items: end; }
+.role-empty { color: var(--erpm-text-muted); padding: 1rem; margin: 0; }
+.role-account-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr)); gap: 1.5rem; margin-top: 1rem; }

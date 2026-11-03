@@ -1,0 +1,19 @@
+<h2>{{ 'role.account.extra_roles' | translate }}</h2>
+<p class="role-hint">{{ 'role.account.extra_hint' | translate }}</p>
+<ul class="role-checks">
+  @for (role of roles(); track role.id) {
+    <li>
+      <label>
+        <input type="checkbox" [checked]="hasExtraRole(role.id)" [disabled]="!canEdit() || !role.isActive" (change)="roleToggle.emit(role.id)">
+        <span>{{ role.name }} <small>{{ role.code }}</small></span>
+      </label>
+    </li>
+  }
+</ul>
+<h2>{{ 'role.account.inline' | translate }}</h2>
+<app-policy-json-editor [control]="inlineControl()" [rows]="8" [error]="inlineError()" [hint]="'role.account.inline_hint' | translate"></app-policy-json-editor>
+@if (canEdit()) {
+  <div class="role-actions">
+    <button type="button" class="erpm-btn erpm-btn-primary" [disabled]="saving()" (click)="save.emit()">{{ 'common.save' | translate }}</button>
+  </div>
+}

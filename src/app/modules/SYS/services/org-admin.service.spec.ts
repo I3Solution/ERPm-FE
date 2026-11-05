@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { OrgAdminService } from './org-admin.service';
-import { OrgUnitType } from '../models/org.models';
+import { OrgUnitType } from '../../../core/models/org.models';
 
 describe('OrgAdminService', () => {
   let service: OrgAdminService;

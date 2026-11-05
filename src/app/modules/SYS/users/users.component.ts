@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
-import { OrgAdminService } from '../../../core/services/org-admin.service';
+import { OrgAdminService } from '../services/org-admin.service';
 import { OrgBranch, UserAccount } from '../../../core/models/org.models';
 import { FormControlComponent } from '../../../shared/components/form-control/form-control.component';
 import { UserFormDialogComponent } from '../../../shared/components/user-form-dialog/user-form-dialog.component';

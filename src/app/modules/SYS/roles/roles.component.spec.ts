@@ -4,7 +4,7 @@ import { of, throwError } from 'rxjs';
 import { RolesComponent } from './roles.component';
 import { Account, AuthService } from '../../../core/services/auth.service';
 import { LocalizationService } from '../../../core/services/localization.service';
-import { OrgAdminService } from '../../../core/services/org-admin.service';
+import { OrgAdminService } from '../services/org-admin.service';
 import { PermissionCatalogItem, Role } from '../../../core/models/org.models';
 
 const item = (module: string, resource: string, verb: string): PermissionCatalogItem =>

@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 import { UsersComponent } from './users.component';
 import { Account, AuthService } from '../../../core/services/auth.service';
 import { LocalizationService } from '../../../core/services/localization.service';
-import { OrgAdminService } from '../../../core/services/org-admin.service';
+import { OrgAdminService } from '../services/org-admin.service';
 import { UserAccount } from '../../../core/models/org.models';
 
 const user = (over: Partial<UserAccount>): UserAccount => ({ id: 1, userName: 'U1', displayName: 'User One', role: 'None', branchIds: [], isActive: true, ...over });

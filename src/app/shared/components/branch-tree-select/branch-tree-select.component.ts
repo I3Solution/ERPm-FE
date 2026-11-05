@@ -10,7 +10,7 @@ import { ChangeDetectionStrategy,
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../pipes/translate.pipe';
-import { ALL_BRANCHES_OPTION, BranchDto, BranchService } from '../../../core/services/branch.service';
+import { ALL_BRANCHES_OPTION, BranchDto, BranchService } from '../../../modules/SYS/services/branch.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

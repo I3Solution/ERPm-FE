@@ -1,6 +1,6 @@
 import { AuthService } from './core/services/auth.service';
 import { ApiErrorService } from './core/services/api-error.service';
-import { BranchService } from './core/services/branch.service';
+import { BranchService } from './modules/SYS/services/branch.service';
 import { ChangeDetectionStrategy, Component, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';

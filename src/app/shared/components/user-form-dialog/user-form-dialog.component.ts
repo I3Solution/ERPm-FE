@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LocalizationService } from '../../../core/services/localization.service';
-import { OrgAdminService } from '../../../core/services/org-admin.service';
+import { OrgAdminService } from '../../../modules/SYS/services/org-admin.service';
 import { Employee, OrgBranch, OrgUnitType, UserAccount } from '../../../core/models/org.models';
 import { flattenBranches } from '../../../core/models/org-tree.util';
 import { FormControlComponent } from '../form-control/form-control.component';

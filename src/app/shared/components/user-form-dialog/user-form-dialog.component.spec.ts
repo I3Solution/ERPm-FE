@@ -3,7 +3,7 @@ import { signal } from '@angular/core';
 import { of } from 'rxjs';
 import { UserFormDialogComponent } from './user-form-dialog.component';
 import { LocalizationService } from '../../../core/services/localization.service';
-import { OrgAdminService } from '../../../core/services/org-admin.service';
+import { OrgAdminService } from '../../../modules/SYS/services/org-admin.service';
 import { OrgBranch, OrgUnitType, UserAccount } from '../../../core/models/org.models';
 
 const node = (over: Partial<OrgBranch>): OrgBranch => ({

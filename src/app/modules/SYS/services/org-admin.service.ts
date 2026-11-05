@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 import {
   CreateBranchRequest, CreateEmployeeRequest, CreateUserRequest, Department, DepartmentFilter, DepartmentLevel, DepartmentRoleGrant,
   EffectivePermission, Employee, SaveDepartmentLevelRequest, SaveWorkHistoryRequest, WorkHistory, EmployeeFilter, JobPosition, ListFilter, OrgBranch, PagedResult, PermissionCatalogItem, Role, SaveBranchRequest, SaveRoleRequest, UserAccessPolicy,
   SaveDepartmentRequest, SaveJobPositionRequest, UpdateEmployeeRequest, UpdateUserRequest, UserAccount
-} from '../models/org.models';
+} from '../../../core/models/org.models';
 
 interface ApiEnvelope<T> { success: boolean; data: T; message?: string; }
 

@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 import { AccountAccessComponent } from './account-access.component';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { LocalizationService } from '../../../../../core/services/localization.service';
-import { OrgAdminService } from '../../../../../core/services/org-admin.service';
+import { OrgAdminService } from '../../../services/org-admin.service';
 import { Role, UserAccount } from '../../../../../core/models/org.models';
 
 const role = (over: Partial<Role>): Role => ({

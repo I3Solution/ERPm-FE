@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { LocalizationService } from '../../../core/services/localization.service';
-import { OrgAdminService } from '../../../core/services/org-admin.service';
+import { OrgAdminService } from '../services/org-admin.service';
 import { OrgBranch, PermissionCatalogItem, PolicyDocument, Role, SaveRoleRequest } from '../../../core/models/org.models';
 import { SelectOption } from '../../../shared/components/custom-select/custom-select.component';
 import { FormControlComponent } from '../../../shared/components/form-control/form-control.component';

@@ -1,0 +1,57 @@
+<div class="async-select-wrapper" [class.disabled]="disabled" [class.size-sm]="size === 'sm'">
+  <div class="async-select-trigger" (click)="openDropdown($event)">
+    <span class="search-icon">🔍</span>
+    <input
+      type="text"
+      class="async-select-input"
+      [disabled]="disabled"
+      [ngModel]="isOpen() ? searchKeyword() : (selectedOption()?.label || '')"
+      (ngModelChange)="onSearchInput($event)"
+      (focus)="openDropdown()"
+      (keydown)="onKeyDown($event)"
+      [placeholder]="selectedOption() ? selectedOption()!.label : placeholder"
+    />
+    @if (loading) {
+      <span class="loading-spinner" title="Đang tìm...">⏳</span>
+    } @else {
+      <span class="chevron-icon">▾</span>
+    }
+  </div>
+
+  @if (isOpen()) {
+    <div class="async-select-dropdown" (click)="$event.stopPropagation()">
+      @if (filteredOptions().length > 0) {
+        <ul class="async-options-list" role="listbox">
+          @for (opt of filteredOptions(); track opt.value; let idx = $index) {
+            <li
+              class="async-option-item"
+              role="option"
+              [class.active]="idx === activeIndex()"
+              [class.selected]="opt.value === currentValue()"
+              (mousedown)="selectOption(opt, $event)"
+            >
+              <div class="option-main">
+                @if (opt.code) {
+                  <span class="option-sku">{{ opt.code }}</span>
+                }
+                <span class="option-name">{{ opt.label }}</span>
+              </div>
+              <div class="option-meta">
+                @if (opt.barcode) {
+                  <span class="option-barcode">🏷️ {{ opt.barcode }}</span>
+                }
+                @if (opt.price !== undefined) {
+                  <span class="option-price">{{ opt.price | number:'1.0-0' }} đ</span>
+                }
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <div class="async-empty-state">
+          Không tìm thấy sản phẩm phù hợp
+        </div>
+      }
+    </div>
+  }
+</div>

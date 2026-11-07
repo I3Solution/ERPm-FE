@@ -69,16 +69,17 @@ export class ThemeService {
     this.isDarkMode.set(isDark);
     const themeName = isDark ? 'dark' : 'light';
 
-    // HTML root attribute
+    // HTML root attribute and dark class
     document.documentElement.setAttribute('data-theme', themeName);
+    document.documentElement.classList.toggle('dark', isDark);
 
-    // Body classes for ERPm and Ionic Palette
+    // Body classes for ERPm, Ionic Palette, and utility classes
     if (isDark) {
-      document.body.classList.add('dark-theme', 'ion-palette-dark');
+      document.body.classList.add('dark-theme', 'ion-palette-dark', 'dark');
       document.body.classList.remove('light-theme');
     } else {
       document.body.classList.add('light-theme');
-      document.body.classList.remove('dark-theme', 'ion-palette-dark');
+      document.body.classList.remove('dark-theme', 'ion-palette-dark', 'dark');
     }
 
     // Update meta theme-color for mobile browser status bar

@@ -234,10 +234,14 @@ html, body {
 .text-slate-700, .text-slate-600 { color: var(--erpm-text-body) !important; }
 .text-slate-500, .text-slate-400 { color: var(--erpm-text-muted) !important; }
 .text-slate-300 { color: var(--erpm-text-subtle) !important; }
+.text-slate-100 { color: var(--erpm-text-heading) !important; }
 .bg-slate-50 { background-color: var(--erpm-bg-canvas) !important; }
 .bg-white { background-color: var(--erpm-bg-surface) !important; }
 .text-indigo-600 { color: var(--erpm-primary-600) !important; }
 .text-amber-400 { color: #fbbf24 !important; }
+.dark .text-indigo-400, [data-theme="dark"] .text-indigo-400, .dark-theme .text-indigo-400 { color: var(--erpm-primary-400, #818cf8) !important; }
+.dark .bg-slate-900, [data-theme="dark"] .bg-slate-900, .dark-theme .bg-slate-900 { background-color: var(--erpm-bg-surface-subtle) !important; }
+.dark .border-slate-800, [data-theme="dark"] .border-slate-800, .dark-theme .border-slate-800 { border-color: var(--erpm-border) !important; }
 
 /* Fluid Theme Transitions */
 body {
@@ -263,5 +267,82 @@ body {
               box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .api-error-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 20000; padding: 1rem; color: var(--erpm-danger-text); background: var(--erpm-danger-bg); border-bottom: 1px solid var(--erpm-danger-border); }
-@media print { body * { visibility: hidden; } #printable-receipt, #printable-receipt * { visibility: visible; color: #000 !important; background: #fff !important; } #printable-receipt { position: absolute; left: 0; top: 0; width: 76mm; } .print-actions { display: none !important; } }
+@media print {
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .app-layout,
+  .main-wrapper,
+  .page-content,
+  .orders-page,
+  app-orders,
+  app-root {
+    height: auto !important;
+    overflow: visible !important;
+    position: static !important;
+    display: block !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .printable-paper,
+  .printable-paper * {
+    visibility: visible !important;
+  }
+
+  .printable-paper {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  .print-dialog-backdrop,
+  .erpm-modal-backdrop {
+    position: static !important;
+    background: transparent !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  .print-modal,
+  .erpm-modal {
+    position: static !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  .print-scroll-container,
+  .erpm-modal-body {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    display: block !important;
+    max-height: none !important;
+  }
+
+  .no-print,
+  .print-actions {
+    display: none !important;
+  }
+}
 @page { size: auto; margin: 5mm; }

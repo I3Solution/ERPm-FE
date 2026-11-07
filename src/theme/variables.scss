@@ -65,6 +65,9 @@
   --erpm-bg-surface-elevated: #ffffff;
   --erpm-bg-surface-subtle: #f8fafc;
   --erpm-bg-surface-active: #f1f5f9;
+  --erpm-surface-card: var(--erpm-bg-surface);
+  --erpm-surface-subtle: var(--erpm-bg-surface-subtle);
+  --erpm-surface-elevated: var(--erpm-bg-surface-elevated);
 
   /* Borders & Dividers */
   --erpm-border-subtle: #f1f5f9;
@@ -187,6 +190,9 @@ body.dark-theme,
   --erpm-bg-surface-elevated: #1e293b;
   --erpm-bg-surface-subtle: #161f30;
   --erpm-bg-surface-active: #1e2a3f;
+  --erpm-surface-card: var(--erpm-bg-surface);
+  --erpm-surface-subtle: var(--erpm-bg-surface-subtle);
+  --erpm-surface-elevated: var(--erpm-bg-surface-elevated);
 
   /* Borders & Dividers */
   --erpm-border-subtle: #1e293b;

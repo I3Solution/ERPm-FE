@@ -1,0 +1,51 @@
+// The frame, header, body and footer come from the shared .erpm-modal styles; this adds what is specific to the
+// confirm / message / prompt dialog: the icon, the tone colour and the text input.
+.app-dialog-backdrop { z-index: 10000; }   // above form dialogs, so a question asked from inside one stays on top
+
+.app-dialog { max-width: 440px; }
+
+.app-dialog-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem 0;
+}
+
+.app-dialog-icon { font-size: 1.5rem; line-height: 1; }
+
+.app-dialog-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--erpm-text-primary, inherit);
+}
+
+.app-dialog-body { padding-top: 0.75rem; }
+
+.app-dialog-message {
+  margin: 0;
+  white-space: pre-line;   // keeps the line breaks of messages that list several things
+  color: var(--erpm-text-secondary, inherit);
+}
+
+.app-dialog-label { display: block; margin: 1rem 0 0.375rem; font-weight: 600; }
+
+.app-dialog-input {
+  width: 100%;
+  resize: vertical;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--erpm-border);
+  border-radius: var(--erpm-radius-md, 8px);
+  background: var(--erpm-bg-surface);
+  color: inherit;
+  font: inherit;
+}
+
+.app-dialog-error { margin: 0.375rem 0 0; color: #dc2626; font-size: 0.875rem; }
+
+.app-dialog-danger .app-dialog-title { color: #dc2626; }
+.app-dialog-warning .app-dialog-title { color: #b45309; }
+.app-dialog-success .app-dialog-title { color: #15803d; }
+
+.erpm-btn-danger { background: #dc2626; color: #fff; border-color: #dc2626; }
+.erpm-btn-danger:hover { background: #b91c1c; border-color: #b91c1c; }

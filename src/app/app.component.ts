@@ -10,6 +10,7 @@ import { ThemeService } from './core/services/theme.service';
 import { BranchTreeSelectComponent } from './shared/components/branch-tree-select/branch-tree-select.component';
 import { NotificationBellComponent } from './shared/components/notification-bell/notification-bell.component';
 import { NotificationToastComponent } from './shared/components/notification-toast/notification-toast.component';
+import { AppDialogComponent } from './shared/components/app-dialog/app-dialog.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,7 +24,8 @@ import { NotificationToastComponent } from './shared/components/notification-toa
     TranslatePipe,
     BranchTreeSelectComponent,
     NotificationBellComponent,
-    NotificationToastComponent
+    NotificationToastComponent,
+    AppDialogComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']

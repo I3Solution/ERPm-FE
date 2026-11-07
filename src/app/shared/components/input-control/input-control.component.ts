@@ -10,6 +10,7 @@ import { ChangeDetectorRef, inject, ChangeDetectionStrategy,
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
 import { BranchSelectComponent } from '../branch-select/branch-select.component';
+import { CurrencyInputDirective } from '../../directives/currency-input.directive';
 import { OrgBranch, OrgUnitType } from '../../../core/models/org.models';
 import {
   CustomSelectComponent,
@@ -34,7 +35,7 @@ export type InputControlType =
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-input-control',
   standalone: true,
-  imports: [CommonModule, FormsModule, CustomSelectComponent, BranchSelectComponent],
+  imports: [CommonModule, FormsModule, CustomSelectComponent, BranchSelectComponent, CurrencyInputDirective],
   templateUrl: './input-control.component.html',
   styleUrls: ['./input-control.component.scss']
 })

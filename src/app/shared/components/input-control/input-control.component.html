@@ -116,16 +116,15 @@
       <div class="erpm-input-affix-wrap">
         <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
         <input [id]="inputId"
-          type="number"
-          class="erpm-input font-numeric font-bold"
+          type="text"
+          inputmode="numeric"
+          erpmCurrencyInput
+          class="erpm-input font-numeric font-bold text-right"
           [class.has-prefix]="!!prefix"
           [class.has-suffix]="true"
           [placeholder]="placeholder || '0'"
           [disabled]="disabled"
           [readOnly]="readonly"
-          [attr.min]="min ?? 0"
-          [attr.max]="max ?? null"
-          [attr.step]="step"
           [ngModel]="internalValue()"
           (ngModelChange)="onNumberChange($event)"
           (blur)="onBlur()"

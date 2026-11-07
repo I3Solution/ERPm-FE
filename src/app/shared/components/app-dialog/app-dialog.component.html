@@ -1,0 +1,27 @@
+@if (dialogs.current(); as request) {
+  <div class="erpm-modal-backdrop app-dialog-backdrop" (click)="cancel()" data-testid="app-dialog">
+    <div class="erpm-modal app-dialog" [class]="'app-dialog-' + request.tone" (click)="$event.stopPropagation()"
+         [attr.role]="request.kind === 'message' ? 'alertdialog' : 'dialog'" aria-modal="true" aria-labelledby="app-dialog-title" aria-describedby="app-dialog-message">
+      <div class="app-dialog-head">
+        <span class="app-dialog-icon" aria-hidden="true">{{ icon(request.tone) }}</span>
+        <h2 id="app-dialog-title" class="app-dialog-title">{{ request.title }}</h2>
+      </div>
+      <div class="erpm-modal-body app-dialog-body">
+        <p id="app-dialog-message" class="app-dialog-message">{{ request.message }}</p>
+        @if (request.kind === 'prompt') {
+          @if (request.label) { <label class="app-dialog-label" for="app-dialog-input">{{ request.label }}</label> }
+          <textarea id="app-dialog-input" class="app-dialog-input" rows="3" data-autofocus [value]="answer()" (input)="onInput($event)"
+                    [attr.maxlength]="request.maxLength" [placeholder]="request.placeholder"></textarea>
+          @if (missing()) { <p class="app-dialog-error" role="alert">{{ 'dialog.required' | translate }}</p> }
+        }
+      </div>
+      <div class="erpm-modal-footer">
+        @if (request.kind !== 'message') {
+          <button type="button" class="erpm-btn erpm-btn-secondary" (click)="cancel()" data-testid="app-dialog-cancel">{{ request.cancelText }}</button>
+        }
+        <button type="button" class="erpm-btn" [class.erpm-btn-primary]="request.tone !== 'danger'" [class.erpm-btn-danger]="request.tone === 'danger'"
+                (click)="confirm()" [attr.data-autofocus]="request.kind === 'prompt' ? null : ''" data-testid="app-dialog-ok">{{ request.confirmText }}</button>
+      </div>
+    </div>
+  </div>
+}

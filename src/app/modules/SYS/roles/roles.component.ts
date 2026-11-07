@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { LocalizationService } from '../../../core/services/localization.service';
+import { DialogService } from '../../../core/services/dialog.service';
 import { OrgAdminService } from '../services/org-admin.service';
 import { OrgBranch, PermissionCatalogItem, PolicyDocument, Role, SaveRoleRequest } from '../../../core/models/org.models';
 import { SelectOption } from '../../../shared/components/custom-select/custom-select.component';
@@ -38,6 +39,7 @@ export class RolesComponent implements OnInit {
   public auth = inject(AuthService);
   private api = inject(OrgAdminService);
   private i18n = inject(LocalizationService);
+  private dialogs = inject(DialogService);
 
   public tab = signal<PageTab>('roles');
   public roles = signal<Role[]>([]);
@@ -237,9 +239,9 @@ export class RolesComponent implements OnInit {
   /** Drops the unsaved edits and reopens the latest stored version of the role. */
   public reloadSelected(): void { this.conflict.set(false); this.reload(this.selectedId()); }
 
-  public remove(role: Role): void {
+  public async remove(role: Role): Promise<void> {
     if (role.isSystemRole || !this.auth.can('sys:role:delete')) return;
-    if (!window.confirm(this.i18n.translate('role.delete_confirm'))) return;
+    if (!await this.dialogs.confirmDanger({ message: 'role.delete_confirm' })) return;
     this.api.deleteRole(role.id).subscribe(() => {
       if (this.selectedId() === role.id) { this.draft.set(null); this.selectedId.set(null); }
       this.reload();

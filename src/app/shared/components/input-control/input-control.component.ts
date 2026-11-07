@@ -22,6 +22,8 @@ export type InputControlType =
   | 'number'
   | 'currency'
   | 'date'
+  | 'datetime'
+  | 'datetime-local'
   | 'email'
   | 'tel'
   | 'password'
@@ -130,6 +132,42 @@ export class InputControlComponent implements ControlValueAccessor {
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
     this.detector.markForCheck();
+  }
+
+  // Format date-time for datetime-local native input (dd/MM/yyyy HH:mm in local UI)
+  public formattedDateTimeValue(): string {
+    const val = this.internalValue();
+    if (!val) return '';
+    if (val instanceof Date) {
+      const pad = (n: number) => (n < 10 ? '0' + n : '' + n);
+      return `${val.getFullYear()}-${pad(val.getMonth() + 1)}-${pad(val.getDate())}T${pad(val.getHours())}:${pad(val.getMinutes())}`;
+    }
+    if (typeof val === 'string') {
+      const trimmed = val.trim();
+      if (!trimmed) return '';
+      if (trimmed.includes('T')) {
+        const clean = trimmed.replace('Z', '').split('.')[0];
+        return clean.length >= 16 ? clean.substring(0, 16) : clean;
+      }
+      if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+        return `${trimmed}T00:00`;
+      }
+      const parsed = new Date(trimmed);
+      if (!isNaN(parsed.getTime())) {
+        const pad = (n: number) => (n < 10 ? '0' + n : '' + n);
+        return `${parsed.getFullYear()}-${pad(parsed.getMonth() + 1)}-${pad(parsed.getDate())}T${pad(parsed.getHours())}:${pad(parsed.getMinutes())}`;
+      }
+      return trimmed;
+    }
+    return '';
+  }
+
+  public onDateTimeInputChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const rawValue = target ? target.value : '';
+    this.internalValue.set(rawValue);
+    this.onChange(rawValue);
+    this.valueChange.emit(rawValue);
   }
 
   // Handle native text, date, email, tel, textarea changes

@@ -133,7 +133,65 @@
       </div>
     </ng-container>
 
-    <!-- 5. Default Standard Input (text, date, email, tel, password) -->
+    <!-- 4b. Date & DateTime Input (formatted dd/MM/yyyy HH:mm in local UI) -->
+    <ng-container *ngSwitchCase="'date'">
+      <div class="erpm-input-affix-wrap">
+        <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
+        <input [id]="inputId"
+          type="datetime-local"
+          class="erpm-input font-numeric"
+          [class.has-prefix]="!!prefix"
+          [class.has-suffix]="!!suffix"
+          [placeholder]="placeholder"
+          [disabled]="disabled"
+          [readOnly]="readonly"
+          [value]="formattedDateTimeValue()"
+          (input)="onDateTimeInputChange($event)"
+          (blur)="onBlur()"
+        />
+        <span *ngIf="suffix" class="input-affix suffix">{{ suffix }}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'datetime'">
+      <div class="erpm-input-affix-wrap">
+        <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
+        <input [id]="inputId"
+          type="datetime-local"
+          class="erpm-input font-numeric"
+          [class.has-prefix]="!!prefix"
+          [class.has-suffix]="!!suffix"
+          [placeholder]="placeholder"
+          [disabled]="disabled"
+          [readOnly]="readonly"
+          [value]="formattedDateTimeValue()"
+          (input)="onDateTimeInputChange($event)"
+          (blur)="onBlur()"
+        />
+        <span *ngIf="suffix" class="input-affix suffix">{{ suffix }}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'datetime-local'">
+      <div class="erpm-input-affix-wrap">
+        <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
+        <input [id]="inputId"
+          type="datetime-local"
+          class="erpm-input font-numeric"
+          [class.has-prefix]="!!prefix"
+          [class.has-suffix]="!!suffix"
+          [placeholder]="placeholder"
+          [disabled]="disabled"
+          [readOnly]="readonly"
+          [value]="formattedDateTimeValue()"
+          (input)="onDateTimeInputChange($event)"
+          (blur)="onBlur()"
+        />
+        <span *ngIf="suffix" class="input-affix suffix">{{ suffix }}</span>
+      </div>
+    </ng-container>
+
+    <!-- 5. Default Standard Input (text, email, tel, password) -->
     <ng-container *ngSwitchDefault>
       <div class="erpm-input-affix-wrap">
         <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>

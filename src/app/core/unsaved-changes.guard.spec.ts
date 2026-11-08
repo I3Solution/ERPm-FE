@@ -1,9 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { unsavedChangesGuard, HasUnsavedChanges } from './unsaved-changes.guard';
 import { DialogService } from './services/dialog.service';
 
 describe('unsavedChangesGuard', () => {
+  beforeEach(() => TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting()] }));
+
   const run = (c: HasUnsavedChanges) => TestBed.runInInjectionContext(() =>
     unsavedChangesGuard(c, {} as ActivatedRouteSnapshot, {} as RouterStateSnapshot, {} as RouterStateSnapshot));
 

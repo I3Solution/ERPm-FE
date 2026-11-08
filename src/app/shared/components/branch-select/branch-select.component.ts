@@ -20,7 +20,7 @@ interface IndexedNode {
 /** One rendered row of the flattened, currently visible part of the tree. */
 export interface BranchRow { id: number; branch: OrgBranch; depth: number; hasChildren: boolean; expanded: boolean; selectable: boolean; }
 
-const ICONS: Record<OrgUnitType, string> = { [OrgUnitType.Group]: '🏛️', [OrgUnitType.Company]: '🏢', [OrgUnitType.Branch]: '🏬' };
+const ICONS: Record<OrgUnitType, string> = { [OrgUnitType.Group]: '🏛️', [OrgUnitType.Company]: '🏢', [OrgUnitType.Branch]: '🏬', [OrgUnitType.Warehouse]: '📦' };
 const SEARCH_DEBOUNCE_MS = 200;
 
 /**

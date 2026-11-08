@@ -53,4 +53,9 @@ describe('ListPageComponent', () => {
     expect(host.changed).toBe(2);
     expect((buttons[0] as HTMLButtonElement).disabled).toBeTrue();
   });
+
+  it('pulls a page beyond the last page back to the last page', () => {
+    host.count = 0; host.total = 25; host.page = 9; update();
+    expect(host.changed).toBe(3);
+  });
 });

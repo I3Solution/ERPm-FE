@@ -5,7 +5,7 @@ export interface PagedResult<T> { items: T[]; totalCount: number; pageIndex: num
 /** Standard list filter of every BaseCrud endpoint. */
 export interface ListFilter { pageIndex?: number; pageSize?: number; keyword?: string; isActive?: boolean; sortBy?: string; isAscending?: boolean; }
 
-export enum OrgUnitType { Group = 0, Company = 1, Branch = 2 }
+export enum OrgUnitType { Group = 0, Company = 1, Branch = 2, Warehouse = 3 }
 
 export interface OrgBranch {
   id: number; code: string; name: string; parentId: number | null; parentName?: string | null;

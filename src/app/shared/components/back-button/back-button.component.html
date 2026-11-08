@@ -1,0 +1,9 @@
+<button
+  type="button"
+  (click)="onBack($event)"
+  class="erpm-back-btn {{ customClass }}"
+  [attr.aria-label]="label | translate"
+>
+  <span class="back-arrow" aria-hidden="true">←</span>
+  <span *ngIf="showLabel" class="back-label">{{ label | translate }}</span>
+</button>

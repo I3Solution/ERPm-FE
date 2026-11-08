@@ -129,6 +129,7 @@ export class BranchTreeSelectComponent implements OnInit {
 
   public getNodeIcon(node: BranchDto, depth: number): string {
     if (depth === 0) return '🏛️';
+    if (node.orgUnitType === 3) return '📦';
     if (node.children && node.children.length > 0) {
       return depth === 1 ? '🌐' : '🏢';
     }

@@ -10,6 +10,7 @@ export interface BranchDto {
   name: string;
   parentId?: number | null;
   parentName?: string | null;
+  orgUnitType?: number;
   address?: string | null;
   phone?: string | null;
   email?: string | null;

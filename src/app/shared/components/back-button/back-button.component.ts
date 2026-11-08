@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
-import { CommonModule, Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { NavigationHistoryService } from '../../../core/services/navigation-history.service';
 
 @Component({
   selector: 'app-back-button',
@@ -12,8 +12,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
   styleUrls: ['./back-button.component.scss']
 })
 export class BackButtonComponent {
-  private location = inject(Location);
-  private router = inject(Router);
+  private navHistory = inject(NavigationHistoryService);
 
   @Input() defaultUrl = '/';
   @Input() label = 'common.back';
@@ -24,12 +23,7 @@ export class BackButtonComponent {
     if (event) {
       event.preventDefault();
     }
-
-    if (window.history.length > 1) {
-      this.location.back();
-    } else if (this.defaultUrl) {
-      this.router.navigateByUrl(this.defaultUrl);
-    }
+    this.navHistory.back(this.defaultUrl);
   }
 }
 

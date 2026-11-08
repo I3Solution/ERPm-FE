@@ -1,0 +1,5 @@
+<div class="skeleton" role="status" aria-busy="true">
+  @for (r of rows(); track r) {
+    <div class="skeleton-line" [class.short]="r === rows().length - 1"></div>
+  }
+</div>

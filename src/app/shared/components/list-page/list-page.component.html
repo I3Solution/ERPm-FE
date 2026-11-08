@@ -1,0 +1,42 @@
+<section class="list-page">
+  <header class="erpm-page-header">
+    <div class="header-info">
+      <h1 class="erpm-page-title">
+        @if (icon()) { <span aria-hidden="true">{{ icon() }} </span> }{{ title() | translate }}
+      </h1>
+      @if (subtitle()) { <p class="erpm-page-subtitle">{{ subtitle() | translate }}</p> }
+    </div>
+    <div class="header-actions"><ng-content select="[actions]"></ng-content></div>
+  </header>
+
+  <div class="list-filters"><ng-content select="[filters]"></ng-content></div>
+
+  @if (loading() && count() > 0) { <div class="list-progress" role="progressbar" aria-busy="true"></div> }
+
+  @if (error()) {
+    <div class="list-state list-error" role="alert">
+      <p>{{ 'common.load_error' | translate }}</p>
+      <button type="button" class="erpm-btn erpm-btn-secondary" (click)="retry.emit()">{{ 'common.retry' | translate }}</button>
+    </div>
+  } @else if (showSkeleton()) {
+    <app-skeleton [lines]="8"></app-skeleton>
+  } @else if (showEmpty()) {
+    <div class="list-state list-empty"><p>{{ emptyText() | translate }}</p></div>
+  }
+
+  <!-- The body stays mounted (but hidden) while empty/error so projected content keeps its state -->
+  <div class="list-body" [class.dimmed]="loading()" [hidden]="!showBody()">
+    <ng-content></ng-content>
+  </div>
+
+  @if (showPaging()) {
+    <footer class="list-paging">
+      <span class="paging-info">{{ firstShown() }}-{{ lastShown() }} / {{ total() }}</span>
+      <div class="paging-buttons">
+        <button type="button" class="erpm-btn erpm-btn-secondary" [disabled]="page() <= 1" (click)="go(page() - 1)">‹ {{ 'common.prev_page' | translate }}</button>
+        <span class="paging-current">{{ page() }} / {{ pageCount() }}</span>
+        <button type="button" class="erpm-btn erpm-btn-secondary" [disabled]="page() >= pageCount()" (click)="go(page() + 1)">{{ 'common.next_page' | translate }} ›</button>
+      </div>
+    </footer>
+  }
+</section>

@@ -1,0 +1,14 @@
+:host { display: block; }
+.detail-top-nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 1rem; }
+.detail-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.detail-header { margin-bottom: 1.25rem; }
+.detail-meta { margin-top: 0.5rem; }
+.detail-meta:empty { display: none; }
+.detail-error {
+  text-align: center; padding: 2.5rem 1rem; color: var(--erpm-danger-text); background: var(--erpm-danger-bg);
+  border: 1px solid var(--erpm-danger-border); border-radius: 0.75rem;
+}
+@media (max-width: 639px) {
+  .detail-actions { width: 100%; }
+  .detail-actions ::ng-deep .erpm-btn { flex: 1; }
+}

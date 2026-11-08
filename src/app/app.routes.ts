@@ -1,5 +1,6 @@
 import { authGuard } from './core/auth.guard';
 import { permissionGuard } from './core/permission.guard';
+import { unsavedChangesGuard } from './core/unsaved-changes.guard';
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
@@ -7,6 +8,8 @@ export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'dashboard', loadComponent: () => import('./modules/dashboard/dashboard/dashboard.component').then(m => m.DashboardComponent), canActivate: [permissionGuard('dashboard:metrics:view')] },
   { path: 'catalog', loadComponent: () => import('./modules/WMS/items/items.component').then(m => m.ItemsComponent), canActivate: [permissionGuard('wms:item:view')] },
+  { path: 'catalog/new', loadComponent: () => import('./modules/WMS/item-detail/item-detail.component').then(m => m.ItemDetailComponent), canActivate: [permissionGuard('wms:item:create')], canDeactivate: [unsavedChangesGuard] },
+  { path: 'catalog/:id', loadComponent: () => import('./modules/WMS/item-detail/item-detail.component').then(m => m.ItemDetailComponent), canActivate: [permissionGuard('wms:item:view')], canDeactivate: [unsavedChangesGuard] },
   { path: 'sales', loadComponent: () => import('./modules/SD/pos/pos.component').then(m => m.PosComponent), canActivate: [permissionGuard('sd:invoice:view')] },
   { path: 'sales/price-lists', loadComponent: () => import('./modules/SD/price-lists/price-lists.component').then(m => m.PriceListsComponent), canActivate: [permissionGuard('sd:pricelist:view')] },
   { path: 'sales/price-lists/:id', loadComponent: () => import('./modules/SD/price-lists/price-list-detail/price-list-detail.component').then(m => m.PriceListDetailComponent), canActivate: [permissionGuard('sd:pricelist:view')] },

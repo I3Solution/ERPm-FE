@@ -7,6 +7,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/rou
 import { TranslatePipe } from './shared/pipes/translate.pipe';
 import { LocalizationService } from './core/services/localization.service';
 import { ThemeService } from './core/services/theme.service';
+import { NavigationHistoryService } from './core/services/navigation-history.service';
 import { BranchTreeSelectComponent } from './shared/components/branch-tree-select/branch-tree-select.component';
 import { NotificationBellComponent } from './shared/components/notification-bell/notification-bell.component';
 import { NotificationToastComponent } from './shared/components/notification-toast/notification-toast.component';
@@ -35,7 +36,8 @@ export class AppComponent {
     private localizationService: LocalizationService,
     public auth: AuthService, public apiErrors: ApiErrorService, private branches: BranchService,
     private themeService: ThemeService,
-    private router: Router
+    private router: Router,
+    private navHistory: NavigationHistoryService
   ) {
     effect(() => { const signedIn = this.auth.isAuthenticated(); untracked(() => { if (signedIn) this.branches.loadBranches(); else { this.branches.branches.set([]); this.branches.branchTree.set([]); this.branches.currentBranch.set(null); } }); });
   }

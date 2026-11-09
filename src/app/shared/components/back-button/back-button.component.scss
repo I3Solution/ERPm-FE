@@ -1,2 +1,37 @@
-:host { display: inline-block; }
-.back-btn { cursor: pointer; }
+.erpm-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--erpm-text-secondary, #475569);
+  background-color: var(--erpm-bg-surface, #ffffff);
+  border: 1px solid var(--erpm-border, #e2e8f0);
+  border-radius: var(--erpm-radius-sm, 0.375rem);
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+
+  &:hover {
+    color: var(--erpm-text-primary, #0f172a);
+    background-color: var(--erpm-bg-surface-subtle, #f8fafc);
+    border-color: var(--erpm-border-focus, #cbd5e1);
+    transform: translateX(-1px);
+  }
+
+  &:active {
+    transform: translateX(0);
+  }
+
+  .back-arrow {
+    font-size: 1.1rem;
+    line-height: 1;
+    font-weight: 600;
+  }
+
+  .back-label {
+    line-height: 1;
+  }
+}
+

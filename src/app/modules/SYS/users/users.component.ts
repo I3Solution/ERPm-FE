@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
@@ -7,6 +7,7 @@ import { OrgBranch, UserAccount } from '../../../core/models/org.models';
 import { FormControlComponent } from '../../../shared/components/form-control/form-control.component';
 import { UserFormDialogComponent } from '../../../shared/components/user-form-dialog/user-form-dialog.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+import { DataTableComponent, TableColumnComponent } from '../../../shared/components/data-table';
 
 /**
  * Internal accounts. A company administrator only receives the accounts of its own company's employees (the
@@ -15,7 +16,7 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, FormControlComponent, UserFormDialogComponent],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, FormControlComponent, UserFormDialogComponent, DataTableComponent, TableColumnComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']

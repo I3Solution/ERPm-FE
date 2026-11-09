@@ -2,13 +2,14 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Router, provideRouter } from '@angular/router';
+import { provideRouter } from '@angular/router';
+import { NavigationHistoryService } from '../../../core/services/navigation-history.service';
 import { DetailPageComponent } from './detail-page.component';
 
 @Component({
   standalone: true,
   imports: [DetailPageComponent],
-  template: `<app-detail-page title="Name" [loading]="loading" [error]="error" [backLink]="['/list']" [backQueryParams]="{ page: '2' }"><p class="body">x</p></app-detail-page>`
+  template: `<app-detail-page title="Name" [loading]="loading" [error]="error" backLink="/list"><p class="body">x</p></app-detail-page>`
 })
 class HostComponent { loading = false; error = false; }
 
@@ -22,11 +23,11 @@ describe('DetailPageComponent', () => {
     fixture.detectChanges();
   });
 
-  it('renders the body and goes back with the list query params', () => {
+  it('renders the body and goes back through the navigation history with the list as fallback', () => {
     expect(el().querySelector('.body')).toBeTruthy();
-    const nav = spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+    const back = spyOn(TestBed.inject(NavigationHistoryService), 'back');
     (el().querySelector('app-back-button button') as HTMLButtonElement).click();
-    expect(nav).toHaveBeenCalledWith(['/list'], { queryParams: { page: '2' } });
+    expect(back).toHaveBeenCalledWith('/list');
   });
 
   it('hides the body while loading', () => {

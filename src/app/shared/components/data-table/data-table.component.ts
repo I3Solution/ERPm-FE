@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   ContentChildren,
@@ -8,6 +8,7 @@ import {
   QueryList,
   TemplateRef,
   computed,
+  contentChildren,
   signal
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -15,24 +16,33 @@ import { FormArray, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { TableColumn, TablePagination, TableSort } from './data-table.models';
 import { DataTableCellDirective } from './data-table-cell.directive';
+import { TableColumnComponent } from './table-column.component';
+import { FormControlComponent } from '../form-control/form-control.component';
+import { InputControlType } from '../input-control/input-control.component';
 
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslatePipe,
+    FormControlComponent
+  ],
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataTableComponent<T = any> {
   // === Data & Column Inputs ===
-  @Input({ required: true }) columns: TableColumn<T>[] = [];
+  @Input() columns: TableColumn<T>[] = [];
   @Input() data: T[] = [];
   @Input() trackBy: string | keyof T | ((item: T) => any) = 'id';
 
   // === Mode & Form Configuration ===
   @Input() mode: 'list' | 'editable' = 'list';
   @Input() formArray?: FormArray;
+  @Input() canEdit = false;
 
   // === Features & Interactions ===
   @Input() selectable = false;
@@ -63,23 +73,80 @@ export class DataTableComponent<T = any> {
   @ContentChildren(DataTableCellDirective)
   private customCells!: QueryList<DataTableCellDirective>;
 
+  // Declarative Column Children (Angular Signal Query)
+  public columnChildren = contentChildren(TableColumnComponent);
+
+  /**
+   * Computed effective columns list:
+   * Uses projected <app-column> components when present, otherwise falls back to the columns input.
+   */
+  public effectiveColumns = computed<TableColumn[]>(() => {
+    const children = this.columnChildren();
+    if (children && children.length > 0) {
+      return children.filter(c => c.visible !== false) as unknown as TableColumn[];
+    }
+    return this.columns;
+  });
+
+  /**
+   * Determines if the table is currently in interactive edit mode.
+   */
+  public get isEditActive(): boolean {
+    return this.canEdit || this.mode === 'editable';
+  }
+
   /**
    * Total number of rendered columns including utility columns.
    */
   public totalColumnCount = computed(() => {
-    let count = this.columns.length;
+    let count = this.effectiveColumns().length;
     if (this.selectable) count++;
     if (this.showIndex) count++;
     return count;
   });
 
   /**
-   * Lookup custom cell template registered for the specified column key.
+   * Lookup custom cell template registered for the specified column key or column component.
+   */
+  public getCellTemplate(col: TableColumn | TableColumnComponent, isEdit: boolean): TemplateRef<any> | null {
+    const c = col as any;
+    if (isEdit && c.editTemplate) {
+      return c.editTemplate;
+    }
+    if (!isEdit && c.viewTemplate) {
+      return c.viewTemplate;
+    }
+    if (c.cellTemplate) {
+      return c.cellTemplate;
+    }
+    return this.getCustomTemplate(col.key);
+  }
+
+  /**
+   * Legacy lookup for DataTableCellDirective.
    */
   public getCustomTemplate(key: string): TemplateRef<any> | null {
     if (!this.customCells) return null;
     const match = this.customCells.find(c => c.columnKey === key);
     return match ? match.templateRef : null;
+  }
+
+  /**
+   * Resolves the appropriate InputControlType for auto-rendered form controls.
+   */
+  public getControlType(col: TableColumn | TableColumnComponent): InputControlType {
+    if (col.controlType) return col.controlType;
+    if (col.type === 'currency') return 'currency';
+    if (col.type === 'number') return 'number';
+    if (col.type === 'date') return 'date';
+    return 'text';
+  }
+
+  /**
+   * Checks whether the given form group has a control registered with key.
+   */
+  public hasFormControl(ctrl: any, key: string): boolean {
+    return !!(ctrl && typeof ctrl.get === 'function' && ctrl.get(key));
   }
 
   /**
@@ -166,7 +233,7 @@ export class DataTableComponent<T = any> {
     if (!this.clickableRows) return;
     // Ignore click if clicking on an interactive control (input, button, select, a)
     const target = event.target as HTMLElement;
-    if (target.closest('button, input, select, a, app-async-select, .erpm-btn')) {
+    if (target.closest('button, input, select, a, app-async-select, app-custom-select, .erpm-btn')) {
       return;
     }
     this.rowClick.emit(row);

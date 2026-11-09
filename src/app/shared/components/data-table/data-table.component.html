@@ -1,10 +1,10 @@
-<div class="erpm-table-container" [style.min-height]="minHeight">
+﻿<div class="erpm-table-container" [style.min-height]="minHeight">
   <!-- Table Scroll Area -->
   <div class="erpm-table-scroll" [style.padding-bottom]="paddingBottom">
     <table
       class="erpm-table"
       [style.min-width]="tableMinWidth"
-      [ngClass]="{ 'erpm-table-editable': mode === 'editable' }"
+      [ngClass]="{ 'erpm-table-editable': isEditActive }"
     >
       <!-- Table Header -->
       <thead>
@@ -25,7 +25,7 @@
             <th class="table-col-index text-center" style="width: 45px; min-width: 45px;">#</th>
           }
 
-          @for (col of columns; track col.key) {
+          @for (col of effectiveColumns(); track col.key) {
             <th
               [style.width]="col.width"
               [style.min-width]="col.minWidth || col.width"
@@ -62,13 +62,95 @@
             <tr class="skeleton-row">
               @if (selectable) { <td class="text-center"><div class="skeleton-box sm"></div></td> }
               @if (showIndex) { <td class="text-center"><div class="skeleton-box sm"></div></td> }
-              @for (col of columns; track col.key) {
+              @for (col of effectiveColumns(); track col.key) {
                 <td><div class="skeleton-box"></div></td>
               }
             </tr>
           }
-        } @else if (mode === 'list') {
-          <!-- List Mode Data -->
+        } @else if (isEditActive && formArray) {
+          <!-- Editable FormArray Mode -->
+          @if (formArray.controls.length === 0) {
+            <tr class="empty-row">
+              <td [attr.colspan]="totalColumnCount()" class="text-center py-6">
+                <div class="empty-state-content">
+                  <span class="empty-icon">📝</span>
+                  <p class="empty-text">{{ emptyMessage | translate }}</p>
+                </div>
+              </td>
+            </tr>
+          } @else {
+            @for (ctrl of formArray.controls; track $index; let idx = $index) {
+              <tr [formGroup]="$any(ctrl)">
+                @if (selectable) {
+                  <td class="table-col-checkbox text-center">
+                    <input type="checkbox" class="erpm-checkbox" />
+                  </td>
+                }
+
+                @if (showIndex) {
+                  <td class="table-col-index text-center text-slate-400 font-mono">
+                    {{ idx + 1 }}
+                  </td>
+                }
+
+                @for (col of effectiveColumns(); track col.key) {
+                  <td
+                    [style.width]="col.width"
+                    [style.min-width]="col.minWidth || col.width"
+                    [class.text-left]="!col.align || col.align === 'left'"
+                    [class.text-center]="col.align === 'center'"
+                    [class.text-right]="col.align === 'right'"
+                    [class.money-cell]="col.type === 'currency' || col.nowrap"
+                    [class.sticky-col-left]="col.sticky === 'left'"
+                    [class.sticky-col-right]="col.sticky === 'right'"
+                  >
+                    @if (getCellTemplate(col, true); as customTpl) {
+                      <ng-container
+                        *ngTemplateOutlet="customTpl; context: { $implicit: ctrl.value, row: ctrl.value, index: idx, group: ctrl, column: col, canEdit: true }"
+                      ></ng-container>
+                    } @else if (col.editable && hasFormControl(ctrl, col.key)) {
+                      <app-form-control
+                        [formControl]="$any(ctrl.get(col.key))"
+                        [type]="getControlType(col)"
+                        [options]="col.options || []"
+                        [placeholder]="col.placeholder || ''"
+                        [min]="col.min"
+                        [max]="col.max"
+                        [step]="col.step ?? (getControlType(col) === 'number' ? 1 : 0.0001)"
+                        [disabled]="!!col.disabled"
+                        [suffix]="col.suffix"
+                        [prefix]="col.prefix"
+                        [compact]="true"
+                        size="sm"
+                      ></app-form-control>
+                    } @else {
+                      @switch (col.type) {
+                        @case ('currency') {
+                          <span class="font-mono font-numeric">{{ getCellValue(ctrl.value, col.key) | number:(col.numberFormat || '1.0-0') }}&nbsp;đ</span>
+                        }
+                        @case ('number') {
+                          <span class="font-mono font-numeric">{{ getCellValue(ctrl.value, col.key) | number:(col.numberFormat || '1.0-0') }}{{ col.suffix || '' }}</span>
+                        }
+                        @case ('date') {
+                          <span class="font-mono">{{ getCellValue(ctrl.value, col.key) | date:(col.dateFormat || 'dd/MM/yyyy') }}</span>
+                        }
+                        @case ('badge') {
+                          <span class="erpm-status-badge" [ngClass]="getBadgeClass(col, ctrl.value)">
+                            {{ getBadgeLabel(col, ctrl.value) }}
+                          </span>
+                        }
+                        @default {
+                          <span>{{ getCellValue(ctrl.value, col.key) }}{{ col.suffix || '' }}</span>
+                        }
+                      }
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          }
+        } @else {
+          <!-- List / View Mode Data -->
           @if (data.length === 0) {
             <tr class="empty-row">
               <td [attr.colspan]="totalColumnCount()" class="text-center py-8">
@@ -102,7 +184,7 @@
                   </td>
                 }
 
-                @for (col of columns; track col.key) {
+                @for (col of effectiveColumns(); track col.key) {
                   <td
                     [style.width]="col.width"
                     [style.min-width]="col.minWidth || col.width"
@@ -113,9 +195,9 @@
                     [class.sticky-col-left]="col.sticky === 'left'"
                     [class.sticky-col-right]="col.sticky === 'right'"
                   >
-                    @if (getCustomTemplate(col.key); as customTpl) {
+                    @if (getCellTemplate(col, false); as customTpl) {
                       <ng-container
-                        *ngTemplateOutlet="customTpl; context: { row: row, index: idx, column: col }"
+                        *ngTemplateOutlet="customTpl; context: { $implicit: row, row: row, index: idx, column: col, canEdit: false }"
                       ></ng-container>
                     } @else {
                       @switch (col.type) {
@@ -123,7 +205,7 @@
                           <span class="font-mono font-numeric">{{ getCellValue(row, col.key) | number:(col.numberFormat || '1.0-0') }}&nbsp;đ</span>
                         }
                         @case ('number') {
-                          <span class="font-mono font-numeric">{{ getCellValue(row, col.key) | number:(col.numberFormat || '1.0-0') }}</span>
+                          <span class="font-mono font-numeric">{{ getCellValue(row, col.key) | number:(col.numberFormat || '1.0-0') }}{{ col.suffix || '' }}</span>
                         }
                         @case ('date') {
                           <span class="font-mono">{{ getCellValue(row, col.key) | date:(col.dateFormat || 'dd/MM/yyyy') }}</span>
@@ -134,56 +216,9 @@
                           </span>
                         }
                         @default {
-                          <span>{{ getCellValue(row, col.key) }}</span>
+                          <span>{{ getCellValue(row, col.key) }}{{ col.suffix || '' }}</span>
                         }
                       }
-                    }
-                  </td>
-                }
-              </tr>
-            }
-          }
-        } @else if (mode === 'editable' && formArray) {
-          <!-- Editable FormArray Mode -->
-          @if (formArray.controls.length === 0) {
-            <tr class="empty-row">
-              <td [attr.colspan]="totalColumnCount()" class="text-center py-6">
-                <div class="empty-state-content">
-                  <span class="empty-icon">📝</span>
-                  <p class="empty-text">{{ emptyMessage | translate }}</p>
-                </div>
-              </td>
-            </tr>
-          } @else {
-            @for (ctrl of formArray.controls; track $index; let idx = $index) {
-              <tr [formGroup]="$any(ctrl)">
-                @if (selectable) {
-                  <td class="table-col-checkbox text-center">
-                    <input type="checkbox" class="erpm-checkbox" />
-                  </td>
-                }
-
-                @if (showIndex) {
-                  <td class="table-col-index text-center text-slate-400 font-mono">
-                    {{ idx + 1 }}
-                  </td>
-                }
-
-                @for (col of columns; track col.key) {
-                  <td
-                    [style.width]="col.width"
-                    [style.min-width]="col.minWidth || col.width"
-                    [class.text-left]="!col.align || col.align === 'left'"
-                    [class.text-center]="col.align === 'center'"
-                    [class.text-right]="col.align === 'right'"
-                    [class.money-cell]="col.type === 'currency' || col.nowrap"
-                  >
-                    @if (getCustomTemplate(col.key); as customTpl) {
-                      <ng-container
-                        *ngTemplateOutlet="customTpl; context: { row: ctrl.value, index: idx, group: ctrl, column: col }"
-                      ></ng-container>
-                    } @else {
-                      <span>{{ getCellValue(ctrl.value, col.key) }}</span>
                     }
                   </td>
                 }
@@ -196,7 +231,7 @@
   </div>
 
   <!-- Table Pagination Footer (If pagination is enabled) -->
-  @if (pagination && mode === 'list') {
+  @if (pagination && !isEditActive) {
     <div class="table-pagination-footer">
       <div class="pagination-info">
         <span>{{ 'common.total' | translate }}: <strong>{{ pagination.totalItems }}</strong></span>

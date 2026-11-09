@@ -1,6 +1,10 @@
-.async-select-wrapper {
+﻿.async-select-wrapper {
   position: relative;
   width: 100%;
+
+  &.is-open {
+    z-index: 100;
+  }
 
   &.disabled {
     opacity: 0.65;
@@ -55,19 +59,20 @@
 }
 
 .async-select-dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
+  position: fixed;
   min-width: 280px;
-  max-height: 260px;
+  max-height: 240px;
   overflow-y: auto;
-  z-index: 60;
+  z-index: 9999;
   background: var(--erpm-surface-card, var(--erpm-bg-surface, #ffffff));
   border: 1px solid var(--erpm-border, #cbd5e1);
   border-radius: 0.6rem;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.35);
   padding: 0.35rem;
+
+  .async-select-wrapper.drop-up & {
+    box-shadow: 0 -12px 28px -4px rgba(0, 0, 0, 0.35);
+  }
 }
 
 .async-options-list {

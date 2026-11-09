@@ -74,6 +74,7 @@ export class AsyncSelectComponent implements OnInit, OnDestroy, ControlValueAcce
   @Output() searchChange = new EventEmitter<string>();
 
   public isOpen = signal<boolean>(false);
+  public isDropUp = signal<boolean>(false);
   public searchKeyword = signal<string>('');
   public currentValue = signal<any>(null);
   public activeIndex = signal<number>(0);
@@ -139,15 +140,48 @@ export class AsyncSelectComponent implements OnInit, OnDestroy, ControlValueAcce
       event.stopPropagation();
     }
     if (this.disabled) return;
+    this.updateDropDirection();
     this.isOpen.set(true);
     this.activeIndex.set(0);
   }
 
   public onSearchInput(value: string): void {
     this.searchKeyword.set(value);
+    this.updateDropDirection();
     this.isOpen.set(true);
     this.activeIndex.set(0);
     this.searchSubject.next(value.trim());
+  }
+
+  private updateDropDirection(): void {
+    try {
+      const host = this.elementRef.nativeElement as HTMLElement;
+      const trigger = (host.querySelector('.async-select-trigger') as HTMLElement) || host;
+      const rect = trigger.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+
+      const spaceBelowViewport = viewportHeight - rect.bottom;
+      const spaceAboveViewport = rect.top;
+
+      const scrollContainer = host.closest('.erpm-table-scroll, .erpm-table-container, .table-responsive');
+      let spaceBelowContainer = spaceBelowViewport;
+      let spaceAboveContainer = spaceAboveViewport;
+
+      if (scrollContainer) {
+        const containerRect = scrollContainer.getBoundingClientRect();
+        spaceBelowContainer = containerRect.bottom - rect.bottom;
+        spaceAboveContainer = rect.top - containerRect.top;
+      }
+
+      const effectiveSpaceBelow = Math.min(spaceBelowViewport, spaceBelowContainer);
+      const effectiveSpaceAbove = Math.max(spaceAboveViewport, spaceAboveContainer);
+
+      // Drop up if space below is less than 240px and space above has more room
+      const shouldDropUp = effectiveSpaceBelow < 240 && effectiveSpaceAbove > effectiveSpaceBelow;
+      this.isDropUp.set(shouldDropUp);
+    } catch {
+      this.isDropUp.set(false);
+    }
   }
 
   public selectOption(opt: AsyncSelectOption, event?: Event): void {
@@ -176,10 +210,12 @@ export class AsyncSelectComponent implements OnInit, OnDestroy, ControlValueAcce
     const list = this.filteredOptions();
     if (event.key === 'ArrowDown') {
       event.preventDefault();
+      this.updateDropDirection();
       this.isOpen.set(true);
       this.activeIndex.set(Math.min(list.length - 1, this.activeIndex() + 1));
     } else if (event.key === 'ArrowUp') {
       event.preventDefault();
+      this.updateDropDirection();
       this.isOpen.set(true);
       this.activeIndex.set(Math.max(0, this.activeIndex() - 1));
     } else if (event.key === 'Enter') {

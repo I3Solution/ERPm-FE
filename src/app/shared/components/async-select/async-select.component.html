@@ -1,4 +1,4 @@
-<div class="async-select-wrapper" [class.disabled]="disabled" [class.size-sm]="size === 'sm'">
+<div class="async-select-wrapper" [class.disabled]="disabled" [class.size-sm]="size === 'sm'" [class.is-open]="isOpen()" [class.drop-up]="isDropUp()">
   <div class="async-select-trigger" (click)="openDropdown($event)">
     <span class="search-icon">🔍</span>
     <input
@@ -36,14 +36,14 @@
                 }
                 <span class="option-name">{{ opt.label }}</span>
               </div>
-              <div class="option-meta">
+              <!-- <div class="option-meta">
                 @if (opt.barcode) {
                   <span class="option-barcode">🏷️ {{ opt.barcode }}</span>
                 }
                 @if (opt.price !== undefined) {
                   <span class="option-price">{{ opt.price | number:'1.0-0' }} đ</span>
                 }
-              </div>
+              </div> -->
             </li>
           }
         </ul>

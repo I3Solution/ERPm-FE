@@ -75,77 +75,92 @@
 
     <div *ngIf="!isLoading() && filteredTemplates().length > 0">
       <app-data-table
-        [columns]="templateColumns"
         [data]="filteredTemplates()"
         [showIndex]="false"
         [tableMinWidth]="'1100px'"
       >
-        <ng-template appDataTableCell="category" let-row="row">
-          <span class="text-center font-lg">{{ getCategoryIcon(row.category) }}</span>
-        </ng-template>
+        <app-column key="category" label="" width="50px" minWidth="50px" align="center">
+          <ng-template let-row="row">
+            <span class="text-center font-lg">{{ getCategoryIcon(row.category) }}</span>
+          </ng-template>
+        </app-column>
 
-        <ng-template appDataTableCell="code" let-row="row">
-          <span class="code-badge">{{ row.code }}</span>
-        </ng-template>
+        <app-column key="code" label="Mã Mẫu (Code)" width="170px" minWidth="160px" [sortable]="true">
+          <ng-template let-row="row">
+            <span class="code-badge">{{ row.code }}</span>
+          </ng-template>
+        </app-column>
 
-        <ng-template appDataTableCell="name" let-row="row">
-          <span class="font-medium text-slate-800">{{ row.name }}</span>
-        </ng-template>
+        <app-column key="name" label="Tên Gợi Nhớ" width="180px" minWidth="170px">
+          <ng-template let-row="row">
+            <span class="font-medium text-slate-800">{{ row.name }}</span>
+          </ng-template>
+        </app-column>
 
-        <ng-template appDataTableCell="content" let-row="row">
-          <div class="tpl-content-cell">
-            <span class="tpl-title-preview">{{ row.titleTemplate }}</span>
-            <span class="tpl-body-preview">{{ row.bodyTemplate }}</span>
-          </div>
-        </ng-template>
+        <app-column key="content" label="Nội Dung Mẫu (Tiếng Việt)" minWidth="250px">
+          <ng-template let-row="row">
+            <div class="tpl-content-cell">
+              <span class="tpl-title-preview">{{ row.titleTemplate }}</span>
+              <span class="tpl-body-preview">{{ row.bodyTemplate }}</span>
+            </div>
+          </ng-template>
+        </app-column>
 
-        <ng-template appDataTableCell="defaultSeverity" let-row="row">
-          <span class="severity-badge" [ngClass]="'badge-' + row.defaultSeverity.toLowerCase()">
-            {{ row.defaultSeverity }}
-          </span>
-        </ng-template>
+        <app-column key="defaultSeverity" label="Mức Độ" width="120px" minWidth="110px" align="center">
+          <ng-template let-row="row">
+            <span class="severity-badge" [ngClass]="'badge-' + row.defaultSeverity.toLowerCase()">
+              {{ row.defaultSeverity }}
+            </span>
+          </ng-template>
+        </app-column>
 
-        <ng-template appDataTableCell="channels" let-row="row">
-          <div class="channels-cell">
-            <span *ngIf="row.supportedChannels?.includes('IN_APP')" class="channel-pill" title="In-App">🔔</span>
-            <span *ngIf="row.supportedChannels?.includes('PUSH_MOBILE')" class="channel-pill" title="Push Mobile">📱</span>
-            <span *ngIf="row.supportedChannels?.includes('EMAIL')" class="channel-pill" title="Email">✉️</span>
-            <span *ngIf="row.supportedChannels?.includes('SMS')" class="channel-pill" title="SMS">💬</span>
-          </div>
-        </ng-template>
+        <app-column key="channels" label="Kênh Hỗ Trợ" width="140px" minWidth="130px" align="center">
+          <ng-template let-row="row">
+            <div class="channels-cell">
+              <span *ngIf="row.supportedChannels?.includes('IN_APP')" class="channel-pill" title="In-App">🔔</span>
+              <span *ngIf="row.supportedChannels?.includes('PUSH_MOBILE')" class="channel-pill" title="Push Mobile">📱</span>
+              <span *ngIf="row.supportedChannels?.includes('EMAIL')" class="channel-pill" title="Email">✉️</span>
+              <span *ngIf="row.supportedChannels?.includes('SMS')" class="channel-pill" title="SMS">💬</span>
+            </div>
+          </ng-template>
+        </app-column>
 
-        <ng-template appDataTableCell="isActive" let-row="row">
-          <div class="text-center">
-            <label class="switch switch-sm" (click)="$event.stopPropagation()">
-              <input
-                type="checkbox"
-                [checked]="row.isActive"
-                (change)="toggleActive(row, $event)"
-              />
-              <span class="slider round"></span>
-            </label>
-          </div>
-        </ng-template>
+        <app-column key="isActive" label="Kích Hoạt" width="100px" minWidth="90px" align="center">
+          <ng-template let-row="row">
+            <div class="text-center">
+              <label class="switch switch-sm" (click)="$event.stopPropagation()">
+                <input
+                  type="checkbox"
+                  [checked]="row.isActive"
+                  (change)="toggleActive(row, $event)"
+                />
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </ng-template>
+        </app-column>
 
-        <ng-template appDataTableCell="actions" let-row="row">
-          <div class="actions-group justify-end" (click)="$event.stopPropagation()">
-            <button
-              type="button"
-              class="btn-icon"
-              (click)="testSend(row.id)"
-              title="Bắn thử nghiệm thông báo này"
-            >
-              🚀
-            </button>
-            <button
-              type="button"
-              class="erpm-btn erpm-btn-secondary btn-sm"
-              (click)="openEditModal(row)"
-            >
-              ✏️ Sửa
-            </button>
-          </div>
-        </ng-template>
+        <app-column key="actions" label="Thao Tác" width="150px" minWidth="140px" align="right">
+          <ng-template let-row="row">
+            <div class="actions-group justify-end" (click)="$event.stopPropagation()">
+              <button
+                type="button"
+                class="btn-icon"
+                (click)="testSend(row.id)"
+                title="Bắn thử nghiệm thông báo này"
+              >
+                🚀
+              </button>
+              <button
+                type="button"
+                class="erpm-btn erpm-btn-secondary btn-sm"
+                (click)="openEditModal(row)"
+              >
+                ✏️ Sửa
+              </button>
+            </div>
+          </ng-template>
+        </app-column>
       </app-data-table>
     </div>
   </div>

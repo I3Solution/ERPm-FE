@@ -12,12 +12,12 @@ import {
 } from '../../../../core/models/notification.model';
 import { NotificationStateService } from '../../../../core/services/notification-state.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
-import { DataTableComponent, DataTableCellDirective, TableColumn } from '../../../../shared/components/data-table';
+import { DataTableComponent, TableColumnComponent } from '../../../../shared/components/data-table';
 
 @Component({
   selector: 'app-notification-templates',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, TranslatePipe, DataTableComponent, DataTableCellDirective],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, TranslatePipe, DataTableComponent, TableColumnComponent],
   templateUrl: './notification-templates.component.html',
   styleUrls: ['./notification-templates.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -44,17 +44,6 @@ export class NotificationTemplatesComponent implements OnInit {
   public activeTab = signal<'vi' | 'en'>('vi');
 
   // Form Model
-  public readonly templateColumns: TableColumn<NotificationTemplate>[] = [
-    { key: 'category', label: '', width: '50px', minWidth: '50px', align: 'center' },
-    { key: 'code', label: 'Mã Mẫu (Code)', width: '170px', minWidth: '160px', sortable: true },
-    { key: 'name', label: 'Tên Gợi Nhớ', width: '180px', minWidth: '170px' },
-    { key: 'content', label: 'Nội Dung Mẫu (Tiếng Việt)', minWidth: '250px' },
-    { key: 'defaultSeverity', label: 'Mức Độ', width: '120px', minWidth: '110px', align: 'center' },
-    { key: 'channels', label: 'Kênh Hỗ Trợ', width: '140px', minWidth: '130px', align: 'center' },
-    { key: 'isActive', label: 'Kích Hoạt', width: '100px', minWidth: '90px', align: 'center' },
-    { key: 'actions', label: 'Thao Tác', width: '150px', minWidth: '140px', align: 'right' }
-  ];
-
   public currentId = signal<number | null>(null);
   public formCode = signal<string>('');
   public formName = signal<string>('');

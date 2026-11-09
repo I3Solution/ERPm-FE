@@ -65,59 +65,70 @@
     <!-- Desktop Table View -->
     <div *ngIf="!isLoading() && items().length > 0" class="desktop-only">
       <app-data-table
-        [columns]="notificationColumns"
         [data]="items()"
         [clickableRows]="true"
         [showIndex]="false"
         [tableMinWidth]="'950px'"
         (rowClick)="onItemClick($event)"
       >
-        <ng-template appDataTableCell="categoryIcon" let-row="row">
-          <span class="text-center font-lg">{{ getCategoryIcon(row.category) }}</span>
-        </ng-template>
+        <app-column key="categoryIcon" label="" width="48px" minWidth="48px" align="center">
+          <ng-template let-row="row">
+            <span class="text-center font-lg">{{ getCategoryIcon(row.category) }}</span>
+          </ng-template>
+        </app-column>
 
-        <ng-template appDataTableCell="category" let-row="row">
-          <span class="module-badge">{{ row.category }}</span>
-        </ng-template>
+        <app-column key="category" label="Phân hệ" width="110px" minWidth="100px">
+          <ng-template let-row="row">
+            <span class="module-badge">{{ row.category }}</span>
+          </ng-template>
+        </app-column>
 
-        <ng-template appDataTableCell="content" let-row="row">
-          <div class="notif-cell-content" [class.font-bold]="!row.isRead">
-            <span class="cell-title">{{ row.title }}</span>
-            <span class="cell-body">{{ row.body }}</span>
-          </div>
-        </ng-template>
+        <app-column key="content" label="Nội dung thông báo" minWidth="250px">
+          <ng-template let-row="row">
+            <div class="notif-cell-content" [class.font-bold]="!row.isRead">
+              <span class="cell-title">{{ row.title }}</span>
+              <span class="cell-body">{{ row.body }}</span>
+            </div>
+          </ng-template>
+        </app-column>
 
-        <ng-template appDataTableCell="severity" let-row="row">
-          <span class="severity-badge" [ngClass]="'badge-' + row.severity.toLowerCase()">
-            {{ row.severity }}
-          </span>
-        </ng-template>
+        <app-column key="severity" label="Mức độ" width="140px" minWidth="130px" align="center">
+          <ng-template let-row="row">
+            <span class="severity-badge" [ngClass]="'badge-' + row.severity.toLowerCase()">
+              {{ row.severity }}
+            </span>
+          </ng-template>
+        </app-column>
 
-        <ng-template appDataTableCell="createdAtUtc" let-row="row">
-          <span class="cell-time">{{ row.createdAtUtc | relativeTime }}</span>
-        </ng-template>
+        <app-column key="createdAtUtc" label="Thời gian" width="140px" minWidth="130px">
+          <ng-template let-row="row">
+            <span class="cell-time">{{ row.createdAtUtc | relativeTime }}</span>
+          </ng-template>
+        </app-column>
 
-        <ng-template appDataTableCell="actions" let-row="row">
-          <div class="flex items-center justify-end gap-1" (click)="$event.stopPropagation()">
-            <button
-              *ngIf="!row.isRead"
-              type="button"
-              class="icon-action-btn"
-              title="Đánh dấu đã đọc"
-              (click)="markAsRead(row)"
-            >
-              ✓
-            </button>
-            <button
-              type="button"
-              class="icon-action-btn"
-              title="Lưu trữ"
-              (click)="archiveItem(row, $event)"
-            >
-              📥
-            </button>
-          </div>
-        </ng-template>
+        <app-column key="actions" label="Thao tác" width="100px" minWidth="90px" align="right">
+          <ng-template let-row="row">
+            <div class="flex items-center justify-end gap-1" (click)="$event.stopPropagation()">
+              <button
+                *ngIf="!row.isRead"
+                type="button"
+                class="icon-action-btn"
+                title="Đánh dấu đã đọc"
+                (click)="markAsRead(row)"
+              >
+                ✓
+              </button>
+              <button
+                type="button"
+                class="icon-action-btn"
+                title="Lưu trữ"
+                (click)="archiveItem(row, $event)"
+              >
+                📥
+              </button>
+            </div>
+          </ng-template>
+        </app-column>
       </app-data-table>
     </div>
 

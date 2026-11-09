@@ -195,9 +195,9 @@
                     [class.sticky-col-left]="col.sticky === 'left'"
                     [class.sticky-col-right]="col.sticky === 'right'"
                   >
-                    @if (getCellTemplate(col, false); as customTpl) {
+                    @if (getCellTemplate(col, isEditActive); as customTpl) {
                       <ng-container
-                        *ngTemplateOutlet="customTpl; context: { $implicit: row, row: row, index: idx, column: col, canEdit: false }"
+                        *ngTemplateOutlet="customTpl; context: { $implicit: row, row: row, index: idx, column: col, canEdit: isEditActive }"
                       ></ng-container>
                     } @else {
                       @switch (col.type) {

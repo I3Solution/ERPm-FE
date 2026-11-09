@@ -1,4 +1,4 @@
-import {
+﻿import {
   inject,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -97,6 +97,14 @@ export class FormControlComponent implements ControlValueAccessor {
   @Output() selectionChange = new EventEmitter<SelectOption | null>();
   @Output() change = new EventEmitter<any>();
 
+  @Input() set value(val: any) {
+    this.internalValue.set(val);
+    this.detector.markForCheck();
+  }
+  get value(): any {
+    return this.internalValue();
+  }
+
   public internalValue = signal<any>(null);
 
   // ControlValueAccessor callbacks
@@ -111,6 +119,7 @@ export class FormControlComponent implements ControlValueAccessor {
 
   writeValue(value: any): void {
     this.internalValue.set(value);
+    this.detector.markForCheck();
   }
 
   registerOnChange(fn: any): void {

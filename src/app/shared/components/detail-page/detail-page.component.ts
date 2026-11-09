@@ -24,11 +24,12 @@ export class DetailPageComponent {
   public readonly subtitle = input('');
   public readonly loading = input(false);
   public readonly error = input(false);
-  /** List route to go back to, plus the list's query params so its page/filter are restored. */
-  public readonly backLink = input<string | unknown[]>('');
-  public readonly backQueryParams = input<Record<string, unknown> | null>(null);
+  /**
+   * List route used when there is no in-app history (direct link, F5). Otherwise the back button pops the browser
+   * history, which returns to the list with its page/search query params intact.
+   */
+  public readonly backLink = input('/');
   public readonly backLabel = input('common.back_to_list');
 
-  public readonly back = output<void>();
   public readonly retry = output<void>();
 }

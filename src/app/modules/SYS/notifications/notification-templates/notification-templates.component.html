@@ -1,4 +1,4 @@
-<div class="templates-page">
+﻿<div class="templates-page">
   <!-- Toast Notification Alert Banner -->
   <div *ngIf="toastMessage()" class="toast-banner" role="alert">
     {{ toastMessage() }}
@@ -23,41 +23,30 @@
   </div>
 
   <!-- Filter & Search Toolbar -->
-  <div class="filter-card">
-    <div class="filter-group search-group">
-      <label class="filter-label">Tìm kiếm mẫu</label>
-      <input
-        type="text"
-        class="search-input"
-        placeholder="Tìm theo mã, tên hoặc nội dung mẫu..."
-        [ngModel]="searchQuery()"
-        (ngModelChange)="searchQuery.set($event)"
-      />
-    </div>
+  <div class="filter-card grid grid-cols-1 md:grid-cols-3 gap-3">
+    <app-form-control
+      type="text"
+      label="Tìm kiếm mẫu"
+      placeholder="Tìm theo mã, tên hoặc nội dung mẫu..."
+      [ngModel]="searchQuery()"
+      (ngModelChange)="searchQuery.set($event)"
+    ></app-form-control>
 
-    <div class="filter-group">
-      <label class="filter-label">Phân hệ</label>
-      <select
-        class="filter-select"
-        [ngModel]="filterCategory()"
-        (ngModelChange)="filterCategory.set($event)"
-      >
-        <option *ngFor="let cat of categories" [value]="cat.code">{{ cat.label }}</option>
-      </select>
-    </div>
+    <app-form-control
+      type="select"
+      label="Phân hệ"
+      [options]="filterCategoryOptions"
+      [ngModel]="filterCategory()"
+      (ngModelChange)="filterCategory.set($event)"
+    ></app-form-control>
 
-    <div class="filter-group">
-      <label class="filter-label">Trạng thái</label>
-      <select
-        class="filter-select"
-        [ngModel]="filterStatus()"
-        (ngModelChange)="filterStatus.set($event)"
-      >
-        <option value="ALL">Tất cả trạng thái</option>
-        <option value="ACTIVE">Đang hoạt động</option>
-        <option value="INACTIVE">Tạm dừng</option>
-      </select>
-    </div>
+    <app-form-control
+      type="select"
+      label="Trạng thái"
+      [options]="statusFilterOptions"
+      [ngModel]="filterStatus()"
+      (ngModelChange)="filterStatus.set($event)"
+    ></app-form-control>
   </div>
 
   <!-- Templates Data Grid -->
@@ -73,82 +62,95 @@
       <p>Thử thay đổi bộ lọc hoặc bấm "+ Thêm Mẫu Thông Báo" để tạo mới.</p>
     </div>
 
-    <div *ngIf="!isLoading() && filteredTemplates().length > 0" class="table-responsive">
-      <table class="erpm-table">
-        <thead>
-          <tr>
-            <th style="width: 50px;"></th>
-            <th style="width: 170px;">Mã Mẫu (Code)</th>
-            <th style="width: 180px;">Tên Gợi Nhớ</th>
-            <th>Nội Dung Mẫu (Tiếng Việt)</th>
-            <th style="width: 120px;">Mức Độ</th>
-            <th style="width: 140px;">Kênh Hỗ Trợ</th>
-            <th style="width: 100px; text-align: center;">Kích Hoạt</th>
-            <th style="width: 150px; text-align: right;">Thao Tác</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let tpl of filteredTemplates()" class="table-row">
-            <td class="text-center font-lg">
-              {{ getCategoryIcon(tpl.category) }}
-            </td>
-            <td>
-              <span class="code-badge">{{ tpl.code }}</span>
-            </td>
-            <td>
-              <span class="font-medium text-slate-800">{{ tpl.name }}</span>
-            </td>
-            <td>
-              <div class="tpl-content-cell">
-                <span class="tpl-title-preview">{{ tpl.titleTemplate }}</span>
-                <span class="tpl-body-preview">{{ tpl.bodyTemplate }}</span>
-              </div>
-            </td>
-            <td>
-              <span class="severity-badge" [ngClass]="'badge-' + tpl.defaultSeverity.toLowerCase()">
-                {{ tpl.defaultSeverity }}
-              </span>
-            </td>
-            <td>
-              <div class="channels-cell">
-                <span *ngIf="tpl.supportedChannels?.includes('IN_APP')" class="channel-pill" title="In-App">🔔</span>
-                <span *ngIf="tpl.supportedChannels?.includes('PUSH_MOBILE')" class="channel-pill" title="Push Mobile">📱</span>
-                <span *ngIf="tpl.supportedChannels?.includes('EMAIL')" class="channel-pill" title="Email">✉️</span>
-                <span *ngIf="tpl.supportedChannels?.includes('SMS')" class="channel-pill" title="SMS">💬</span>
-              </div>
-            </td>
-            <td class="text-center">
+    <div *ngIf="!isLoading() && filteredTemplates().length > 0">
+      <app-data-table
+        [data]="filteredTemplates()"
+        [showIndex]="false"
+        [tableMinWidth]="'1100px'"
+      >
+        <app-column key="category" label="" width="50px" minWidth="50px" align="center">
+          <ng-template let-row="row">
+            <span class="text-center font-lg">{{ getCategoryIcon(row.category) }}</span>
+          </ng-template>
+        </app-column>
+
+        <app-column key="code" label="Mã Mẫu (Code)" width="170px" minWidth="160px" [sortable]="true">
+          <ng-template let-row="row">
+            <span class="code-badge">{{ row.code }}</span>
+          </ng-template>
+        </app-column>
+
+        <app-column key="name" label="Tên Gợi Nhớ" width="180px" minWidth="170px">
+          <ng-template let-row="row">
+            <span class="font-medium text-slate-800">{{ row.name }}</span>
+          </ng-template>
+        </app-column>
+
+        <app-column key="content" label="Nội Dung Mẫu (Tiếng Việt)" minWidth="250px">
+          <ng-template let-row="row">
+            <div class="tpl-content-cell">
+              <span class="tpl-title-preview">{{ row.titleTemplate }}</span>
+              <span class="tpl-body-preview">{{ row.bodyTemplate }}</span>
+            </div>
+          </ng-template>
+        </app-column>
+
+        <app-column key="defaultSeverity" label="Mức Độ" width="120px" minWidth="110px" align="center">
+          <ng-template let-row="row">
+            <span class="severity-badge" [ngClass]="'badge-' + row.defaultSeverity.toLowerCase()">
+              {{ row.defaultSeverity }}
+            </span>
+          </ng-template>
+        </app-column>
+
+        <app-column key="channels" label="Kênh Hỗ Trợ" width="140px" minWidth="130px" align="center">
+          <ng-template let-row="row">
+            <div class="channels-cell">
+              <span *ngIf="row.supportedChannels?.includes('IN_APP')" class="channel-pill" title="In-App">🔔</span>
+              <span *ngIf="row.supportedChannels?.includes('PUSH_MOBILE')" class="channel-pill" title="Push Mobile">📱</span>
+              <span *ngIf="row.supportedChannels?.includes('EMAIL')" class="channel-pill" title="Email">✉️</span>
+              <span *ngIf="row.supportedChannels?.includes('SMS')" class="channel-pill" title="SMS">💬</span>
+            </div>
+          </ng-template>
+        </app-column>
+
+        <app-column key="isActive" label="Kích Hoạt" width="100px" minWidth="90px" align="center">
+          <ng-template let-row="row">
+            <div class="text-center">
               <label class="switch switch-sm" (click)="$event.stopPropagation()">
                 <input
                   type="checkbox"
-                  [checked]="tpl.isActive"
-                  (change)="toggleActive(tpl, $event)"
+                  [checked]="row.isActive"
+                  (change)="toggleActive(row, $event)"
                 />
                 <span class="slider round"></span>
               </label>
-            </td>
-            <td class="text-right">
-              <div class="actions-group">
-                <button
-                  type="button"
-                  class="btn-icon"
-                  (click)="testSend(tpl.id)"
-                  title="Bắn thử nghiệm thông báo này"
-                >
-                  🚀
-                </button>
-                <button
-                  type="button"
-                  class="erpm-btn erpm-btn-secondary btn-sm"
-                  (click)="openEditModal(tpl)"
-                >
-                  ✏️ Sửa
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+          </ng-template>
+        </app-column>
+
+        <app-column key="actions" label="Thao Tác" width="150px" minWidth="140px" align="right">
+          <ng-template let-row="row">
+            <div class="actions-group justify-end" (click)="$event.stopPropagation()">
+              <button
+                type="button"
+                class="btn-icon"
+                (click)="testSend(row.id)"
+                title="Bắn thử nghiệm thông báo này"
+              >
+                🚀
+              </button>
+              <button
+                type="button"
+                class="erpm-btn erpm-btn-secondary btn-sm"
+                (click)="openEditModal(row)"
+              >
+                ✏️ Sửa
+              </button>
+            </div>
+          </ng-template>
+        </app-column>
+      </app-data-table>
     </div>
   </div>
 
@@ -172,68 +174,51 @@
         <div class="form-section">
           <h4 class="section-title">1. Thông tin cơ bản</h4>
           <div class="form-grid">
-            <div class="form-field">
-              <label class="field-label">Mã mẫu (Code) *</label>
-              <input
+            <app-form-control
+              type="text"
+              label="Mã mẫu (Code)"
+              [required]="true"
+              placeholder="VD: SD_ORDER_CONFIRMED"
+              hint="Mã duy nhất viết hoa, dùng để kích hoạt từ sự kiện Backend"
+              [disabled]="isEditing()"
+              [ngModel]="formCode()"
+              (ngModelChange)="formCode.set($event)"
+            ></app-form-control>
+
+            <app-form-control
+              type="text"
+              label="Tên gợi nhớ"
+              [required]="true"
+              placeholder="VD: Thông báo đơn hàng đã xác nhận"
+              [ngModel]="formName()"
+              (ngModelChange)="formName.set($event)"
+            ></app-form-control>
+
+            <app-form-control
+              type="select"
+              label="Phân hệ (Category)"
+              [options]="formCategoryOptions"
+              [ngModel]="formCategory()"
+              (ngModelChange)="formCategory.set($event)"
+            ></app-form-control>
+
+            <app-form-control
+              type="select"
+              label="Mức độ cảnh báo (Severity)"
+              [options]="severityOptions"
+              [ngModel]="formSeverity()"
+              (ngModelChange)="formSeverity.set($event)"
+            ></app-form-control>
+
+            <div class="full-width">
+              <app-form-control
                 type="text"
-                class="form-input code-input"
-                placeholder="VD: SD_ORDER_CONFIRMED"
-                [disabled]="isEditing()"
-                [ngModel]="formCode()"
-                (ngModelChange)="formCode.set($event)"
-              />
-              <span class="field-hint">Mã duy nhất viết hoa, dùng để kích hoạt từ sự kiện Backend</span>
-            </div>
-
-            <div class="form-field">
-              <label class="field-label">Tên gợi nhớ *</label>
-              <input
-                type="text"
-                class="form-input"
-                placeholder="VD: Thông báo đơn hàng đã xác nhận"
-                [ngModel]="formName()"
-                (ngModelChange)="formName.set($event)"
-              />
-            </div>
-
-            <div class="form-field">
-              <label class="field-label">Phân hệ (Category)</label>
-              <select
-                class="form-select"
-                [ngModel]="formCategory()"
-                (ngModelChange)="formCategory.set($event)"
-              >
-                <option value="SD">🛒 Bán hàng & POS (SD)</option>
-                <option value="WMS">📦 Kho & Tồn kho (WMS)</option>
-                <option value="PUR">📥 Mua hàng & NCC (PUR)</option>
-                <option value="ACC">💰 Kế toán & Sổ quỹ (ACC)</option>
-                <option value="CRM">👥 Khách hàng (CRM)</option>
-                <option value="HRM">👤 Nhân sự & IAM (HRM)</option>
-                <option value="SYS">⚙️ Hệ thống chung (SYS)</option>
-              </select>
-            </div>
-
-            <div class="form-field">
-              <label class="field-label">Mức độ cảnh báo (Severity)</label>
-              <select
-                class="form-select"
-                [ngModel]="formSeverity()"
-                (ngModelChange)="formSeverity.set($event)"
-              >
-                <option *ngFor="let s of severities" [value]="s.code">{{ s.label }}</option>
-              </select>
-            </div>
-
-            <div class="form-field full-width">
-              <label class="field-label">Đường dẫn điều hướng (Action URL Pattern)</label>
-              <input
-                type="text"
-                class="form-input"
+                label="Đường dẫn điều hướng (Action URL Pattern)"
                 placeholder="VD: /sales/orders/{order_code}"
+                hint="Trang sẽ mở khi người dùng click vào thông báo Toast hoặc Popover"
                 [ngModel]="formActionUrl()"
                 (ngModelChange)="formActionUrl.set($event)"
-              />
-              <span class="field-hint">Trang sẽ mở khi người dùng click vào thông báo Toast hoặc Popover</span>
+              ></app-form-control>
             </div>
           </div>
         </div>
@@ -337,50 +322,50 @@
           </div>
 
           <div class="tab-content" *ngIf="activeTab() === 'vi'">
-            <div class="form-field mb-3">
-              <label class="field-label">Tiêu đề mẫu (Tiếng Việt) *</label>
-              <input
+            <div class="mb-3">
+              <app-form-control
                 type="text"
-                class="form-input"
+                label="Tiêu đề mẫu (Tiếng Việt)"
+                [required]="true"
                 placeholder="VD: Đơn hàng mới: {order_code}"
                 [ngModel]="formTitleVi()"
                 (ngModelChange)="formTitleVi.set($event)"
-              />
+              ></app-form-control>
             </div>
 
-            <div class="form-field">
-              <label class="field-label">Nội dung chi tiết (Tiếng Việt) *</label>
-              <textarea
-                class="form-textarea"
-                rows="3"
+            <div>
+              <app-form-control
+                type="textarea"
+                [rows]="3"
+                label="Nội dung chi tiết (Tiếng Việt)"
+                [required]="true"
                 placeholder="VD: Khách hàng {customer_name} vừa đặt đơn {order_code} với tổng tiền {amount}."
                 [ngModel]="formBodyVi()"
                 (ngModelChange)="formBodyVi.set($event)"
-              ></textarea>
+              ></app-form-control>
             </div>
           </div>
 
           <div class="tab-content" *ngIf="activeTab() === 'en'">
-            <div class="form-field mb-3">
-              <label class="field-label">Title Template (English)</label>
-              <input
+            <div class="mb-3">
+              <app-form-control
                 type="text"
-                class="form-input"
+                label="Title Template (English)"
                 placeholder="e.g. New order confirmed: {order_code}"
                 [ngModel]="formTitleEn()"
                 (ngModelChange)="formTitleEn.set($event)"
-              />
+              ></app-form-control>
             </div>
 
-            <div class="form-field">
-              <label class="field-label">Body Template (English)</label>
-              <textarea
-                class="form-textarea"
-                rows="3"
+            <div>
+              <app-form-control
+                type="textarea"
+                [rows]="3"
+                label="Body Template (English)"
                 placeholder="e.g. Customer {customer_name} has placed order {order_code} for {amount}."
                 [ngModel]="formBodyEn()"
                 (ngModelChange)="formBodyEn.set($event)"
-              ></textarea>
+              ></app-form-control>
             </div>
           </div>
         </div>
@@ -428,17 +413,15 @@
           </div>
 
           <div *ngIf="formIsDigest()" class="digest-window-field mt-3">
-            <label class="field-label">Khung thời gian gom tin (giây):</label>
-            <input
+            <app-form-control
               type="number"
-              class="form-input"
-              style="max-width: 150px;"
-              min="10"
-              max="3600"
+              label="Khung thời gian gom tin (giây):"
+              hint="Mặc định 300 giây (5 phút)"
+              [min]="10"
+              [max]="3600"
               [ngModel]="formDigestWindow()"
               (ngModelChange)="formDigestWindow.set($event)"
-            />
-            <span class="field-hint">Mặc định 300 giây (5 phút)</span>
+            ></app-form-control>
           </div>
         </div>
       </div>

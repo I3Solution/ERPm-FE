@@ -1,0 +1,265 @@
+﻿<div class="erpm-table-container" [style.min-height]="minHeight">
+  <!-- Table Scroll Area -->
+  <div class="erpm-table-scroll" [style.padding-bottom]="paddingBottom">
+    <table
+      class="erpm-table"
+      [style.min-width]="tableMinWidth"
+      [ngClass]="{ 'erpm-table-editable': isEditActive }"
+    >
+      <!-- Table Header -->
+      <thead>
+        <tr>
+          @if (selectable) {
+            <th class="table-col-checkbox text-center" style="width: 44px; min-width: 44px;">
+              <input
+                type="checkbox"
+                class="erpm-checkbox"
+                [checked]="isAllSelected()"
+                [indeterminate]="isPartiallySelected()"
+                (change)="toggleSelectAll($event)"
+              />
+            </th>
+          }
+
+          @if (showIndex) {
+            <th class="table-col-index text-center" style="width: 45px; min-width: 45px;">#</th>
+          }
+
+          @for (col of effectiveColumns(); track col.key) {
+            <th
+              [style.width]="col.width"
+              [style.min-width]="col.minWidth || col.width"
+              [class.sortable]="col.sortable"
+              [class.text-left]="!col.align || col.align === 'left'"
+              [class.text-center]="col.align === 'center'"
+              [class.text-right]="col.align === 'right'"
+              [class.sticky-col-left]="col.sticky === 'left'"
+              [class.sticky-col-right]="col.sticky === 'right'"
+              (click)="onHeaderClick(col)"
+            >
+              <div class="header-content" [class.justify-end]="col.align === 'right'" [class.justify-center]="col.align === 'center'">
+                <span>{{ col.label | translate }}</span>
+                @if (col.sortable) {
+                  <span class="sort-icon" [class.active]="currentSort()?.column === col.key">
+                    @if (currentSort()?.column === col.key) {
+                      {{ currentSort()?.direction === 'asc' ? '▲' : '▼' }}
+                    } @else {
+                      <span class="sort-neutral">↕</span>
+                    }
+                  </span>
+                }
+              </div>
+            </th>
+          }
+        </tr>
+      </thead>
+
+      <!-- Table Body -->
+      <tbody>
+        <!-- Loading Skeleton -->
+        @if (loading) {
+          @for (n of [1, 2, 3, 4]; track n) {
+            <tr class="skeleton-row">
+              @if (selectable) { <td class="text-center"><div class="skeleton-box sm"></div></td> }
+              @if (showIndex) { <td class="text-center"><div class="skeleton-box sm"></div></td> }
+              @for (col of effectiveColumns(); track col.key) {
+                <td><div class="skeleton-box"></div></td>
+              }
+            </tr>
+          }
+        } @else if (isEditActive && formArray) {
+          <!-- Editable FormArray Mode -->
+          @if (formArray.controls.length === 0) {
+            <tr class="empty-row">
+              <td [attr.colspan]="totalColumnCount()" class="text-center py-6">
+                <div class="empty-state-content">
+                  <span class="empty-icon">📝</span>
+                  <p class="empty-text">{{ emptyMessage | translate }}</p>
+                </div>
+              </td>
+            </tr>
+          } @else {
+            @for (ctrl of formArray.controls; track $index; let idx = $index) {
+              <tr [formGroup]="$any(ctrl)">
+                @if (selectable) {
+                  <td class="table-col-checkbox text-center">
+                    <input type="checkbox" class="erpm-checkbox" />
+                  </td>
+                }
+
+                @if (showIndex) {
+                  <td class="table-col-index text-center text-slate-400 font-mono">
+                    {{ idx + 1 }}
+                  </td>
+                }
+
+                @for (col of effectiveColumns(); track col.key) {
+                  <td
+                    [style.width]="col.width"
+                    [style.min-width]="col.minWidth || col.width"
+                    [class.text-left]="!col.align || col.align === 'left'"
+                    [class.text-center]="col.align === 'center'"
+                    [class.text-right]="col.align === 'right'"
+                    [class.money-cell]="col.type === 'currency' || col.nowrap"
+                    [class.sticky-col-left]="col.sticky === 'left'"
+                    [class.sticky-col-right]="col.sticky === 'right'"
+                  >
+                    @if (getCellTemplate(col, true); as customTpl) {
+                      <ng-container
+                        *ngTemplateOutlet="customTpl; context: { $implicit: ctrl.value, row: ctrl.value, index: idx, group: ctrl, column: col, canEdit: true }"
+                      ></ng-container>
+                    } @else if (col.editable && hasFormControl(ctrl, col.key)) {
+                      <app-form-control
+                        [formControl]="$any(ctrl.get(col.key))"
+                        [type]="getControlType(col)"
+                        [options]="col.options || []"
+                        [placeholder]="col.placeholder || ''"
+                        [min]="col.min"
+                        [max]="col.max"
+                        [step]="col.step ?? (getControlType(col) === 'number' ? 1 : 0.0001)"
+                        [disabled]="!!col.disabled"
+                        [suffix]="col.suffix"
+                        [prefix]="col.prefix"
+                        [compact]="true"
+                        size="sm"
+                      ></app-form-control>
+                    } @else {
+                      @switch (col.type) {
+                        @case ('currency') {
+                          <span class="font-mono font-numeric">{{ getCellValue(ctrl.value, col.key) | number:(col.numberFormat || '1.0-0') }}&nbsp;đ</span>
+                        }
+                        @case ('number') {
+                          <span class="font-mono font-numeric">{{ getCellValue(ctrl.value, col.key) | number:(col.numberFormat || '1.0-0') }}{{ col.suffix || '' }}</span>
+                        }
+                        @case ('date') {
+                          <span class="font-mono">{{ getCellValue(ctrl.value, col.key) | date:(col.dateFormat || 'dd/MM/yyyy') }}</span>
+                        }
+                        @case ('badge') {
+                          <span class="erpm-status-badge" [ngClass]="getBadgeClass(col, ctrl.value)">
+                            {{ getBadgeLabel(col, ctrl.value) }}
+                          </span>
+                        }
+                        @default {
+                          <span>{{ getCellValue(ctrl.value, col.key) }}{{ col.suffix || '' }}</span>
+                        }
+                      }
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          }
+        } @else {
+          <!-- List / View Mode Data -->
+          @if (data.length === 0) {
+            <tr class="empty-row">
+              <td [attr.colspan]="totalColumnCount()" class="text-center py-8">
+                <div class="empty-state-content">
+                  <span class="empty-icon">📭</span>
+                  <p class="empty-text">{{ emptyMessage | translate }}</p>
+                </div>
+              </td>
+            </tr>
+          } @else {
+            @for (row of data; track getRowTrackId(row, $index); let idx = $index) {
+              <tr
+                [class.clickable-row]="clickableRows"
+                [class.selected-row]="isRowSelected(row)"
+                (click)="onRowClick(row, $event)"
+              >
+                @if (selectable) {
+                  <td class="table-col-checkbox text-center" (click)="$event.stopPropagation()">
+                    <input
+                      type="checkbox"
+                      class="erpm-checkbox"
+                      [checked]="isRowSelected(row)"
+                      (change)="toggleRowSelection(row, $event)"
+                    />
+                  </td>
+                }
+
+                @if (showIndex) {
+                  <td class="table-col-index text-center text-slate-400 font-mono">
+                    {{ calculateRowIndex(idx) }}
+                  </td>
+                }
+
+                @for (col of effectiveColumns(); track col.key) {
+                  <td
+                    [style.width]="col.width"
+                    [style.min-width]="col.minWidth || col.width"
+                    [class.text-left]="!col.align || col.align === 'left'"
+                    [class.text-center]="col.align === 'center'"
+                    [class.text-right]="col.align === 'right'"
+                    [class.money-cell]="col.type === 'currency' || col.nowrap"
+                    [class.sticky-col-left]="col.sticky === 'left'"
+                    [class.sticky-col-right]="col.sticky === 'right'"
+                  >
+                    @if (getCellTemplate(col, isEditActive); as customTpl) {
+                      <ng-container
+                        *ngTemplateOutlet="customTpl; context: { $implicit: row, row: row, index: idx, column: col, canEdit: isEditActive }"
+                      ></ng-container>
+                    } @else {
+                      @switch (col.type) {
+                        @case ('currency') {
+                          <span class="font-mono font-numeric">{{ getCellValue(row, col.key) | number:(col.numberFormat || '1.0-0') }}&nbsp;đ</span>
+                        }
+                        @case ('number') {
+                          <span class="font-mono font-numeric">{{ getCellValue(row, col.key) | number:(col.numberFormat || '1.0-0') }}{{ col.suffix || '' }}</span>
+                        }
+                        @case ('date') {
+                          <span class="font-mono">{{ getCellValue(row, col.key) | date:(col.dateFormat || 'dd/MM/yyyy') }}</span>
+                        }
+                        @case ('badge') {
+                          <span class="erpm-status-badge" [ngClass]="getBadgeClass(col, row)">
+                            {{ getBadgeLabel(col, row) }}
+                          </span>
+                        }
+                        @default {
+                          <span>{{ getCellValue(row, col.key) }}{{ col.suffix || '' }}</span>
+                        }
+                      }
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Table Pagination Footer (If pagination is enabled) -->
+  @if (pagination && !isEditActive) {
+    <div class="table-pagination-footer">
+      <div class="pagination-info">
+        <span>{{ 'common.total' | translate }}: <strong>{{ pagination.totalItems }}</strong></span>
+      </div>
+
+      <div class="pagination-controls">
+        <button
+          type="button"
+          class="pagination-btn"
+          [disabled]="pagination.pageIndex <= 0"
+          (click)="onPageChange(pagination.pageIndex - 1)"
+        >
+          ‹
+        </button>
+
+        <span class="pagination-page-label">
+          {{ pagination.pageIndex + 1 }} / {{ getTotalPages() }}
+        </span>
+
+        <button
+          type="button"
+          class="pagination-btn"
+          [disabled]="pagination.pageIndex >= getTotalPages() - 1"
+          (click)="onPageChange(pagination.pageIndex + 1)"
+        >
+          ›
+        </button>
+      </div>
+    </div>
+  }
+</div>

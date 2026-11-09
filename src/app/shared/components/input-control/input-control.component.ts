@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, inject, ChangeDetectionStrategy,
+﻿import { ChangeDetectorRef, inject, ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
@@ -94,6 +94,7 @@ export class InputControlComponent implements ControlValueAccessor {
 
   @Input() set value(val: any) {
     this.internalValue.set(val);
+    this.detector.markForCheck();
   }
   get value(): any {
     return this.internalValue();
@@ -119,6 +120,7 @@ export class InputControlComponent implements ControlValueAccessor {
 
   writeValue(value: any): void {
     this.internalValue.set(value);
+    this.detector.markForCheck();
   }
 
   registerOnChange(fn: any): void {

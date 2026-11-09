@@ -1,6 +1,9 @@
-/**
+﻿/**
  * Core type definitions and contracts for enterprise DataTable component.
  */
+import { TemplateRef } from '@angular/core';
+import { InputControlType } from '../input-control/input-control.component';
+import { SelectOption } from '../custom-select/custom-select.component';
 
 export type ColumnAlign = 'left' | 'center' | 'right';
 
@@ -11,7 +14,7 @@ export type ColumnType =
   | 'date'        // Date or datetime string
   | 'badge'       // Status badge mapped through badgeMap
   | 'actions'     // Action buttons column
-  | 'custom';     // Custom template rendered via DataTableCellDirective
+  | 'custom';     // Custom template rendered via DataTableCellDirective or app-column
 
 export interface TableBadgeConfig {
   label?: string;
@@ -31,6 +34,22 @@ export interface TableColumn<T = any> {
   nowrap?: boolean;
   dateFormat?: string; // e.g. 'dd/MM/yyyy' or 'dd/MM/yyyy HH:mm'
   numberFormat?: string; // e.g. '1.0-0' or '1.2-2'
+  visible?: boolean;
+  suffix?: string;
+  prefix?: string;
+
+  // Editable inline cell fields
+  editable?: boolean;
+  controlType?: InputControlType;
+  options?: SelectOption[];
+  placeholder?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  disabled?: boolean;
+  cellTemplate?: TemplateRef<any>;
+  viewTemplate?: TemplateRef<any>;
+  editTemplate?: TemplateRef<any>;
 }
 
 export interface TableSort {

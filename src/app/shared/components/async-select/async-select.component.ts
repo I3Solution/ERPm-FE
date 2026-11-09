@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -74,6 +74,8 @@ export class AsyncSelectComponent implements OnInit, OnDestroy, ControlValueAcce
   @Output() searchChange = new EventEmitter<string>();
 
   public isOpen = signal<boolean>(false);
+  public isDropUp = signal<boolean>(false);
+  public dropdownStyle = signal<{ [key: string]: string }>({});
   public searchKeyword = signal<string>('');
   public currentValue = signal<any>(null);
   public activeIndex = signal<number>(0);
@@ -110,11 +112,26 @@ export class AsyncSelectComponent implements OnInit, OnDestroy, ControlValueAcce
       .subscribe(kw => {
         this.searchChange.emit(kw);
       });
+
+    window.addEventListener('scroll', this.handleScroll, true);
+    window.addEventListener('resize', this.handleScroll, true);
   }
 
   ngOnDestroy(): void {
     this.searchSub?.unsubscribe();
+    window.removeEventListener('scroll', this.handleScroll, true);
+    window.removeEventListener('resize', this.handleScroll, true);
   }
+
+  private handleScroll = (event: Event): void => {
+    if (!this.isOpen()) return;
+    const dropdownEl = (this.elementRef.nativeElement as HTMLElement).querySelector('.async-select-dropdown');
+    if (dropdownEl && dropdownEl.contains(event.target as Node)) {
+      return;
+    }
+    this.updateDropDirection();
+    this.cdr.markForCheck();
+  };
 
   writeValue(value: any): void {
     this.currentValue.set(value);
@@ -139,15 +156,66 @@ export class AsyncSelectComponent implements OnInit, OnDestroy, ControlValueAcce
       event.stopPropagation();
     }
     if (this.disabled) return;
+    this.updateDropDirection();
     this.isOpen.set(true);
     this.activeIndex.set(0);
   }
 
   public onSearchInput(value: string): void {
     this.searchKeyword.set(value);
+    this.updateDropDirection();
     this.isOpen.set(true);
     this.activeIndex.set(0);
     this.searchSubject.next(value.trim());
+  }
+
+  private updateDropDirection(): void {
+    try {
+      const host = this.elementRef.nativeElement as HTMLElement;
+      const trigger = (host.querySelector('.async-select-trigger') as HTMLElement) || host;
+      const rect = trigger.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+
+      // Close if trigger scrolled outside viewport
+      if (rect.bottom < 0 || rect.top > viewportHeight) {
+        this.isOpen.set(false);
+        return;
+      }
+
+      const spaceBelow = viewportHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      const dropdownMaxHeight = 240;
+
+      const shouldDropUp = spaceBelow < dropdownMaxHeight && spaceAbove > spaceBelow;
+      this.isDropUp.set(shouldDropUp);
+
+      const width = Math.max(rect.width, 280);
+      let left = rect.left;
+      if (left + width > viewportWidth - 8) {
+        left = Math.max(8, viewportWidth - width - 8);
+      }
+
+      const styles: { [key: string]: string } = {
+        position: 'fixed',
+        left: `${left}px`,
+        width: `${width}px`,
+        'z-index': '9999'
+      };
+
+      if (shouldDropUp) {
+        styles['bottom'] = `${viewportHeight - rect.top + 4}px`;
+        styles['top'] = 'auto';
+      } else {
+        styles['top'] = `${rect.bottom + 4}px`;
+        styles['bottom'] = 'auto';
+      }
+
+      this.dropdownStyle.set(styles);
+    } catch {
+      this.isDropUp.set(false);
+      this.dropdownStyle.set({});
+    }
   }
 
   public selectOption(opt: AsyncSelectOption, event?: Event): void {
@@ -176,10 +244,12 @@ export class AsyncSelectComponent implements OnInit, OnDestroy, ControlValueAcce
     const list = this.filteredOptions();
     if (event.key === 'ArrowDown') {
       event.preventDefault();
+      this.updateDropDirection();
       this.isOpen.set(true);
       this.activeIndex.set(Math.min(list.length - 1, this.activeIndex() + 1));
     } else if (event.key === 'ArrowUp') {
       event.preventDefault();
+      this.updateDropDirection();
       this.isOpen.set(true);
       this.activeIndex.set(Math.max(0, this.activeIndex() - 1));
     } else if (event.key === 'Enter') {

@@ -1,4 +1,4 @@
-<div class="notifications-page">
+﻿<div class="notifications-page">
   <!-- Page Header -->
   <div class="page-header">
     <div class="header-titles">
@@ -24,29 +24,30 @@
   </div>
 
   <!-- Filter Bar -->
-  <div class="filter-card">
-    <div class="filter-group">
-      <label class="filter-label">{{ 'notifications.filter_module' | translate }}</label>
-      <select class="filter-select" [ngModel]="filterCategory()" (ngModelChange)="filterCategory.set($event); onFilterChange()">
-        <option *ngFor="let cat of categories" [value]="cat.code">{{ cat.label }}</option>
-      </select>
-    </div>
+  <div class="filter-card grid grid-cols-1 md:grid-cols-3 gap-3">
+    <app-form-control
+      type="select"
+      [label]="'notifications.filter_module' | translate"
+      [options]="categoryOptions"
+      [ngModel]="filterCategory()"
+      (ngModelChange)="filterCategory.set($event); onFilterChange()"
+    ></app-form-control>
 
-    <div class="filter-group">
-      <label class="filter-label">{{ 'notifications.filter_severity' | translate }}</label>
-      <select class="filter-select" [ngModel]="filterSeverity()" (ngModelChange)="filterSeverity.set($event); onFilterChange()">
-        <option *ngFor="let sev of severities" [value]="sev.code">{{ sev.label }}</option>
-      </select>
-    </div>
+    <app-form-control
+      type="select"
+      [label]="'notifications.filter_severity' | translate"
+      [options]="severityOptions"
+      [ngModel]="filterSeverity()"
+      (ngModelChange)="filterSeverity.set($event); onFilterChange()"
+    ></app-form-control>
 
-    <div class="filter-group">
-      <label class="filter-label">{{ 'notifications.filter_status' | translate }}</label>
-      <select class="filter-select" [ngModel]="filterReadStatus()" (ngModelChange)="filterReadStatus.set($event); onFilterChange()">
-        <option value="ALL">Tất cả trạng thái</option>
-        <option value="UNREAD">Chưa đọc</option>
-        <option value="READ">Đã đọc</option>
-      </select>
-    </div>
+    <app-form-control
+      type="select"
+      [label]="'notifications.filter_status' | translate"
+      [options]="readStatusOptions"
+      [ngModel]="filterReadStatus()"
+      (ngModelChange)="filterReadStatus.set($event); onFilterChange()"
+    ></app-form-control>
   </div>
 
   <!-- Content List / Table Area -->
@@ -63,52 +64,58 @@
     </div>
 
     <!-- Desktop Table View -->
-    <div *ngIf="!isLoading() && items().length > 0" class="desktop-only table-responsive">
-      <table class="erpm-table">
-        <thead>
-          <tr>
-            <th style="width: 48px;"></th>
-            <th style="width: 110px;">Phân hệ</th>
-            <th>Nội dung thông báo</th>
-            <th style="width: 140px;">Mức độ</th>
-            <th style="width: 140px;">Thời gian</th>
-            <th style="width: 100px; text-align: right;">Thao tác</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="let item of items()"
-            [class.row-unread]="!item.isRead"
-            (click)="onItemClick(item)"
-            class="clickable-row"
-          >
-            <td class="text-center font-lg">
-              {{ getCategoryIcon(item.category) }}
-            </td>
-            <td>
-              <span class="module-badge">{{ item.category }}</span>
-            </td>
-            <td>
-              <div class="notif-cell-content">
-                <span class="cell-title">{{ item.title }}</span>
-                <span class="cell-body">{{ item.body }}</span>
-              </div>
-            </td>
-            <td>
-              <span class="severity-badge" [ngClass]="'badge-' + item.severity.toLowerCase()">
-                {{ item.severity }}
-              </span>
-            </td>
-            <td class="cell-time">
-              {{ item.createdAtUtc | relativeTime }}
-            </td>
-            <td class="text-right" (click)="$event.stopPropagation()">
+    <div *ngIf="!isLoading() && items().length > 0" class="desktop-only">
+      <app-data-table
+        [data]="items()"
+        [clickableRows]="true"
+        [showIndex]="false"
+        [tableMinWidth]="'950px'"
+        (rowClick)="onItemClick($event)"
+      >
+        <app-column key="categoryIcon" label="" width="48px" minWidth="48px" align="center">
+          <ng-template let-row="row">
+            <span class="text-center font-lg">{{ getCategoryIcon(row.category) }}</span>
+          </ng-template>
+        </app-column>
+
+        <app-column key="category" label="Phân hệ" width="110px" minWidth="100px">
+          <ng-template let-row="row">
+            <span class="module-badge">{{ row.category }}</span>
+          </ng-template>
+        </app-column>
+
+        <app-column key="content" label="Nội dung thông báo" minWidth="250px">
+          <ng-template let-row="row">
+            <div class="notif-cell-content" [class.font-bold]="!row.isRead">
+              <span class="cell-title">{{ row.title }}</span>
+              <span class="cell-body">{{ row.body }}</span>
+            </div>
+          </ng-template>
+        </app-column>
+
+        <app-column key="severity" label="Mức độ" width="140px" minWidth="130px" align="center">
+          <ng-template let-row="row">
+            <span class="severity-badge" [ngClass]="'badge-' + row.severity.toLowerCase()">
+              {{ row.severity }}
+            </span>
+          </ng-template>
+        </app-column>
+
+        <app-column key="createdAtUtc" label="Thời gian" width="140px" minWidth="130px">
+          <ng-template let-row="row">
+            <span class="cell-time">{{ row.createdAtUtc | relativeTime }}</span>
+          </ng-template>
+        </app-column>
+
+        <app-column key="actions" label="Thao tác" width="100px" minWidth="90px" align="right">
+          <ng-template let-row="row">
+            <div class="flex items-center justify-end gap-1" (click)="$event.stopPropagation()">
               <button
-                *ngIf="!item.isRead"
+                *ngIf="!row.isRead"
                 type="button"
                 class="icon-action-btn"
                 title="Đánh dấu đã đọc"
-                (click)="markAsRead(item)"
+                (click)="markAsRead(row)"
               >
                 ✓
               </button>
@@ -116,14 +123,14 @@
                 type="button"
                 class="icon-action-btn"
                 title="Lưu trữ"
-                (click)="archiveItem(item, $event)"
+                (click)="archiveItem(row, $event)"
               >
                 📥
               </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+          </ng-template>
+        </app-column>
+      </app-data-table>
     </div>
 
     <!-- Mobile Card View -->

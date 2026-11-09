@@ -91,7 +91,8 @@ describe('MVP regression checks', () => {
       {} as any,
       { branches: signal([]), branchTree: signal([]), currentBranch: signal(null), loadBranches: () => {} } as any,
       { isDarkMode: signal(false) } as any,
-      mockRouter
+      mockRouter,
+      {} as any
     ));
 
     expect(app.isAdminRouteActive()).toBeTrue();

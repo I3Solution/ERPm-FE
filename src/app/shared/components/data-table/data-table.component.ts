@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, ReactiveFormsModule } from '@angular/forms';
-import { TranslatePipe } from '../../../core/pipes/translate.pipe';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 import { TableColumn, TablePagination, TableSort } from './data-table.models';
 import { DataTableCellDirective } from './data-table-cell.directive';
 
@@ -28,7 +28,7 @@ export class DataTableComponent<T = any> {
   // === Data & Column Inputs ===
   @Input({ required: true }) columns: TableColumn<T>[] = [];
   @Input() data: T[] = [];
-  @Input() trackBy: keyof T | ((item: T) => any) = 'id';
+  @Input() trackBy: string | keyof T | ((item: T) => any) = 'id';
 
   // === Mode & Form Configuration ===
   @Input() mode: 'list' | 'editable' = 'list';

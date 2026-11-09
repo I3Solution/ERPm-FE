@@ -1,4 +1,4 @@
-<div class="async-select-wrapper" [class.disabled]="disabled" [class.size-sm]="size === 'sm'" [class.is-open]="isOpen()" [class.drop-up]="isDropUp()">
+﻿<div class="async-select-wrapper" [class.disabled]="disabled" [class.size-sm]="size === 'sm'" [class.is-open]="isOpen()" [class.drop-up]="isDropUp()">
   <div class="async-select-trigger" (click)="openDropdown($event)">
     <span class="search-icon">🔍</span>
     <input
@@ -19,7 +19,7 @@
   </div>
 
   @if (isOpen()) {
-    <div class="async-select-dropdown" (click)="$event.stopPropagation()">
+    <div class="async-select-dropdown" [ngStyle]="dropdownStyle()" (click)="$event.stopPropagation()">
       @if (filteredOptions().length > 0) {
         <ul class="async-options-list" role="listbox">
           @for (opt of filteredOptions(); track opt.value; let idx = $index) {

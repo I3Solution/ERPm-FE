@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
@@ -7,6 +7,7 @@ import { OrgBranch, UserAccount } from '../../../core/models/org.models';
 import { FormControlComponent } from '../../../shared/components/form-control/form-control.component';
 import { UserFormDialogComponent } from '../../../shared/components/user-form-dialog/user-form-dialog.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+import { DataTableComponent, DataTableCellDirective, TableColumn } from '../../../shared/components/data-table';
 
 /**
  * Internal accounts. A company administrator only receives the accounts of its own company's employees (the
@@ -15,7 +16,7 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, FormControlComponent, UserFormDialogComponent],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, FormControlComponent, UserFormDialogComponent, DataTableComponent, DataTableCellDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
@@ -31,6 +32,15 @@ export class UsersComponent implements OnInit {
   public keywordControl = new FormControl('');
 
   /** Dialog target: `undefined` closed, `null` create, an account to edit. */
+  public readonly userColumns: TableColumn<any>[] = [
+    { key: 'userName', label: 'acc.user_name', width: '150px', minWidth: '140px', sortable: true },
+    { key: 'displayName', label: 'acc.display_name', minWidth: '180px' },
+    { key: 'role', label: 'acc.role_label', width: '150px', minWidth: '140px' },
+    { key: 'employeeLabel', label: 'acc.employee', minWidth: '200px' },
+    { key: 'status', label: 'common.status', width: '120px', minWidth: '110px', align: 'center' },
+    { key: 'actions', label: 'common.actions', width: '120px', minWidth: '110px', align: 'right' }
+  ];
+
   public dialogUser = signal<UserAccount | null | undefined>(undefined);
 
   public isSuperAdmin = computed(() => !!this.auth.account()?.isSuperAdmin);

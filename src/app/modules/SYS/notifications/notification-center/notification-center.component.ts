@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -8,11 +8,12 @@ import { NotificationItem, NotificationListResponse } from '../../../../core/mod
 import { NotificationStateService } from '../../../../core/services/notification-state.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { RelativeTimePipe } from '../../../../shared/pipes/relative-time.pipe';
+import { DataTableComponent, DataTableCellDirective, TableColumn } from '../../../../shared/components/data-table';
 
 @Component({
   selector: 'app-notification-center',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, TranslatePipe, RelativeTimePipe],
+  imports: [CommonModule, FormsModule, RouterLink, TranslatePipe, RelativeTimePipe, DataTableComponent, DataTableCellDirective],
   templateUrl: './notification-center.component.html',
   styleUrls: ['./notification-center.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -31,6 +32,15 @@ export class NotificationCenterComponent implements OnInit {
   public isLoading = signal<boolean>(false);
 
   // Filters
+  public readonly notificationColumns: TableColumn<NotificationItem>[] = [
+    { key: 'categoryIcon', label: '', width: '48px', minWidth: '48px', align: 'center' },
+    { key: 'category', label: 'Phân hệ', width: '110px', minWidth: '100px' },
+    { key: 'content', label: 'Nội dung thông báo', minWidth: '250px' },
+    { key: 'severity', label: 'Mức độ', width: '140px', minWidth: '130px', align: 'center' },
+    { key: 'createdAtUtc', label: 'Thời gian', width: '140px', minWidth: '130px' },
+    { key: 'actions', label: 'Thao tác', width: '100px', minWidth: '90px', align: 'right' }
+  ];
+
   public filterCategory = signal<string>('ALL');
   public filterSeverity = signal<string>('ALL');
   public filterReadStatus = signal<string>('ALL');

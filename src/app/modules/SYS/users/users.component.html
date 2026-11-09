@@ -1,4 +1,4 @@
-<div class="usr-container">
+﻿<div class="usr-container">
   <div class="erpm-page-header">
     <div>
       <h1 class="erpm-page-title">{{ 'usr.title' | translate }}</h1>
@@ -13,38 +13,45 @@
     <div class="usr-toolbar">
       <app-form-control class="usr-search" [formControl]="keywordControl" type="text" [placeholder]="'common.search' | translate"></app-form-control>
     </div>
-    <div class="erpm-table-scroll">
-      <table class="erpm-table">
-        <thead>
-          <tr>
-            <th>{{ 'acc.user_name' | translate }}</th>
-            <th>{{ 'acc.display_name' | translate }}</th>
-            <th>{{ 'acc.role_label' | translate }}</th>
-            <th>{{ 'acc.employee' | translate }}</th>
-            <th class="text-center">{{ 'common.status' | translate }}</th>
-            <th class="text-right">{{ 'common.actions' | translate }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of rows(); track row.id) {
-            <tr [class.usr-inactive]="!row.isActive">
-              <td>{{ row.userName }}</td>
-              <td>{{ row.displayName }}</td>
-              <td>{{ ('acc.role.' + row.role) | translate }}</td>
-              <td>{{ row.employeeLabel }}</td>
-              <td class="text-center">{{ (row.isActive ? 'common.active' : 'common.inactive') | translate }}</td>
-              <td class="text-right">
-                @if (auth.can('sys:user:edit')) {
-                  <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="openEdit(row)">{{ 'common.edit' | translate }}</button>
-                }
-              </td>
-            </tr>
-          } @empty {
-            <tr><td colspan="6"><p class="usr-empty">{{ loading() ? ('common.loading' | translate) : ('usr.empty' | translate) }}</p></td></tr>
+    <app-data-table
+      [columns]="userColumns"
+      [data]="rows()"
+      [loading]="loading()"
+      [showIndex]="false"
+      [tableMinWidth]="'950px'"
+      emptyMessage="usr.empty"
+    >
+      <ng-template appDataTableCell="userName" let-row="row">
+        <span class="font-mono font-medium">{{ row.userName }}</span>
+      </ng-template>
+
+      <ng-template appDataTableCell="displayName" let-row="row">
+        <span class="font-medium text-slate-900 dark:text-slate-100">{{ row.displayName }}</span>
+      </ng-template>
+
+      <ng-template appDataTableCell="role" let-row="row">
+        <span class="erpm-badge erpm-badge-info">{{ ('acc.role.' + row.role) | translate }}</span>
+      </ng-template>
+
+      <ng-template appDataTableCell="employeeLabel" let-row="row">
+        <span>{{ row.employeeLabel }}</span>
+      </ng-template>
+
+      <ng-template appDataTableCell="status" let-row="row">
+        <span [class]="row.isActive ? 'erpm-badge erpm-badge-success' : 'erpm-badge erpm-badge-neutral'">
+          <span class="dot"></span>
+          {{ (row.isActive ? 'common.active' : 'common.inactive') | translate }}
+        </span>
+      </ng-template>
+
+      <ng-template appDataTableCell="actions" let-row="row">
+        <div class="flex items-center justify-end gap-1" (click)="$event.stopPropagation()">
+          @if (auth.can('sys:user:edit')) {
+            <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="openEdit(row)">{{ 'common.edit' | translate }}</button>
           }
-        </tbody>
-      </table>
-    </div>
+        </div>
+      </ng-template>
+    </app-data-table>
   </div>
 </div>
 

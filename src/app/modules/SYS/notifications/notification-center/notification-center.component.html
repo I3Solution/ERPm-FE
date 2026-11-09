@@ -1,4 +1,4 @@
-<div class="notifications-page">
+﻿<div class="notifications-page">
   <!-- Page Header -->
   <div class="page-header">
     <div class="header-titles">
@@ -63,67 +63,62 @@
     </div>
 
     <!-- Desktop Table View -->
-    <div *ngIf="!isLoading() && items().length > 0" class="desktop-only table-responsive">
-      <table class="erpm-table">
-        <thead>
-          <tr>
-            <th style="width: 48px;"></th>
-            <th style="width: 110px;">Phân hệ</th>
-            <th>Nội dung thông báo</th>
-            <th style="width: 140px;">Mức độ</th>
-            <th style="width: 140px;">Thời gian</th>
-            <th style="width: 100px; text-align: right;">Thao tác</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="let item of items()"
-            [class.row-unread]="!item.isRead"
-            (click)="onItemClick(item)"
-            class="clickable-row"
-          >
-            <td class="text-center font-lg">
-              {{ getCategoryIcon(item.category) }}
-            </td>
-            <td>
-              <span class="module-badge">{{ item.category }}</span>
-            </td>
-            <td>
-              <div class="notif-cell-content">
-                <span class="cell-title">{{ item.title }}</span>
-                <span class="cell-body">{{ item.body }}</span>
-              </div>
-            </td>
-            <td>
-              <span class="severity-badge" [ngClass]="'badge-' + item.severity.toLowerCase()">
-                {{ item.severity }}
-              </span>
-            </td>
-            <td class="cell-time">
-              {{ item.createdAtUtc | relativeTime }}
-            </td>
-            <td class="text-right" (click)="$event.stopPropagation()">
-              <button
-                *ngIf="!item.isRead"
-                type="button"
-                class="icon-action-btn"
-                title="Đánh dấu đã đọc"
-                (click)="markAsRead(item)"
-              >
-                ✓
-              </button>
-              <button
-                type="button"
-                class="icon-action-btn"
-                title="Lưu trữ"
-                (click)="archiveItem(item, $event)"
-              >
-                📥
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div *ngIf="!isLoading() && items().length > 0" class="desktop-only">
+      <app-data-table
+        [columns]="notificationColumns"
+        [data]="items()"
+        [clickableRows]="true"
+        [showIndex]="false"
+        [tableMinWidth]="'950px'"
+        (rowClick)="onItemClick($event)"
+      >
+        <ng-template appDataTableCell="categoryIcon" let-row="row">
+          <span class="text-center font-lg">{{ getCategoryIcon(row.category) }}</span>
+        </ng-template>
+
+        <ng-template appDataTableCell="category" let-row="row">
+          <span class="module-badge">{{ row.category }}</span>
+        </ng-template>
+
+        <ng-template appDataTableCell="content" let-row="row">
+          <div class="notif-cell-content" [class.font-bold]="!row.isRead">
+            <span class="cell-title">{{ row.title }}</span>
+            <span class="cell-body">{{ row.body }}</span>
+          </div>
+        </ng-template>
+
+        <ng-template appDataTableCell="severity" let-row="row">
+          <span class="severity-badge" [ngClass]="'badge-' + row.severity.toLowerCase()">
+            {{ row.severity }}
+          </span>
+        </ng-template>
+
+        <ng-template appDataTableCell="createdAtUtc" let-row="row">
+          <span class="cell-time">{{ row.createdAtUtc | relativeTime }}</span>
+        </ng-template>
+
+        <ng-template appDataTableCell="actions" let-row="row">
+          <div class="flex items-center justify-end gap-1" (click)="$event.stopPropagation()">
+            <button
+              *ngIf="!row.isRead"
+              type="button"
+              class="icon-action-btn"
+              title="Đánh dấu đã đọc"
+              (click)="markAsRead(row)"
+            >
+              ✓
+            </button>
+            <button
+              type="button"
+              class="icon-action-btn"
+              title="Lưu trữ"
+              (click)="archiveItem(row, $event)"
+            >
+              📥
+            </button>
+          </div>
+        </ng-template>
+      </app-data-table>
     </div>
 
     <!-- Mobile Card View -->

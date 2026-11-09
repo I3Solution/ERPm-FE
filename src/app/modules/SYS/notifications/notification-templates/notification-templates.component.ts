@@ -12,12 +12,13 @@ import {
 } from '../../../../core/models/notification.model';
 import { NotificationStateService } from '../../../../core/services/notification-state.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { FormControlComponent } from '../../../../shared/components/form-control/form-control.component';
 import { DataTableComponent, TableColumnComponent } from '../../../../shared/components/data-table';
 
 @Component({
   selector: 'app-notification-templates',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, TranslatePipe, DataTableComponent, TableColumnComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, TranslatePipe, FormControlComponent, DataTableComponent, TableColumnComponent],
   templateUrl: './notification-templates.component.html',
   styleUrls: ['./notification-templates.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -93,6 +94,15 @@ export class NotificationTemplatesComponent implements OnInit {
     { code: 'SUCCESS', label: '✓ Thành công (SUCCESS)' },
     { code: 'WARNING', label: '⚠️ Cảnh báo (WARNING)' },
     { code: 'DANGER', label: '🚨 Khẩn cấp (DANGER)' }
+  ];
+
+  public readonly filterCategoryOptions = this.categories.map(c => ({ value: c.code, label: c.label }));
+  public readonly formCategoryOptions = this.categories.filter(c => c.code !== 'ALL').map(c => ({ value: c.code, label: c.label }));
+  public readonly severityOptions = this.severities.map(s => ({ value: s.code, label: s.label }));
+  public readonly statusFilterOptions = [
+    { value: 'ALL', label: 'Tất cả trạng thái' },
+    { value: 'ACTIVE', label: 'Đang hoạt động' },
+    { value: 'INACTIVE', label: 'Tạm dừng' }
   ];
 
   public readonly sampleVariables: Record<string, string> = {

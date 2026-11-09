@@ -24,29 +24,30 @@
   </div>
 
   <!-- Filter Bar -->
-  <div class="filter-card">
-    <div class="filter-group">
-      <label class="filter-label">{{ 'notifications.filter_module' | translate }}</label>
-      <select class="filter-select" [ngModel]="filterCategory()" (ngModelChange)="filterCategory.set($event); onFilterChange()">
-        <option *ngFor="let cat of categories" [value]="cat.code">{{ cat.label }}</option>
-      </select>
-    </div>
+  <div class="filter-card grid grid-cols-1 md:grid-cols-3 gap-3">
+    <app-form-control
+      type="select"
+      [label]="'notifications.filter_module' | translate"
+      [options]="categoryOptions"
+      [ngModel]="filterCategory()"
+      (ngModelChange)="filterCategory.set($event); onFilterChange()"
+    ></app-form-control>
 
-    <div class="filter-group">
-      <label class="filter-label">{{ 'notifications.filter_severity' | translate }}</label>
-      <select class="filter-select" [ngModel]="filterSeverity()" (ngModelChange)="filterSeverity.set($event); onFilterChange()">
-        <option *ngFor="let sev of severities" [value]="sev.code">{{ sev.label }}</option>
-      </select>
-    </div>
+    <app-form-control
+      type="select"
+      [label]="'notifications.filter_severity' | translate"
+      [options]="severityOptions"
+      [ngModel]="filterSeverity()"
+      (ngModelChange)="filterSeverity.set($event); onFilterChange()"
+    ></app-form-control>
 
-    <div class="filter-group">
-      <label class="filter-label">{{ 'notifications.filter_status' | translate }}</label>
-      <select class="filter-select" [ngModel]="filterReadStatus()" (ngModelChange)="filterReadStatus.set($event); onFilterChange()">
-        <option value="ALL">Tất cả trạng thái</option>
-        <option value="UNREAD">Chưa đọc</option>
-        <option value="READ">Đã đọc</option>
-      </select>
-    </div>
+    <app-form-control
+      type="select"
+      [label]="'notifications.filter_status' | translate"
+      [options]="readStatusOptions"
+      [ngModel]="filterReadStatus()"
+      (ngModelChange)="filterReadStatus.set($event); onFilterChange()"
+    ></app-form-control>
   </div>
 
   <!-- Content List / Table Area -->

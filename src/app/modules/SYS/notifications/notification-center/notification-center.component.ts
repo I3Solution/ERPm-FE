@@ -8,12 +8,13 @@ import { NotificationItem, NotificationListResponse } from '../../../../core/mod
 import { NotificationStateService } from '../../../../core/services/notification-state.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { RelativeTimePipe } from '../../../../shared/pipes/relative-time.pipe';
+import { FormControlComponent } from '../../../../shared/components/form-control/form-control.component';
 import { DataTableComponent, TableColumnComponent } from '../../../../shared/components/data-table';
 
 @Component({
   selector: 'app-notification-center',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, TranslatePipe, RelativeTimePipe, DataTableComponent, TableColumnComponent],
+  imports: [CommonModule, FormsModule, RouterLink, TranslatePipe, RelativeTimePipe, FormControlComponent, DataTableComponent, TableColumnComponent],
   templateUrl: './notification-center.component.html',
   styleUrls: ['./notification-center.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -53,6 +54,14 @@ export class NotificationCenterComponent implements OnInit {
     { code: 'SUCCESS', label: 'Thành công (SUCCESS)' },
     { code: 'WARNING', label: 'Cảnh báo (WARNING)' },
     { code: 'DANGER', label: 'Khẩn cấp (DANGER)' }
+  ];
+
+  public readonly categoryOptions = this.categories.map(c => ({ value: c.code, label: c.label }));
+  public readonly severityOptions = this.severities.map(s => ({ value: s.code, label: s.label }));
+  public readonly readStatusOptions = [
+    { value: 'ALL', label: 'Tất cả trạng thái' },
+    { value: 'UNREAD', label: 'Chưa đọc' },
+    { value: 'READ', label: 'Đã đọc' }
   ];
 
   ngOnInit(): void {

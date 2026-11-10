@@ -14,6 +14,7 @@ describe('AuthService permissions', () => {
   let http: HttpTestingController;
   beforeEach(() => {
     sessionStorage.clear();
+    localStorage.clear();
     TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting()] });
     auth = TestBed.inject(AuthService);
     http = TestBed.inject(HttpTestingController);

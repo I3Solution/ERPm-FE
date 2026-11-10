@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, output } from '@angular/core';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { SkeletonComponent } from '../skeleton/skeleton.component';
 
@@ -47,6 +47,13 @@ export class ListPageComponent {
   public readonly showSkeleton = computed(() => this.loading() && this.count() === 0 && !this.error());
   public readonly showEmpty = computed(() => !this.loading() && !this.error() && this.count() === 0);
   public readonly showBody = computed(() => !this.error() && this.count() > 0);
+
+  constructor() {
+    // A page beyond the real last page (stale link, rows deleted) is pulled back to the last page.
+    effect(() => {
+      if (!this.loading() && !this.error() && this.total() > 0 && this.page() > this.pageCount()) this.pageChange.emit(this.pageCount());
+    });
+  }
 
   public go(page: number): void {
     const next = Math.min(this.pageCount(), Math.max(1, page));

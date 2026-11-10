@@ -3,6 +3,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 
+/** Upper bound for a pageSize read from the URL, so a hand-edited link cannot request a huge page. */
+const MAX_PAGE_SIZE = 200;
+
 /** Values a list keeps in the URL. Extra filters (status, branch...) are plain string keys. */
 export interface ListQuery {
   page: number;
@@ -41,8 +44,8 @@ export function createListQueryState(defaults: ListQueryDefaults = {}): ListQuer
   const filterKeys = defaults.filterKeys ?? [];
 
   const query = toSignal(route.queryParamMap.pipe(map((p): ListQuery => ({
-    page: Math.max(1, Number(p.get('page')) || 1),
-    pageSize: Math.max(1, Number(p.get('pageSize')) || pageSizeDefault),
+    page: Math.max(1, Math.floor(Number(p.get('page'))) || 1),
+    pageSize: Math.min(MAX_PAGE_SIZE, Math.max(1, Math.floor(Number(p.get('pageSize'))) || pageSizeDefault)),
     q: p.get('q') ?? '',
     sort: p.get('sort') ?? sortDefault,
     filters: Object.fromEntries(filterKeys.map(k => [k, p.get(k) ?? '']))

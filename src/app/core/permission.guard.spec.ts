@@ -33,6 +33,12 @@ describe('permissionGuard', () => {
     expect(urlOf(run('sd:order:view'))).toBe('/login');
   });
 
+  it('preserves returnUrl when signed-out users access a route', () => {
+    state.isAuthenticated = () => false;
+    const result = TestBed.runInInjectionContext(() => permissionGuard('sd:order:view')({} as never, { url: '/sales/orders' } as never));
+    expect(urlOf(result)).toBe('/login?returnUrl=%2Fsales%2Forders');
+  });
+
   it('lets an account with the permission through', () => {
     grant('sd:order:view');
     expect(run('sd:order:view')).toBeTrue();

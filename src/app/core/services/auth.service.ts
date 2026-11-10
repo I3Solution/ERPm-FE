@@ -19,7 +19,7 @@ export interface Account {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  public token = signal<string | null>(sessionStorage.getItem('erpm_access_token'));
+  public token = signal<string | null>(localStorage.getItem('erpm_access_token') || sessionStorage.getItem('erpm_access_token'));
   public account = signal<Account | null>(null);
   public isAuthenticated = computed(() => !!this.token());
   public permissions = computed(() => new Set(this.account()?.permissions ?? []));
@@ -43,7 +43,11 @@ export class AuthService {
 
   login(userName: string, password: string): Observable<Account> {
     return this.http.post<{ accessToken: string }>('/api/v1/auth/login', { userName, password }).pipe(
-      tap(result => { this.token.set(result.accessToken); sessionStorage.setItem('erpm_access_token', result.accessToken); }),
+      tap(result => {
+        this.token.set(result.accessToken);
+        localStorage.setItem('erpm_access_token', result.accessToken);
+        sessionStorage.setItem('erpm_access_token', result.accessToken);
+      }),
       switchMap(() => this.loadAccount())
     );
   }
@@ -53,6 +57,9 @@ export class AuthService {
     );
   }
   logout(): void {
-    this.token.set(null); this.account.set(null); sessionStorage.removeItem('erpm_access_token');
+    this.token.set(null);
+    this.account.set(null);
+    localStorage.removeItem('erpm_access_token');
+    sessionStorage.removeItem('erpm_access_token');
   }
 }

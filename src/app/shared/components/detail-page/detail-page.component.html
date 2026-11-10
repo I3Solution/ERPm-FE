@@ -1,0 +1,25 @@
+<section class="detail-page">
+  <div class="detail-top-nav">
+    <app-back-button [defaultUrl]="backLink()" [label]="backLabel()"></app-back-button>
+    <div class="detail-actions"><ng-content select="[actions]"></ng-content></div>
+  </div>
+
+  @if (title()) {
+    <header class="detail-header">
+      <h1 class="erpm-page-title">{{ title() | translate }}</h1>
+      @if (subtitle()) { <p class="erpm-page-subtitle">{{ subtitle() | translate }}</p> }
+      <div class="detail-meta"><ng-content select="[meta]"></ng-content></div>
+    </header>
+  }
+
+  @if (error()) {
+    <div class="detail-error" role="alert">
+      <p>{{ 'common.load_error' | translate }}</p>
+      <button type="button" class="erpm-btn erpm-btn-secondary" (click)="retry.emit()">{{ 'common.retry' | translate }}</button>
+    </div>
+  } @else if (loading()) {
+    <app-skeleton [lines]="10"></app-skeleton>
+  } @else {
+    <div class="detail-body"><ng-content></ng-content></div>
+  }
+</section>

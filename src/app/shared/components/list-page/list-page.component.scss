@@ -1,0 +1,19 @@
+:host { display: block; }
+.header-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.list-filters { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
+.list-filters:empty { display: none; }
+.list-body { transition: opacity 0.15s; &.dimmed { opacity: 0.6; pointer-events: none; } }
+.list-progress {
+  height: 3px; margin-bottom: 0.5rem; border-radius: 2px; overflow: hidden;
+  background: linear-gradient(90deg, transparent, var(--erpm-info-core), transparent);
+  background-size: 50% 100%; background-repeat: no-repeat; animation: list-progress 1s linear infinite;
+}
+@keyframes list-progress { from { background-position: -50% 0; } to { background-position: 150% 0; } }
+.list-state { text-align: center; padding: 2.5rem 1rem; color: var(--erpm-text-muted); }
+.list-error { color: var(--erpm-danger-text); background: var(--erpm-danger-bg); border: 1px solid var(--erpm-danger-border); border-radius: 0.75rem; }
+.list-paging {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 1rem;
+  .paging-buttons { display: flex; align-items: center; gap: 0.5rem; }
+  .paging-info, .paging-current { font-size: 0.85rem; color: var(--erpm-text-muted); }
+  button { cursor: pointer; }
+}

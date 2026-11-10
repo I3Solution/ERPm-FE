@@ -20,7 +20,7 @@ export class NotificationSignalRService {
       return;
     }
 
-    const token = sessionStorage.getItem('erpm_access_token');
+    const token = localStorage.getItem('erpm_access_token') || sessionStorage.getItem('erpm_access_token');
     if (!token) return;
 
     this.isConnecting = true;
@@ -28,7 +28,7 @@ export class NotificationSignalRService {
 
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(hubUrl, {
-        accessTokenFactory: () => sessionStorage.getItem('erpm_access_token') || '',
+        accessTokenFactory: () => localStorage.getItem('erpm_access_token') || sessionStorage.getItem('erpm_access_token') || '',
         transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
       })
       .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])

@@ -7,10 +7,12 @@ Chào bạn AI Assistant, bạn đang làm việc trên repository **ERPm-FE** -
 
 ## 📌 QUY TẮC HOẠT ĐỘNG BẮT BUỘC
 
-1. **Đọc tài liệu cốt lõi trước khi thực hiện nhiệm vụ:**
-   - [PROJECT_MASTER.md](PROJECT_MASTER.md): Kiến trúc Standalone, Signals, Design System và quản lý submodule.
-   - [.ai/roadmap.md](.ai/roadmap.md): Lộ trình phát triển tính năng Frontend.
-   - [.ai/status.md](.ai/status.md): Trạng thái hiện tại của Frontend và các công việc tiếp theo.
+1. **Bootstrap theo task — không đọc tràn lan:**
+   - Xác định repository, branch, HEAD và working tree trước khi làm.
+   - Nếu task bắt đầu từ umbrella ERPm, đọc `ERPm/AGENTS.md`, `ERPm/.ai/context/README.md` và `ERPm/.ai/context/context-policy.md` trước để định tuyến.
+   - Đọc tài liệu cục bộ của repository này theo đúng phần liên quan: `PROJECT_MASTER.md`, `.ai/roadmap.md`, `.ai/status.md`, plan/task và source. Không mặc định đọc toàn bộ ba tài liệu lớn ở mọi task.
+   - Chỉ mở rộng sang repo/domain khác khi API contract, DTO, dictionary, database mapping hoặc dependency trực tiếp yêu cầu; ghi rõ bằng chứng.
+   - Các quy tắc kỹ thuật, Git và task logging bên dưới vẫn có hiệu lực; bootstrap gọn không có nghĩa là bỏ qua quy tắc.
 
 2. **Cấu trúc Git Submodule cho từng Module nghiệp vụ:**
    - Mỗi module trong `src/app/modules/` là một Git Submodule độc lập:

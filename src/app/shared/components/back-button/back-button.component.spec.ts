@@ -1,25 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BackButtonComponent } from './back-button.component';
-import { TranslatePipe } from '../../pipes/translate.pipe';
+import { NavigationHistoryService } from '../../../core/services/navigation-history.service';
 
 describe('BackButtonComponent', () => {
   let component: BackButtonComponent;
   let fixture: ComponentFixture<BackButtonComponent>;
-  let locationSpy: jasmine.SpyObj<Location>;
-  let routerSpy: jasmine.SpyObj<Router>;
+  let history: jasmine.SpyObj<NavigationHistoryService>;
 
   beforeEach(async () => {
-    locationSpy = jasmine.createSpyObj('Location', ['back']);
-    routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
+    history = jasmine.createSpyObj('NavigationHistoryService', ['back']);
 
     await TestBed.configureTestingModule({
-      imports: [BackButtonComponent, TranslatePipe],
-      providers: [
-        { provide: Location, useValue: locationSpy },
-        { provide: Router, useValue: routerSpy }
-      ]
+      imports: [BackButtonComponent],
+      providers: [{ provide: NavigationHistoryService, useValue: history }, provideHttpClient(), provideHttpClientTesting()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BackButtonComponent);
@@ -31,10 +26,18 @@ describe('BackButtonComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call location.back when history length > 1', () => {
-    spyOnProperty(window.history, 'length', 'get').and.returnValue(3);
+  it('goes back through the navigation history with the default URL as fallback', () => {
+    component.defaultUrl = '/catalog';
     component.onBack();
-    expect(locationSpy.back).toHaveBeenCalled();
+    expect(history.back).toHaveBeenCalledWith('/catalog');
+  });
+
+  it('can hide the label', () => {
+    component.showLabel = false;
+    fixture.changeDetectorRef.markForCheck();
+    fixture = TestBed.createComponent(BackButtonComponent);
+    fixture.componentInstance.showLabel = false;
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.back-label')).toBeNull();
   });
 });
-

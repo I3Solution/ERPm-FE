@@ -136,6 +136,11 @@ export class InputControlComponent implements ControlValueAccessor {
     this.detector.markForCheck();
   }
 
+  // Date-only value (yyyy-MM-dd) for the native date input; time parts of ISO strings are dropped.
+  public formattedDateValue(): string {
+    return this.formattedDateTimeValue().substring(0, 10);
+  }
+
   // Format date-time for datetime-local native input (dd/MM/yyyy HH:mm in local UI)
   public formattedDateTimeValue(): string {
     const val = this.internalValue();

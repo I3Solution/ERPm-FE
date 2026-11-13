@@ -14,6 +14,17 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+      # The dictionary is shared with the backend and must match it byte for byte. Change the backend file first (or in the same
+      # change set), then this one; a frontend-only change fails here instead of failing later in the root repository.
+      - uses: actions/checkout@v4
+        with:
+          repository: I3Solution/ERPm-BE
+          path: be-dictionary
+          sparse-checkout: src/ERPm.Infrastructure/Persistence/Seeders/system_dictionary.json
+          sparse-checkout-cone-mode: false
+          token: ${{ secrets.SUBMODULES_TOKEN || github.token }}
+      - name: Verify the dictionary matches the backend
+        run: cmp src/assets/i18n/system.json be-dictionary/src/ERPm.Infrastructure/Persistence/Seeders/system_dictionary.json
       - run: npm ci
       - run: npm run build
       - run: npm test -- --watch=false --browsers=ChromeHeadless

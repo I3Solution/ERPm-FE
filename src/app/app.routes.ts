@@ -41,6 +41,8 @@ export const routes: Routes = [
   { path: 'department-levels', loadComponent: () => import('./modules/HRM/department-levels/department-levels.component').then(m => m.DepartmentLevelsComponent), canActivate: [permissionGuard('hrm:department:view')] },
   { path: 'job-positions', loadComponent: () => import('./modules/HRM/job-positions/job-positions.component').then(m => m.JobPositionsComponent), canActivate: [permissionGuard('hrm:job-position:view')] },
   { path: 'employees', loadComponent: () => import('./modules/HRM/employees/employees.component').then(m => m.EmployeesComponent), canActivate: [permissionGuard('hrm:employee:view')] },
+  { path: 'employees/new', loadComponent: () => import('./modules/HRM/employee-detail/employee-detail.component').then(m => m.EmployeeDetailComponent), canActivate: [permissionGuard('hrm:employee:create')], canDeactivate: [unsavedChangesGuard] },
+  { path: 'employees/:id', loadComponent: () => import('./modules/HRM/employee-detail/employee-detail.component').then(m => m.EmployeeDetailComponent), canActivate: [permissionGuard('hrm:employee:view')], canDeactivate: [unsavedChangesGuard] },
   { path: 'users', loadComponent: () => import('./modules/SYS/users/users.component').then(m => m.UsersComponent), canActivate: [permissionGuard('sys:user:view')] },
   { path: 'roles', loadComponent: () => import('./modules/SYS/roles/roles.component').then(m => m.RolesComponent), canActivate: [permissionGuard('sys:role:view')] },
   { path: 'admin', loadComponent: () => import('./modules/SYS/admin-hub/admin-hub.component').then(m => m.AdminHubComponent), canActivate: [authGuard] },

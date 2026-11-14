@@ -68,6 +68,20 @@ describe('DropdownMenuComponent', () => {
     expect(document.activeElement).toBe(items()[1]);
   });
 
+  it('closes when the browser Back button is used while it is open', () => {
+    open();
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    fixture.detectChanges();
+    expect(panel()).toBeNull();
+  });
+
+  it('marks phone-only items so wider screens hide them', () => {
+    fixture.componentInstance.items = [{ id: 'lang', label: 'header.lang_en', mobileOnly: true }, { id: 'sign-out', label: 'auth.sign_out' }];
+    fixture.componentRef.changeDetectorRef.markForCheck();
+    open();
+    expect(items().map(i => i.classList.contains('mobile-only'))).toEqual([true, false]);
+  });
+
   it('removes the panel when the component is destroyed while open', () => {
     open();
     fixture.destroy();

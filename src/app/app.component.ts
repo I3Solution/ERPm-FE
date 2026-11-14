@@ -1,7 +1,7 @@
 import { AuthService } from './core/services/auth.service';
 import { ApiErrorService } from './core/services/api-error.service';
 import { BranchService } from './modules/SYS/services/branch.service';
-import { ChangeDetectionStrategy, Component, effect, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { TranslatePipe } from './shared/pipes/translate.pipe';
@@ -45,10 +45,18 @@ export class AppComponent {
   }
 
   /** Actions of the account menu; add an item here (and a case in onProfileAction) for profile, password and so on. */
-  public readonly profileItems: MenuItem[] = [{ id: 'sign-out', label: 'auth.sign_out', icon: '⎋', danger: true }];
+  public profileItems = computed<MenuItem[]>(() => [
+    // On a phone the header has no room for the theme and language buttons, so they live here instead.
+    { id: 'theme', label: this.isDarkMode() ? 'theme.light' : 'theme.dark', icon: this.isDarkMode() ? '☀' : '☾', mobileOnly: true },
+    { id: 'lang-vi', label: 'header.lang_vi', icon: this.currentLang() === 'vi' ? '✓' : '', mobileOnly: true },
+    { id: 'lang-en', label: 'header.lang_en', icon: this.currentLang() === 'en' ? '✓' : '', mobileOnly: true },
+    { id: 'sign-out', label: 'auth.sign_out', icon: '⎋', danger: true }
+  ]);
 
   public onProfileAction(id: string): void {
     if (id === 'sign-out') { this.auth.logout(); this.router.navigateByUrl('/login'); }
+    else if (id === 'theme') this.toggleTheme();
+    else if (id === 'lang-vi' || id === 'lang-en') this.setLanguage(id === 'lang-vi' ? 'vi' : 'en');
   }
 
   /** Up to two letters from the account's display name, for the avatar. */

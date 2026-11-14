@@ -9,6 +9,8 @@ export interface MenuItem {
   icon?: string;
   danger?: boolean;
   disabled?: boolean;
+  /** Shown only below 768px, for actions the header has room for on larger screens. */
+  mobileOnly?: boolean;
 }
 
 /**
@@ -71,6 +73,10 @@ export class DropdownMenuComponent implements OnDestroy {
     const target = event.target as Node;
     if (this.isOpen() && !this.host.nativeElement.contains(target) && !this.panelEl?.contains(target)) this.close(false);
   }
+
+  /** The browser's Back button leaves the page's state; an open menu should not stay behind. */
+  @HostListener('window:popstate')
+  onPopState(): void { if (this.isOpen()) this.close(false); }
 
   @HostListener('keydown', ['$event'])
   onKey(event: KeyboardEvent): void {

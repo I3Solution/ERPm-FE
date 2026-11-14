@@ -128,7 +128,7 @@
       </div>
 
       <!-- Interactive Branch Tree Select Box -->
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3 header-branch">
         <app-branch-tree-select></app-branch-tree-select>
       </div>
 
@@ -138,7 +138,7 @@
         <!-- Theme Mode Toggle Button -->
         <button
           type="button"
-          class="theme-toggle-btn"
+          class="theme-toggle-btn desktop-only"
           (click)="toggleTheme()"
           [title]="(isDarkMode() ? 'theme.light' : 'theme.dark') | translate"
           aria-label="Toggle theme mode"
@@ -179,7 +179,7 @@
         </button>
 
         <!-- Language Switcher Pill -->
-        <div class="lang-switcher">
+        <div class="lang-switcher desktop-only">
           <button
             type="button"
             (click)="setLanguage('vi')"
@@ -199,7 +199,7 @@
         </div>
 
         <!-- User Profile Pill: opens the account menu (sign out now; profile, password and so on are added as items). -->
-        <app-dropdown-menu [items]="profileItems" label="header.profile_menu" (itemSelect)="onProfileAction($event)">
+        <app-dropdown-menu [items]="profileItems()" label="header.profile_menu" (itemSelect)="onProfileAction($event)">
           <span class="user-pill">
             <span class="user-avatar">{{ initials() }}</span>
             <span class="user-name desktop-only">{{ auth.account()?.displayName }}</span>

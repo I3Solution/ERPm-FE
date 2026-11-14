@@ -40,5 +40,5 @@
 
   &:hover:not(:disabled), &:focus-visible { background: var(--erpm-bg-surface-subtle, #f1f5f9); outline: none; }
   &:disabled { opacity: 0.45; cursor: default; }
-  &.is-danger { color: var(--erpm-danger-600, #dc2626); }
+  &.is-danger { color: var(--erpm-danger-text, #b91c1c); }
 }

@@ -1,0 +1,48 @@
+:host {
+  display: block;
+  /* Map the Material table tokens onto ERPm tokens so light/dark follow the app theme. */
+  --mat-table-background-color: var(--erpm-bg-surface);
+  --mat-table-header-headline-color: var(--erpm-text-muted);
+  --mat-table-row-item-label-text-color: var(--erpm-text-body);
+  --mat-table-row-item-outline-color: var(--erpm-border);
+  --mat-table-header-container-height: 44px;
+  --mat-table-row-item-container-height: 52px;
+  --mat-sort-arrow-color: var(--erpm-text-muted);
+  --mat-table-header-headline-font: inherit;
+  --mat-table-row-item-label-text-font: inherit;
+}
+
+.erpm-list-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--erpm-border);
+  border-radius: var(--erpm-radius-md, 8px);
+  background: var(--erpm-bg-surface);
+}
+.dimmed { opacity: 0.6; pointer-events: none; }
+
+.erpm-list-table { width: 100%; table-layout: auto; }
+th.mat-mdc-header-cell { font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.03em; line-height: 1.2; }
+td.mat-mdc-cell, th.mat-mdc-header-cell { padding: 0 1rem; }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+tr.clickable { cursor: pointer; }
+tr.clickable:hover td { background: var(--erpm-bg-surface-active); }
+/* Pinned actions column keeps its background so scrolled cells do not show through. */
+td.mat-mdc-table-sticky, th.mat-mdc-table-sticky { background: var(--erpm-bg-surface); }
+.erpm-list-table .mat-column-actions { white-space: nowrap; }
+
+.erpm-list-cards { display: flex; flex-direction: column; gap: 0.75rem; }
+.erpm-list-card {
+  margin: 0;
+  background: var(--erpm-bg-surface);
+  border: 1px solid var(--erpm-border);
+  box-shadow: none;
+  &.clickable { cursor: pointer; }
+}
+.card-field { display: flex; justify-content: space-between; gap: 1rem; padding: 0.25rem 0; }
+.card-label { color: var(--erpm-text-muted); font-size: 0.8rem; }
+.card-value { text-align: right; color: var(--erpm-text-body); min-width: 0; overflow-wrap: anywhere; }
+.card-actions {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-end; margin-top: 0.5rem;
+  ::ng-deep .erpm-btn { min-height: 44px; min-width: 44px; }
+}

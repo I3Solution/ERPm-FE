@@ -7,7 +7,8 @@ import { OrgBranch, UserAccount } from '../../../core/models/org.models';
 import { FormControlComponent } from '../../../shared/components/form-control/form-control.component';
 import { UserFormDialogComponent } from '../../../shared/components/user-form-dialog/user-form-dialog.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
-import { DataTableComponent, TableColumnComponent } from '../../../shared/components/data-table';
+import { TableColumnComponent } from '../../../shared/components/data-table';
+import { ErpmListComponent } from '../../../shared/components/erpm-list/erpm-list.component';
 
 /**
  * Internal accounts. A company administrator only receives the accounts of its own company's employees (the
@@ -16,7 +17,7 @@ import { DataTableComponent, TableColumnComponent } from '../../../shared/compon
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, FormControlComponent, UserFormDialogComponent, DataTableComponent, TableColumnComponent],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, FormControlComponent, UserFormDialogComponent, ErpmListComponent, TableColumnComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']

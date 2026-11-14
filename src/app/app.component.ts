@@ -32,6 +32,15 @@ import { AppDialogComponent } from './shared/components/app-dialog/app-dialog.co
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  // Input modals must not close on backdrop click (accidental data loss). Capture phase runs
+  // before each dialog's own handler; confirm/preview dialogs opt out via their backdrop classes.
+  private readonly blockBackdropClose = document.addEventListener('click', e => {
+    const c = (e.target as HTMLElement | null)?.classList;
+    if (c?.contains('erpm-modal-backdrop') && !c.contains('app-dialog-backdrop') && !c.contains('print-dialog-backdrop')) {
+      e.stopPropagation();
+    }
+  }, true);
+
   constructor(
     private localizationService: LocalizationService,
     public auth: AuthService, public apiErrors: ApiErrorService, private branches: BranchService,

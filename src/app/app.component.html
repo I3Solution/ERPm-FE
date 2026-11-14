@@ -135,7 +135,6 @@
       <!-- Header Actions: Notifications, Sign Out, Theme Toggle, Language Switcher & Profile -->
       <div class="header-actions">
         <app-notification-bell></app-notification-bell>
-        <button type="button" (click)="auth.logout()" routerLink="/login" class="erpm-btn erpm-btn-secondary">{{ 'auth.sign_out' | translate }}</button>
         <!-- Theme Mode Toggle Button -->
         <button
           type="button"
@@ -199,11 +198,13 @@
           </button>
         </div>
 
-        <!-- User Profile Pill -->
-        <div class="user-pill desktop-only">
-          <div class="user-avatar">AD</div>
-          <span class="user-name">{{ auth.account()?.displayName }}</span>
-        </div>
+        <!-- User Profile Pill: opens the account menu (sign out now; profile, password and so on are added as items). -->
+        <app-dropdown-menu [items]="profileItems" label="header.profile_menu" (itemSelect)="onProfileAction($event)">
+          <span class="user-pill">
+            <span class="user-avatar">{{ initials() }}</span>
+            <span class="user-name desktop-only">{{ auth.account()?.displayName }}</span>
+          </span>
+        </app-dropdown-menu>
       </div>
     </header>
 

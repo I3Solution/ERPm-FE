@@ -56,6 +56,10 @@
         <span class="nav-icon">🔄</span>
         <span>{{ 'menu.returns' | translate }}</span>
       </a>
+      <a *ngIf="auth.can('sd:report:view')" routerLink="/sales/analytics" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📈</span>
+        <span>{{ 'menu.sales_analytics' | translate }}</span>
+      </a>
 
       <a *ngIf="auth.can('wms:stock:view')" routerLink="/inventory" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">📦</span>

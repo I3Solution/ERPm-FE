@@ -4,16 +4,17 @@ import { Component } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TableColumnComponent } from '../data-table/table-column.component';
-import { ErpmListComponent } from './erpm-list.component';
+import { By } from '@angular/platform-browser';
+import { TableColumnComponent } from './table-column.component';
+import { DataTableComponent } from './data-table.component';
 
 @Component({
   standalone: true,
-  imports: [ErpmListComponent, TableColumnComponent],
-  template: `<erpm-list [data]="rows" [sort]="sort" (sortChange)="last = $event">
+  imports: [DataTableComponent, TableColumnComponent],
+  template: `<app-data-table [showIndex]="false" [data]="rows" [sort]="sort">
     <app-column key="name" label="Name" [sortable]="true"></app-column>
     <app-column key="rank" label="Rank" [sortable]="true"></app-column>
-  </erpm-list>`
+  </app-data-table>`
 })
 class HostComponent {
   rows = [{ name: 'b', rank: 10 }, { name: 'a', rank: 2 }, { name: 'c', rank: null }];
@@ -21,7 +22,7 @@ class HostComponent {
   last: unknown = null;
 }
 
-describe('ErpmListComponent', () => {
+describe('DataTableComponent', () => {
   let fixture: ComponentFixture<HostComponent>;
   const names = () => Array.from(fixture.nativeElement.querySelectorAll('tr.mat-mdc-row td:first-child')).map((e: any) => e.textContent.trim());
 
@@ -51,10 +52,18 @@ describe('ErpmListComponent', () => {
     expect(names()).toEqual(['a', 'b', 'c']);
   });
 
-  it('emits sortChange when a sortable header is clicked', () => {
-    fixture.nativeElement.querySelector('th.mat-mdc-header-cell').click();
+  it('keeps empty values last when sorting descending', () => {
+    fixture.componentInstance.sort = '-rank';
+    fixture.detectChanges();
+    expect(names()).toEqual(['b', 'a', 'c']);
+  });
+
+  it('emits sortChange on a header click and leaves ordering to the host once it listens', () => {
+    const table = fixture.debugElement.query(By.directive(DataTableComponent)).componentInstance as DataTableComponent;
+    table.sortChange.subscribe(v => fixture.componentInstance.last = v);
+    fixture.nativeElement.querySelector('th.mat-mdc-header-cell:not(.table-col-index)').click();
     fixture.detectChanges();
     expect(fixture.componentInstance.last).toEqual({ column: 'name', direction: 'asc' });
-    expect(names()).toEqual(['a', 'b', 'c']);
+    expect(names()).toEqual(['b', 'a', 'c']);
   });
 });

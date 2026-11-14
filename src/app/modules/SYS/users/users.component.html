@@ -9,13 +9,16 @@
     }
   </div>
 
-  <div class="erpm-list-wrap">
+  <div class="erpm-table-container">
     <div class="usr-toolbar">
       <app-form-control class="usr-search" [formControl]="keywordControl" type="text" [placeholder]="'common.search' | translate"></app-form-control>
     </div>
-    <erpm-list
+    <app-data-table
       [data]="rows()"
       [loading]="loading()"
+      [showIndex]="false"
+      [tableMinWidth]="'950px'"
+      emptyMessage="usr.empty"
     >
       <app-column key="userName" label="acc.user_name" width="150px" minWidth="140px" [sortable]="true">
         <ng-template let-row="row">
@@ -59,7 +62,7 @@
           </div>
         </ng-template>
       </app-column>
-    </erpm-list>
+    </app-data-table>
   </div>
 </div>
 

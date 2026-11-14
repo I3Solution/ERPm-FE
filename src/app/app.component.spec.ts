@@ -25,7 +25,7 @@ describe('MVP regression checks', () => {
     let query = '';
     fixture.componentInstance.searchChange.subscribe(value => query = value);
     fixture.componentInstance.isOpen.set(true); fixture.detectChanges(); await fixture.whenStable();
-    const input: HTMLInputElement = fixture.nativeElement.querySelector('.dropdown-search-input');
+    const input: HTMLInputElement = document.body.querySelector<HTMLInputElement>('.dropdown-search-input')!;
     input.value = 'BARCODE987'; input.dispatchEvent(new Event('input', { bubbles: true }));
     fixture.detectChanges(); await fixture.whenStable();
     expect(query).toBe('BARCODE987');

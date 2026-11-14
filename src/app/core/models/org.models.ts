@@ -45,7 +45,7 @@ export interface SaveDepartmentRequest {
   code: string; name: string; translations?: Record<string, string>;
   companyId: number; branchId: number; parentId: number | null; levelId: number | null; isActive: boolean;
 }
-export interface DepartmentFilter extends ListFilter { companyId?: number; levelCode?: string; underId?: number; }
+export interface DepartmentFilter extends ListFilter { companyId?: number; branchId?: number; levelCode?: string; underId?: number; }
 
 export interface JobPosition {
   id: number; code: string; name: string; translations: Record<string, string>;
@@ -68,7 +68,7 @@ export interface CreateEmployeeRequest {
 export interface UpdateEmployeeRequest {
   code: string; fullName: string; email?: string | null; phone?: string | null; hireDate?: string | null; userId?: number | null;
 }
-export interface EmployeeFilter extends ListFilter { withoutAccount?: boolean; branchId?: number; }
+export interface EmployeeFilter extends ListFilter { withoutAccount?: boolean; branchId?: number; departmentId?: number; jobPositionId?: number; }
 
 export interface PolicyStatement {
   sid?: string; effect: 'Allow' | 'Deny'; actions: string[]; resources?: string[];

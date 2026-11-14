@@ -1,0 +1,2691 @@
+[
+ {
+  "route": "dashboard",
+  "view": "desktop-light",
+  "url": "/dashboard",
+  "title": {
+   "text": "Tổng quan kinh doanh",
+   "size": 26,
+   "weight": "500",
+   "h": 31.2
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "catalog",
+  "view": "desktop-light",
+  "url": "/catalog",
+  "title": {
+   "text": "Sản phẩm (ITEM)",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "+Thêm mới",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo mã, tên hoặ"
+  },
+  "table": {
+   "rowH": 50.1,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 40,
+   "thSize": 12,
+   "rows": 3,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "catalog/new",
+  "view": "desktop-light",
+  "url": "/catalog/new",
+  "title": {
+   "text": "Thêm mới Sản phẩm / Hàng hóa",
+   "size": 26,
+   "weight": "500",
+   "h": 31.2
+  },
+  "primaryBtn": {
+   "text": "Lưu lại",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tự động cấp mã"
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": true
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/price-lists",
+  "view": "desktop-light",
+  "url": "/sales/price-lists",
+  "title": {
+   "text": "🏷️ Quản lý Bảng giá & Chiết khấu",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "➕ Tạo bảng giá",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1346
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo mã hoặc tên"
+  },
+  "table": {
+   "rowH": 97,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 1,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/quotations",
+  "view": "desktop-light",
+  "url": "/sales/quotations",
+  "title": {
+   "text": "Báo giá Khách hàng",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "➕ Tạo báo giá",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo số báo giá "
+  },
+  "table": null,
+  "tableFrame": {
+   "overflowX": false,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/orders",
+  "view": "desktop-light",
+  "url": "/sales/orders",
+  "title": {
+   "text": "Quản lý Đơn bán hàng",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "➕ Tạo đơn bán hàng",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo số đơn hàng"
+  },
+  "table": null,
+  "tableFrame": {
+   "overflowX": false,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/orders/new",
+  "view": "desktop-light",
+  "url": "/sales/orders/new",
+  "title": null,
+  "primaryBtn": {
+   "text": "💾 Lưu lại",
+   "h": 33.6,
+   "size": 14,
+   "padY": 8.8,
+   "padX": 20,
+   "right": 1234.1
+  },
+  "rowBtns": {
+   "count": 1,
+   "hMin": 26.4,
+   "hMax": 26.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 1,
+   "withText": 1
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": ""
+  },
+  "table": {
+   "rowH": 60.4,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 40,
+   "thSize": 12,
+   "rows": 1,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/returns",
+  "view": "desktop-light",
+  "url": "/sales/returns",
+  "title": {
+   "text": "Trả hàng bán & Giảm trừ công nợ",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "➕ Tạo phiếu trả hàng",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo số phiếu tr"
+  },
+  "table": null,
+  "tableFrame": {
+   "overflowX": false,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "inventory",
+  "view": "desktop-light",
+  "url": "/inventory",
+  "title": {
+   "text": "Quản lý Tồn kho",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "📥+ Nhập kho hàng",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1342
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo mã SKU, tên"
+  },
+  "table": {
+   "rowH": 97,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 1,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "crm/partners",
+  "view": "desktop-light",
+  "url": "/crm/partners",
+  "title": {
+   "text": "Khách hàng & Đối tác",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "++ Thêm đối tác mới",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1342
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo tên, SĐT, m"
+  },
+  "table": {
+   "rowH": 97,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 1,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "crm/partners/new",
+  "view": "desktop-light",
+  "url": "/crm/partners/new",
+  "title": {
+   "text": "Thêm Khách hàng / Nhà cung cấp mới",
+   "size": 21.6,
+   "weight": "800",
+   "h": 25.9
+  },
+  "primaryBtn": {
+   "text": "💾 Lưu lại",
+   "h": 33.6,
+   "size": 14,
+   "padY": 8.8,
+   "padX": 20,
+   "right": 1346
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tự động cấp mã"
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "org",
+  "view": "desktop-light",
+  "url": "/org",
+  "title": {
+   "text": "Cơ cấu tổ chức",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "department-levels",
+  "view": "desktop-light",
+  "url": "/department-levels",
+  "title": {
+   "text": "Danh mục cấp phòng ban",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm cấp",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1342
+  },
+  "rowBtns": {
+   "count": 8,
+   "hMin": 26.4,
+   "hMax": 26.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 2,
+   "withText": 8
+  },
+  "firstInput": null,
+  "table": {
+   "rowH": 51.4,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 4,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "job-positions",
+  "view": "desktop-light",
+  "url": "/job-positions",
+  "title": {
+   "text": "Danh mục chức danh",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm chức danh",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1342
+  },
+  "rowBtns": {
+   "count": 8,
+   "hMin": 26.4,
+   "hMax": 26.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 2,
+   "withText": 8
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm kiếm..."
+  },
+  "table": {
+   "rowH": 51.4,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 4,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "employees",
+  "view": "desktop-light",
+  "url": "/employees",
+  "title": {
+   "text": "Hồ sơ nhân viên",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm nhân viên",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "rowBtns": {
+   "count": 18,
+   "hMin": 26.4,
+   "hMax": 31.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 4,
+   "withText": 18
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm kiếm..."
+  },
+  "table": {
+   "rowH": 64.2,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 5,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "employees/new",
+  "view": "desktop-light",
+  "url": "/employees/new",
+  "title": {
+   "text": "Thêm nhân viên",
+   "size": 26,
+   "weight": "500",
+   "h": 31.2
+  },
+  "primaryBtn": {
+   "text": "Lưu lại",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": ""
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": true
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "employees/1",
+  "view": "desktop-light",
+  "url": "/employees/1",
+  "title": {
+   "text": "Nguyễn Văn An",
+   "size": 26,
+   "weight": "500",
+   "h": 31.2
+  },
+  "primaryBtn": {
+   "text": "Lưu lại",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": ""
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": true
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "employees/1/work-history",
+  "view": "desktop-light",
+  "url": "/employees/1/work-history",
+  "title": {
+   "text": "Quá trình công tác",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Điều chuyển",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1126.8
+  },
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "users",
+  "view": "desktop-light",
+  "url": "/users",
+  "title": {
+   "text": "Tài khoản đăng nhập",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm tài khoản",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1342
+  },
+  "rowBtns": {
+   "count": 3,
+   "hMin": 26.4,
+   "hMax": 26.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 1,
+   "withText": 3
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm kiếm..."
+  },
+  "table": {
+   "rowH": 51.4,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 3,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "roles",
+  "view": "desktop-light",
+  "url": "/roles",
+  "title": {
+   "text": "Vai trò & phân quyền",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm vai trò",
+   "h": 26.4,
+   "size": 12.4,
+   "padY": 6,
+   "padX": 12,
+   "right": 623
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm kiếm..."
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "admin",
+  "view": "desktop-light",
+  "url": "/admin",
+  "title": {
+   "text": "Quản trị hệ thống",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "more",
+  "view": "desktop-light",
+  "url": "/admin",
+  "title": {
+   "text": "Quản trị hệ thống",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "notifications",
+  "view": "desktop-light",
+  "url": "/notifications",
+  "title": {
+   "text": "Trung tâm Thông báo",
+   "size": 24,
+   "weight": "800",
+   "h": 28.8
+  },
+  "primaryBtn": {
+   "text": "📝 Mẫu thông báo",
+   "h": 41,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1342
+  },
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "notifications/preferences",
+  "view": "desktop-light",
+  "url": "/notifications/preferences",
+  "title": {
+   "text": "Cấu hình Thông báo",
+   "size": 24,
+   "weight": "800",
+   "h": 28.8
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": {
+   "rowH": 56.2,
+   "tdSize": 14,
+   "tdPadY": 13.6,
+   "thH": 41,
+   "thSize": 13,
+   "rows": 7,
+   "isDataTable": false,
+   "rawTable": true
+  },
+  "tableFrame": {
+   "overflowX": false,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "notifications/templates",
+  "view": "desktop-light",
+  "url": "/notifications/templates",
+  "title": {
+   "text": "Quản lý Mẫu Thông Báo (Templates)",
+   "size": 24,
+   "weight": "700",
+   "h": 28.8
+  },
+  "primaryBtn": {
+   "text": "+ Thêm Mẫu Thông Báo",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1342
+  },
+  "rowBtns": {
+   "count": 28,
+   "hMin": 32,
+   "hMax": 36,
+   "fontMin": 14,
+   "fontMax": 14,
+   "maxPerRow": 2,
+   "withText": 14
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo mã, tên hoặ"
+  },
+  "table": {
+   "rowH": 83.8,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 14,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "dashboard",
+  "view": "desktop-dark",
+  "url": "/dashboard",
+  "title": {
+   "text": "Tổng quan kinh doanh",
+   "size": 26,
+   "weight": "500",
+   "h": 31.2
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "catalog",
+  "view": "desktop-dark",
+  "url": "/catalog",
+  "title": {
+   "text": "Sản phẩm (ITEM)",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "+Thêm mới",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo mã, tên hoặ"
+  },
+  "table": {
+   "rowH": 50.1,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 40,
+   "thSize": 12,
+   "rows": 3,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "catalog/new",
+  "view": "desktop-dark",
+  "url": "/catalog/new",
+  "title": {
+   "text": "Thêm mới Sản phẩm / Hàng hóa",
+   "size": 26,
+   "weight": "500",
+   "h": 31.2
+  },
+  "primaryBtn": {
+   "text": "Lưu lại",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tự động cấp mã"
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": true
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/price-lists",
+  "view": "desktop-dark",
+  "url": "/",
+  "title": null,
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/quotations",
+  "view": "desktop-dark",
+  "url": "/sales/quotations",
+  "title": {
+   "text": "Báo giá Khách hàng",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "➕ Tạo báo giá",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo số báo giá "
+  },
+  "table": null,
+  "tableFrame": {
+   "overflowX": false,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/orders",
+  "view": "desktop-dark",
+  "url": "/sales/orders",
+  "title": {
+   "text": "Quản lý Đơn bán hàng",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "➕ Tạo đơn bán hàng",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo số đơn hàng"
+  },
+  "table": null,
+  "tableFrame": {
+   "overflowX": false,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/orders/new",
+  "view": "desktop-dark",
+  "url": "/sales/orders/new",
+  "title": null,
+  "primaryBtn": {
+   "text": "💾 Lưu lại",
+   "h": 33.6,
+   "size": 14,
+   "padY": 8.8,
+   "padX": 20,
+   "right": 1234.1
+  },
+  "rowBtns": {
+   "count": 1,
+   "hMin": 26.4,
+   "hMax": 26.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 1,
+   "withText": 1
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": ""
+  },
+  "table": {
+   "rowH": 60.4,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 40,
+   "thSize": 12,
+   "rows": 1,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/returns",
+  "view": "desktop-dark",
+  "url": "/sales/returns",
+  "title": {
+   "text": "Trả hàng bán & Giảm trừ công nợ",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "➕ Tạo phiếu trả hàng",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo số phiếu tr"
+  },
+  "table": null,
+  "tableFrame": {
+   "overflowX": false,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "inventory",
+  "view": "desktop-dark",
+  "url": "/inventory",
+  "title": {
+   "text": "Quản lý Tồn kho",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "📥+ Nhập kho hàng",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1342
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo mã SKU, tên"
+  },
+  "table": {
+   "rowH": 97,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 1,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "crm/partners",
+  "view": "desktop-dark",
+  "url": "/crm/partners",
+  "title": {
+   "text": "Khách hàng & Đối tác",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "++ Thêm đối tác mới",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1342
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo tên, SĐT, m"
+  },
+  "table": {
+   "rowH": 97,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 1,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "crm/partners/new",
+  "view": "desktop-dark",
+  "url": "/crm/partners/new",
+  "title": {
+   "text": "Thêm Khách hàng / Nhà cung cấp mới",
+   "size": 21.6,
+   "weight": "800",
+   "h": 25.9
+  },
+  "primaryBtn": {
+   "text": "💾 Lưu lại",
+   "h": 33.6,
+   "size": 14,
+   "padY": 8.8,
+   "padX": 20,
+   "right": 1346
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tự động cấp mã"
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "org",
+  "view": "desktop-dark",
+  "url": "/org",
+  "title": {
+   "text": "Cơ cấu tổ chức",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "department-levels",
+  "view": "desktop-dark",
+  "url": "/department-levels",
+  "title": {
+   "text": "Danh mục cấp phòng ban",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm cấp",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1342
+  },
+  "rowBtns": {
+   "count": 8,
+   "hMin": 26.4,
+   "hMax": 26.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 2,
+   "withText": 8
+  },
+  "firstInput": null,
+  "table": {
+   "rowH": 51.4,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 4,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "job-positions",
+  "view": "desktop-dark",
+  "url": "/job-positions",
+  "title": {
+   "text": "Danh mục chức danh",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm chức danh",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1342
+  },
+  "rowBtns": {
+   "count": 8,
+   "hMin": 26.4,
+   "hMax": 26.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 2,
+   "withText": 8
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm kiếm..."
+  },
+  "table": {
+   "rowH": 51.4,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 4,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "employees",
+  "view": "desktop-dark",
+  "url": "/employees",
+  "title": {
+   "text": "Hồ sơ nhân viên",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm nhân viên",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "rowBtns": {
+   "count": 18,
+   "hMin": 26.4,
+   "hMax": 31.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 4,
+   "withText": 18
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm kiếm..."
+  },
+  "table": {
+   "rowH": 64.2,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 5,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "employees/new",
+  "view": "desktop-dark",
+  "url": "/employees/new",
+  "title": {
+   "text": "Thêm nhân viên",
+   "size": 26,
+   "weight": "500",
+   "h": 31.2
+  },
+  "primaryBtn": {
+   "text": "Lưu lại",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": ""
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": true
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "employees/1",
+  "view": "desktop-dark",
+  "url": "/employees/1",
+  "title": {
+   "text": "Nguyễn Văn An",
+   "size": 26,
+   "weight": "500",
+   "h": 31.2
+  },
+  "primaryBtn": {
+   "text": "Lưu lại",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1366
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": ""
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": true
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "employees/1/work-history",
+  "view": "desktop-dark",
+  "url": "/employees/1/work-history",
+  "title": {
+   "text": "Quá trình công tác",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Điều chuyển",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1126.8
+  },
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "users",
+  "view": "desktop-dark",
+  "url": "/users",
+  "title": {
+   "text": "Tài khoản đăng nhập",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm tài khoản",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1342
+  },
+  "rowBtns": {
+   "count": 3,
+   "hMin": 26.4,
+   "hMax": 26.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 1,
+   "withText": 3
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm kiếm..."
+  },
+  "table": {
+   "rowH": 51.4,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 3,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "roles",
+  "view": "desktop-dark",
+  "url": "/roles",
+  "title": {
+   "text": "Vai trò & phân quyền",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm vai trò",
+   "h": 26.4,
+   "size": 12.4,
+   "padY": 6,
+   "padX": 12,
+   "right": 623
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm kiếm..."
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "admin",
+  "view": "desktop-dark",
+  "url": "/admin",
+  "title": {
+   "text": "Quản trị hệ thống",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "more",
+  "view": "desktop-dark",
+  "url": "/admin",
+  "title": {
+   "text": "Quản trị hệ thống",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "notifications",
+  "view": "desktop-dark",
+  "url": "/notifications",
+  "title": {
+   "text": "Trung tâm Thông báo",
+   "size": 24,
+   "weight": "800",
+   "h": 28.8
+  },
+  "primaryBtn": {
+   "text": "📝 Mẫu thông báo",
+   "h": 41,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1342
+  },
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "notifications/preferences",
+  "view": "desktop-dark",
+  "url": "/notifications/preferences",
+  "title": {
+   "text": "Cấu hình Thông báo",
+   "size": 24,
+   "weight": "800",
+   "h": 28.8
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": {
+   "rowH": 56.2,
+   "tdSize": 14,
+   "tdPadY": 13.6,
+   "thH": 41,
+   "thSize": 13,
+   "rows": 7,
+   "isDataTable": false,
+   "rawTable": true
+  },
+  "tableFrame": {
+   "overflowX": false,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "notifications/templates",
+  "view": "desktop-dark",
+  "url": "/notifications/templates",
+  "title": {
+   "text": "Quản lý Mẫu Thông Báo (Templates)",
+   "size": 24,
+   "weight": "700",
+   "h": 28.8
+  },
+  "primaryBtn": {
+   "text": "+ Thêm Mẫu Thông Báo",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 1342
+  },
+  "rowBtns": {
+   "count": 28,
+   "hMin": 32,
+   "hMax": 36,
+   "fontMin": 14,
+   "fontMax": 14,
+   "maxPerRow": 2,
+   "withText": 14
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo mã, tên hoặ"
+  },
+  "table": {
+   "rowH": 83.8,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 14,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "dashboard",
+  "view": "mobile-light",
+  "url": "/dashboard",
+  "title": {
+   "text": "Tổng quan kinh doanh",
+   "size": 26,
+   "weight": "500",
+   "h": 62.4
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "catalog",
+  "view": "mobile-light",
+  "url": "/catalog",
+  "title": {
+   "text": "Sản phẩm (ITEM)",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "+Thêm mới",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 125.2
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo mã, tên hoặ"
+  },
+  "table": null,
+  "tableFrame": {
+   "overflowX": false,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "catalog/new",
+  "view": "mobile-light",
+  "url": "/catalog/new",
+  "title": {
+   "text": "Thêm mới Sản phẩm / Hàng hóa",
+   "size": 26,
+   "weight": "500",
+   "h": 62.4
+  },
+  "primaryBtn": {
+   "text": "Lưu lại",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 85.5
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tự động cấp mã"
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": true
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/price-lists",
+  "view": "mobile-light",
+  "url": "/sales/price-lists",
+  "title": {
+   "text": "🏷️ Quản lý Bảng giá & Chiết khấu",
+   "size": 24,
+   "weight": "800",
+   "h": 60
+  },
+  "primaryBtn": {
+   "text": "➕ Tạo bảng giá",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 174.8
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo mã hoặc tên"
+  },
+  "table": null,
+  "tableFrame": {
+   "overflowX": false,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/quotations",
+  "view": "mobile-light",
+  "url": "/sales/quotations",
+  "title": {
+   "text": "Báo giá Khách hàng",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "➕ Tạo báo giá",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 146.3
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo số báo giá "
+  },
+  "table": null,
+  "tableFrame": {
+   "overflowX": false,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/orders",
+  "view": "mobile-light",
+  "url": "/sales/orders",
+  "title": {
+   "text": "Quản lý Đơn bán hàng",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "➕ Tạo đơn bán hàng",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 188.5
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo số đơn hàng"
+  },
+  "table": null,
+  "tableFrame": {
+   "overflowX": false,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/orders/new",
+  "view": "mobile-light",
+  "url": "/sales/orders/new",
+  "title": null,
+  "primaryBtn": {
+   "text": "💾 Lưu lại",
+   "h": 33.6,
+   "size": 14,
+   "padY": 8.8,
+   "padX": 20,
+   "right": 128.2
+  },
+  "rowBtns": {
+   "count": 1,
+   "hMin": 26.4,
+   "hMax": 26.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 1,
+   "withText": 1
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": ""
+  },
+  "table": {
+   "rowH": 60.4,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 40,
+   "thSize": 12,
+   "rows": 1,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "sales/returns",
+  "view": "mobile-light",
+  "url": "/sales/returns",
+  "title": {
+   "text": "Trả hàng bán & Giảm trừ công nợ",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "➕ Tạo phiếu trả hàng",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 193.3
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo số phiếu tr"
+  },
+  "table": null,
+  "tableFrame": {
+   "overflowX": false,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "inventory",
+  "view": "mobile-light",
+  "url": "/inventory",
+  "title": {
+   "text": "Quản lý Tồn kho",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "📥+ Nhập kho hàng",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 206
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo mã SKU, tên"
+  },
+  "table": {
+   "rowH": 97,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 1,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "crm/partners",
+  "view": "mobile-light",
+  "url": "/crm/partners",
+  "title": {
+   "text": "Khách hàng & Đối tác",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "++ Thêm đối tác mới",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 209.9
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo tên, SĐT, m"
+  },
+  "table": {
+   "rowH": 97,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 1,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "crm/partners/new",
+  "view": "mobile-light",
+  "url": "/crm/partners/new",
+  "title": {
+   "text": "Thêm Khách hàng / Nhà cung cấp mới",
+   "size": 21.6,
+   "weight": "800",
+   "h": 51.8
+  },
+  "primaryBtn": {
+   "text": "💾 Lưu lại",
+   "h": 33.6,
+   "size": 14,
+   "padY": 8.8,
+   "padX": 20,
+   "right": 370
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tự động cấp mã"
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "org",
+  "view": "mobile-light",
+  "url": "/org",
+  "title": {
+   "text": "Cơ cấu tổ chức",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "department-levels",
+  "view": "mobile-light",
+  "url": "/department-levels",
+  "title": {
+   "text": "Danh mục cấp phòng ban",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm cấp",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 374
+  },
+  "rowBtns": {
+   "count": 8,
+   "hMin": 26.4,
+   "hMax": 26.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 2,
+   "withText": 8
+  },
+  "firstInput": null,
+  "table": {
+   "rowH": 51.4,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 4,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "job-positions",
+  "view": "mobile-light",
+  "url": "/job-positions",
+  "title": {
+   "text": "Danh mục chức danh",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm chức danh",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 374
+  },
+  "rowBtns": {
+   "count": 8,
+   "hMin": 26.4,
+   "hMax": 26.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 2,
+   "withText": 8
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm kiếm..."
+  },
+  "table": {
+   "rowH": 51.4,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 4,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "employees",
+  "view": "mobile-light",
+  "url": "/employees",
+  "title": {
+   "text": "Hồ sơ nhân viên",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm nhân viên",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 148.3
+  },
+  "rowBtns": {
+   "count": 18,
+   "hMin": 26.4,
+   "hMax": 31.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 4,
+   "withText": 18
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm kiếm..."
+  },
+  "table": {
+   "rowH": 64.2,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 5,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": true,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "employees/new",
+  "view": "mobile-light",
+  "url": "/employees/new",
+  "title": {
+   "text": "Thêm nhân viên",
+   "size": 26,
+   "weight": "500",
+   "h": 31.2
+  },
+  "primaryBtn": {
+   "text": "Lưu lại",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 85.5
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": ""
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": true
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "employees/1",
+  "view": "mobile-light",
+  "url": "/employees/1",
+  "title": {
+   "text": "Nguyễn Văn An",
+   "size": 26,
+   "weight": "500",
+   "h": 31.2
+  },
+  "primaryBtn": {
+   "text": "Lưu lại",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 233.6
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": ""
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": true
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "employees/1/work-history",
+  "view": "mobile-light",
+  "url": "/employees/1/work-history",
+  "title": {
+   "text": "Quá trình công tác",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Điều chuyển",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 141.4
+  },
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "users",
+  "view": "mobile-light",
+  "url": "/users",
+  "title": {
+   "text": "Tài khoản đăng nhập",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm tài khoản",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 374
+  },
+  "rowBtns": {
+   "count": 3,
+   "hMin": 26.4,
+   "hMax": 26.4,
+   "fontMin": 12.4,
+   "fontMax": 12.4,
+   "maxPerRow": 1,
+   "withText": 3
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm kiếm..."
+  },
+  "table": {
+   "rowH": 51.4,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 3,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "roles",
+  "view": "mobile-light",
+  "url": "/roles",
+  "title": {
+   "text": "Vai trò & phân quyền",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": {
+   "text": "Thêm vai trò",
+   "h": 26.4,
+   "size": 12.4,
+   "padY": 6,
+   "padX": 12,
+   "right": 361
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm kiếm..."
+  },
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "admin",
+  "view": "mobile-light",
+  "url": "/admin",
+  "title": {
+   "text": "Quản trị hệ thống",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "more",
+  "view": "mobile-light",
+  "url": "/admin",
+  "title": {
+   "text": "Quản trị hệ thống",
+   "size": 24,
+   "weight": "800",
+   "h": 30
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "notifications",
+  "view": "mobile-light",
+  "url": "/notifications",
+  "title": {
+   "text": "Trung tâm Thông báo",
+   "size": 24,
+   "weight": "800",
+   "h": 28.8
+  },
+  "primaryBtn": {
+   "text": "📝 Mẫu thông báo",
+   "h": 41,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 381.3
+  },
+  "firstInput": null,
+  "table": null,
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "notifications/preferences",
+  "view": "mobile-light",
+  "url": "/notifications/preferences",
+  "title": {
+   "text": "Cấu hình Thông báo",
+   "size": 24,
+   "weight": "800",
+   "h": 28.8
+  },
+  "primaryBtn": null,
+  "firstInput": null,
+  "table": {
+   "rowH": 106.6,
+   "tdSize": 14,
+   "tdPadY": 13.6,
+   "thH": 41,
+   "thSize": 13,
+   "rows": 7,
+   "isDataTable": false,
+   "rawTable": true
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ },
+ {
+  "route": "notifications/templates",
+  "view": "mobile-light",
+  "url": "/notifications/templates",
+  "title": {
+   "text": "Quản lý Mẫu Thông Báo (Templates)",
+   "size": 24,
+   "weight": "700",
+   "h": 115.2
+  },
+  "primaryBtn": {
+   "text": "+ Thêm Mẫu Thông Báo",
+   "h": 36,
+   "size": 14,
+   "padY": 10,
+   "padX": 20,
+   "right": 380.7
+  },
+  "rowBtns": {
+   "count": 28,
+   "hMin": 32,
+   "hMax": 36,
+   "fontMin": 14,
+   "fontMax": 14,
+   "maxPerRow": 2,
+   "withText": 14
+  },
+  "firstInput": {
+   "h": 36.6,
+   "size": 14,
+   "ph": "Tìm theo mã, tên hoặ"
+  },
+  "table": {
+   "rowH": 83.8,
+   "tdSize": 14,
+   "tdPadY": 12,
+   "thH": 55,
+   "thSize": 12,
+   "rows": 14,
+   "isDataTable": true,
+   "rawTable": false
+  },
+  "tableFrame": {
+   "overflowX": true,
+   "cardBorder": "1px"
+  },
+  "frames": {
+   "listPage": false,
+   "detailPage": false
+  },
+  "pageOverflowX": false,
+  "bodyFont": "Inter 16"
+ }
+]

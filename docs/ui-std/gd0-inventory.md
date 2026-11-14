@@ -83,8 +83,6 @@ Cột Khung: L=list-page, D=detail-page, T=data-table, R=`<table>` tay, - = tự
 5. **Khung trang**: chỉ các màn đã qua LD.1 (HRM, WMS, vài màn SD) dùng `app-list-page`/`app-detail-page`; còn lại tự dựng.
 6. Màn có nhiều tùy biến SCSS nhất (cần ưu tiên dọn): xem 8 dòng đầu khi sắp xếp cột "font-size + height + padding" ở mục 3 (notification-templates, pos, order-detail, return-detail, quotation-detail, notification-center).
 
-## 5. Chưa có và cách bổ sung
+## 5. Số đo thực và ảnh
 
-- **Số đo thực** (cỡ chữ tiêu đề, chiều cao nút, chiều cao dòng bảng, ở 1366px sáng/tối và mobile 390px) và **ảnh chụp**: cần chạy FE + API và một script Playwright đo `getComputedStyle` cho: tiêu đề trang, nút chính, nút trong dòng, ô tìm kiếm, ô lọc, dòng bảng, tiêu đề cột. Đề xuất chạy sau khi Thiện đồng ý cách tiếp cận; kết quả bổ sung vào file này.
-- Chuẩn đề xuất (GĐ1) sẽ chọn từ số liệu đo thực, không từ ước lượng trong tài liệu này.
-
+Xem `gd0-measurements.md` (bảng số đo 25 route × 3 chế độ), `measurements.json`, ảnh trong `shots/`, và script đo `tools/measure.js`. Chuẩn đề xuất (GĐ1) sẽ chọn từ số đo đó.

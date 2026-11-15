@@ -28,6 +28,8 @@ export class TableColumnComponent {
   @Input() align?: ColumnAlign = 'left';
   @Input() type?: ColumnType = 'text';
   @Input() sortable = false;
+  /** Value to sort this column by when it differs from the cell value (e.g. a translated label). */
+  @Input() sortValue?: (row: any) => unknown;
   @Input() sticky?: 'left' | 'right';
   @Input() nowrap = false;
   @Input() dateFormat?: string;

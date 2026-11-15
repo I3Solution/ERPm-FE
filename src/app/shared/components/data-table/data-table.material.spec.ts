@@ -14,11 +14,13 @@ import { DataTableComponent } from './data-table.component';
   template: `<app-data-table [showIndex]="false" [data]="rows" [sort]="sort">
     <app-column key="name" label="Name" [sortable]="true"></app-column>
     <app-column key="rank" label="Rank" [sortable]="true"></app-column>
+    <app-column key="tag" label="Tag" [sortable]="true" [sortValue]="byName"></app-column>
   </app-data-table>`
 })
 class HostComponent {
   rows = [{ name: 'b', rank: 10 }, { name: 'a', rank: 2 }, { name: 'c', rank: null }];
   sort: string | null = null;
+  byName = (row: { name: string }) => row.name.toUpperCase();
   last: unknown = null;
 }
 
@@ -50,6 +52,12 @@ describe('DataTableComponent', () => {
     fixture.componentInstance.sort = 'rank';
     fixture.detectChanges();
     expect(names()).toEqual(['a', 'b', 'c']);
+  });
+
+  it('sorts by the column sortValue when one is given', () => {
+    fixture.componentInstance.sort = '-tag';
+    fixture.detectChanges();
+    expect(names()).toEqual(['c', 'b', 'a']);
   });
 
   it('keeps empty values last when sorting descending', () => {

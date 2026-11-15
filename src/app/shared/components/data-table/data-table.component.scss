@@ -307,13 +307,20 @@
 .erpm-mat-table th.mat-mdc-header-cell,
 .erpm-mat-table td.mat-mdc-cell { padding: 0.5rem 0.75rem; overflow-wrap: anywhere; }
 .erpm-mat-table th.mat-mdc-header-cell { font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.03em; line-height: 1.2; }
-/* One width rule per column kind, shared by every screen; text columns share the remaining width. */
-.erpm-mat-table [data-kind='code'] { width: 9rem; min-width: 7rem; max-width: 12rem; }
-.erpm-mat-table [data-kind='date'] { width: 8rem; min-width: 7rem; }
-.erpm-mat-table [data-kind='number'] { width: 8rem; min-width: 6rem; }
-.erpm-mat-table [data-kind='status'] { width: 8rem; min-width: 7rem; }
-.erpm-mat-table [data-kind='actions'] { width: 1%; white-space: nowrap; }
-.erpm-mat-table [data-kind='text'] { min-width: 9rem; }
+/* One width rule per column kind, shared by every screen (fixed layout: same kind, same width everywhere);
+   text columns share the remaining width and wrap. Row actions wrap inside their column. */
+.erpm-mat-table { table-layout: fixed; }
+.erpm-mat-table [data-kind='code'] { width: 9rem; }
+.erpm-mat-table [data-kind='date'] { width: 8rem; }
+.erpm-mat-table [data-kind='number'] { width: 8rem; }
+.erpm-mat-table [data-kind='status'] { width: 8rem; }
+.erpm-mat-table [data-kind='actions'] { width: 11rem; }
+.erpm-mat-table td[data-kind='actions'] > div { flex-wrap: wrap; }
+.erpm-mat-table .table-col-checkbox { width: 44px; }
+.erpm-mat-table .table-col-index { width: 56px; }
+/* A column that cannot sort shows no sort arrow. */
+.erpm-mat-table ::ng-deep .mat-sort-header-disabled .mat-sort-header-arrow,
+.erpm-mat-table ::ng-deep th[aria-disabled='true'] .mat-sort-header-arrow { display: none; }
 .erpm-mat-table td.mat-mdc-table-sticky,
 .erpm-mat-table th.mat-mdc-table-sticky { background: var(--erpm-bg-surface); }
 .erpm-mat-table tr.clickable-row { cursor: pointer; }

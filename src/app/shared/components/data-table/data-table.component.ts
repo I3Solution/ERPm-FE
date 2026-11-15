@@ -353,7 +353,9 @@ export class DataTableComponent<T = any> {
     if (!sort || this.sortChange.observed) return this.data;
     if (this.sortedFor?.data === this.data && this.sortedFor.sort === sort) return this.sortedFor.rows;
     const dir = sort.direction === 'asc' ? 1 : -1;
-    const rows = [...this.data].sort((a, b) => compareCells(this.getCellValue(a, sort.column), this.getCellValue(b, sort.column), dir));
+    const sortValue = (this.effectiveColumns().find(c => c.key === sort.column) as TableColumnComponent | undefined)?.sortValue;
+    const valueOf = (row: T) => sortValue ? sortValue(row) : this.getCellValue(row, sort.column);
+    const rows = [...this.data].sort((a, b) => compareCells(valueOf(a), valueOf(b), dir));
     this.sortedFor = { data: this.data, sort, rows };
     return rows;
   }

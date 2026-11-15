@@ -31,7 +31,7 @@
         </ng-template>
       </app-column>
 
-      <app-column key="role" label="acc.role_label" [sortable]="true">
+      <app-column key="role" label="acc.role_label" [sortable]="true" [sortValue]="roleLabel">
         <ng-template let-row="row">
           <span class="erpm-badge erpm-badge-info">{{ ('acc.role.' + row.role) | translate }}</span>
         </ng-template>

@@ -1,4 +1,4 @@
-﻿export * from './data-table.models';
+﻿export * from './interfaces/data-table.models';
 export * from './data-table.component';
-export * from './data-table-cell.directive';
-export * from './table-column.component';
+export * from './directives/data-table-cell.directive';
+export * from './components/table-column.component';

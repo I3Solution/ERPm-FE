@@ -1,19 +1,30 @@
-import { ChangeDetectionStrategy, Component, computed, effect, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
+import { AuthService } from '../../../core/services/auth.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { DropdownMenuComponent, MenuItem } from '../dropdown-menu/dropdown-menu.component';
 import { SkeletonComponent } from '../skeleton/skeleton.component';
+
+/** One header action. Declared as data so every list screen gets the same button bar. */
+export interface ListAction extends MenuItem {
+  /** Permission code; the action is hidden when the user lacks it. */
+  permission?: string;
+  /** The single main button (usually Add). Every other action goes into the "⋯" menu. */
+  primary?: boolean;
+}
 
 /**
  * Common frame of every list screen: header (title + actions), filter bar, body, and a footer with paging.
  * It draws the loading skeleton, the error box with a retry button, and the empty state; the host only projects
  * the table/cards as the default content and reports how many rows it has loaded in `count`.
  *
- * Slots: [actions] header buttons, [filters] toolbar under the header, default = the rows (table or cards).
+ * Header buttons come from `actions` (data: id, label key, permission, danger): the primary one is a button, the rest
+ * share one "⋯" menu, and `actionSelect` reports the chosen id. Slots: [actions] extra custom header content, [filters] toolbar under the header, default = the rows (table or cards).
  * The host keeps page/filter state in the URL (see createListQueryState) so Back returns to the same place.
  */
 @Component({
   selector: 'app-list-page',
   standalone: true,
-  imports: [TranslatePipe, SkeletonComponent],
+  imports: [TranslatePipe, SkeletonComponent, DropdownMenuComponent],
   templateUrl: './list-page.component.html',
   styleUrl: './list-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -36,8 +47,17 @@ export class ListPageComponent {
   /** Dictionary key of the empty-state text. */
   public readonly emptyText = input('common.no_results');
 
+  /** Standard action bar, see ListAction. */
+  public readonly actions = input<ListAction[]>([]);
+
+  public readonly actionSelect = output<string>();
   public readonly pageChange = output<number>();
   public readonly retry = output<void>();
+
+  private readonly auth = inject(AuthService);
+  private readonly allowed = computed(() => this.actions().filter(a => !a.permission || this.auth.can(a.permission)));
+  public readonly primaryAction = computed(() => this.allowed().find(a => a.primary));
+  public readonly menuActions = computed(() => this.allowed().filter(a => !a.primary));
 
   public readonly pageCount = computed(() => Math.max(1, Math.ceil(this.total() / Math.max(1, this.pageSize()))));
   public readonly showPaging = computed(() => this.pageCount() > 1);

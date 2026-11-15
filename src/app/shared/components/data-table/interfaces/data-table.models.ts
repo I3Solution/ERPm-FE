@@ -2,8 +2,8 @@
  * Core type definitions and contracts for enterprise DataTable component.
  */
 import { TemplateRef } from '@angular/core';
-import { InputControlType } from '../input-control/input-control.component';
-import { SelectOption } from '../custom-select/custom-select.component';
+import { InputControlType } from '../../input-control/input-control.component';
+import { SelectOption } from '../../custom-select/custom-select.component';
 
 export type ColumnAlign = 'left' | 'center' | 'right';
 

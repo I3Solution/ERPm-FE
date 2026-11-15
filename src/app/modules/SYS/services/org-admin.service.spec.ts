@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController, TestRequest, provideHttpClientTesting } from '@angular/common/http/testing';
 import { OrgAdminService } from './org-admin.service';
 import { OrgUnitType } from '../../../core/models/org.models';
 
@@ -29,6 +29,22 @@ describe('OrgAdminService', () => {
     expect(request.request.params.get('pageSize')).toBe('50');
     expect(request.request.params.has('keyword')).toBeFalse();
     request.flush({ success: true, data: { items: [], totalCount: 0, pageIndex: 1, pageSize: 50 } });
+  });
+
+  it('allDepartments pages through 450 departments in 200-row pages', () => {
+    let all: unknown[] = [];
+    service.allDepartments().subscribe(items => all = items);
+    const total = 450;
+    const reply = (req: TestRequest) => {
+      const index = Number(req.request.params.get('pageIndex'));
+      const count = Math.min(200, total - (index - 1) * 200);
+      req.flush({ success: true, data: { items: Array.from({ length: count }, (_, i) => ({ id: (index - 1) * 200 + i + 1 })), totalCount: total, pageIndex: index, pageSize: 200 } });
+    };
+    reply(http.expectOne(r => r.url === '/api/v1/hrm/departments' && r.params.get('pageIndex') === '1'));
+    reply(http.expectOne(r => r.url === '/api/v1/hrm/departments' && r.params.get('pageIndex') === '2'));
+    reply(http.expectOne(r => r.url === '/api/v1/hrm/departments' && r.params.get('pageIndex') === '3'));
+    expect(all.length).toBe(450);
+    expect(new Set(all.map(d => (d as { id: number }).id)).size).toBe(450);
   });
 
   it('keeps the node type on create and updates through PUT', () => {

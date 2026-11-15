@@ -9,7 +9,4 @@
   text-align: center; padding: 2.5rem 1rem; color: var(--erpm-danger-text); background: var(--erpm-danger-bg);
   border: 1px solid var(--erpm-danger-border); border-radius: 0.75rem;
 }
-@media (max-width: 639px) {
-  .detail-actions { width: 100%; }
-  .detail-actions ::ng-deep .erpm-btn { flex: 1; }
-}
+.detail-top-nav { flex-wrap: nowrap; }

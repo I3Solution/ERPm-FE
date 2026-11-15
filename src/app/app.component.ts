@@ -1,11 +1,13 @@
 import { AuthService } from './core/services/auth.service';
 import { ApiErrorService } from './core/services/api-error.service';
 import { BranchService } from './modules/SYS/services/branch.service';
-import { ChangeDetectionStrategy, Component, computed, effect, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, Injector, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { TranslatePipe } from './shared/pipes/translate.pipe';
 import { LocalizationService } from './core/services/localization.service';
+import { handleModalEscape } from './shared/utils/modal-escape';
+import { DialogService } from './core/services/dialog.service';
 import { ThemeService } from './core/services/theme.service';
 import { NavigationHistoryService } from './core/services/navigation-history.service';
 import { BranchTreeSelectComponent } from './shared/components/branch-tree-select/branch-tree-select.component';
@@ -43,6 +45,9 @@ export class AppComponent {
       e.stopPropagation();
     }
   }, true);
+
+  private readonly injector = inject(Injector);
+  private readonly escapeCloseModal = document.addEventListener('keydown', e => handleModalEscape(e, () => this.injector.get(DialogService)));
 
   constructor(
     private localizationService: LocalizationService,

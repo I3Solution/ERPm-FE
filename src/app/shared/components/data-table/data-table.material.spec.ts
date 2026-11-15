@@ -11,13 +11,14 @@ import { DataTableComponent } from './data-table.component';
 @Component({
   standalone: true,
   imports: [DataTableComponent, TableColumnComponent],
-  template: `<app-data-table [showIndex]="false" [data]="rows" [sort]="sort">
+  template: `<app-data-table [showIndex]="false" [canEdit]="canEdit" [data]="rows" [sort]="sort">
     <app-column key="name" label="Name" [sortable]="true"></app-column>
     <app-column key="rank" label="Rank" [sortable]="true"></app-column>
     <app-column key="tag" label="Tag" [sortable]="true" [sortValue]="byName"></app-column>
   </app-data-table>`
 })
 class HostComponent {
+  canEdit = false;
   rows = [{ name: 'b', rank: 10 }, { name: 'a', rank: 2 }, { name: 'c', rank: null }];
   sort: string | null = null;
   byName = (row: { name: string }) => row.name.toUpperCase();
@@ -33,6 +34,12 @@ describe('DataTableComponent', () => {
         { provide: BreakpointObserver, useValue: { observe: () => of({ matches: false, breakpoints: {} }) } },provideHttpClient(), provideHttpClientTesting()] });
     fixture = TestBed.createComponent(HostComponent);
     fixture.detectChanges();
+  });
+
+  it('still draws the data rows when canEdit is on and there is no formArray', () => {
+    fixture.componentInstance.canEdit = true;
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelectorAll('tbody tr').length).toBe(3);
   });
 
   it('keeps the given order without a sort', () => {

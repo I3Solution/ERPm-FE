@@ -48,19 +48,19 @@
       </ng-template>
     </app-column>
 
-    <app-column key="code" [label]="'ntpl.col_code' | translate" width="170px" minWidth="160px" [sortable]="true">
+    <app-column key="code" label="ntpl.col_code" width="170px" minWidth="160px" [sortable]="true">
       <ng-template let-row="row">
         <span class="code-badge">{{ row.code }}</span>
       </ng-template>
     </app-column>
 
-    <app-column key="name" [label]="'ntpl.col_name' | translate" width="180px" minWidth="170px">
+    <app-column key="name" label="ntpl.col_name" width="180px" minWidth="170px">
       <ng-template let-row="row">
         <span class="font-medium text-slate-800">{{ row.name }}</span>
       </ng-template>
     </app-column>
 
-    <app-column key="content" [label]="'ntpl.col_content' | translate" minWidth="250px">
+    <app-column key="content" label="ntpl.col_content" minWidth="250px">
       <ng-template let-row="row">
         <div class="tpl-content-cell">
           <span class="tpl-title-preview">{{ row.titleTemplate }}</span>
@@ -69,7 +69,7 @@
       </ng-template>
     </app-column>
 
-    <app-column key="defaultSeverity" [label]="'ntpl.col_severity' | translate" width="120px" minWidth="110px" align="center">
+    <app-column key="defaultSeverity" label="ntpl.col_severity" width="120px" minWidth="110px" align="center">
       <ng-template let-row="row">
         <span class="severity-badge" [ngClass]="'badge-' + row.defaultSeverity.toLowerCase()">
           {{ row.defaultSeverity }}
@@ -77,7 +77,7 @@
       </ng-template>
     </app-column>
 
-    <app-column key="channels" [label]="'ntpl.col_channels' | translate" width="140px" minWidth="130px" align="center">
+    <app-column key="channels" label="ntpl.col_channels" width="140px" minWidth="130px" align="center">
       <ng-template let-row="row">
         <div class="channels-cell">
           <span *ngIf="row.supportedChannels?.includes('IN_APP')" class="channel-pill" title="In-App">🔔</span>
@@ -88,7 +88,7 @@
       </ng-template>
     </app-column>
 
-    <app-column key="isActive" [label]="'ntpl.col_active' | translate" width="100px" minWidth="90px" align="center">
+    <app-column key="isActive" label="ntpl.col_active" width="100px" minWidth="90px" align="center">
       <ng-template let-row="row">
         <div class="text-center">
           <label class="switch switch-sm" (click)="$event.stopPropagation()">
@@ -103,7 +103,7 @@
       </ng-template>
     </app-column>
 
-    <app-column key="actions" [label]="'common.actions' | translate" width="150px" minWidth="140px" align="right">
+    <app-column key="actions" label="common.actions" width="150px" minWidth="140px" align="right">
       <ng-template let-row="row">
         <div class="actions-group justify-end" (click)="$event.stopPropagation()">
           <button

@@ -6,6 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import { NotificationItem, NotificationListResponse } from '../../../../core/models/notification.model';
 import { NotificationStateService } from '../../../../core/services/notification-state.service';
+import { LocalizationService } from '../../../../core/services/localization.service';
+import { ListAction, ListPageComponent } from '../../../../shared/components/list-page/list-page.component';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { RelativeTimePipe } from '../../../../shared/pipes/relative-time.pipe';
 import { FormControlComponent } from '../../../../shared/components/form-control/form-control.component';
@@ -14,7 +16,7 @@ import { DataTableComponent, TableColumnComponent } from '../../../../shared/com
 @Component({
   selector: 'app-notification-center',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, TranslatePipe, RelativeTimePipe, FormControlComponent, DataTableComponent, TableColumnComponent],
+  imports: [CommonModule, FormsModule, RouterLink, TranslatePipe, RelativeTimePipe, FormControlComponent, DataTableComponent, TableColumnComponent, ListPageComponent],
   templateUrl: './notification-center.component.html',
   styleUrls: ['./notification-center.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -23,6 +25,22 @@ export class NotificationCenterComponent implements OnInit {
   private http = inject(HttpClient);
   public router = inject(Router);
   public notifState = inject(NotificationStateService);
+  private i18n = inject(LocalizationService);
+
+  /** Header action bar: Templates is the main button, preferences and mark-all-read sit in the menu. */
+  public get headerActions(): ListAction[] {
+    return [
+      { id: 'templates', label: 'notifications.templates_manage', icon: '📝', primary: true },
+      { id: 'prefs', label: 'notifications.preferences', icon: '⚙️' },
+      ...(this.notifState.hasUnread() ? [{ id: 'markall', label: 'notifications.mark_all_read', icon: '✓' }] : [])
+    ];
+  }
+
+  public onHeaderAction(id: string): void {
+    if (id === 'templates') void this.router.navigate(['/notifications/templates']);
+    else if (id === 'prefs') void this.router.navigate(['/notifications/preferences']);
+    else if (id === 'markall') this.markAllAsRead();
+  }
 
   private baseUrl = `${environment.apiBaseUrl}/api/v1/sys/notifications`;
 
@@ -37,32 +55,24 @@ export class NotificationCenterComponent implements OnInit {
   public filterSeverity = signal<string>('ALL');
   public filterReadStatus = signal<string>('ALL');
 
-  public readonly categories = [
-    { code: 'ALL', label: 'Tất cả phân hệ' },
-    { code: 'SD', label: 'Bán hàng (SD)' },
-    { code: 'WMS', label: 'Tồn kho (WMS)' },
-    { code: 'PUR', label: 'Mua hàng (PUR)' },
-    { code: 'ACC', label: 'Kế toán (ACC)' },
-    { code: 'CRM', label: 'Khách hàng (CRM)' },
-    { code: 'HRM', label: 'Nhân sự (HRM)' },
-    { code: 'SYS', label: 'Hệ thống (SYS)' }
-  ];
+  private t(key: string): string { return this.i18n.translate(key); }
 
-  public readonly severities = [
-    { code: 'ALL', label: 'Tất cả mức độ' },
-    { code: 'INFO', label: 'Thông tin (INFO)' },
-    { code: 'SUCCESS', label: 'Thành công (SUCCESS)' },
-    { code: 'WARNING', label: 'Cảnh báo (WARNING)' },
-    { code: 'DANGER', label: 'Khẩn cấp (DANGER)' }
-  ];
+  public get categoryOptions() {
+    return ['ALL', 'SD', 'WMS', 'PUR', 'ACC', 'CRM', 'HRM', 'SYS'].map(code => ({ value: code, label: this.t('ntpl.cat_' + code.toLowerCase()) }));
+  }
 
-  public readonly categoryOptions = this.categories.map(c => ({ value: c.code, label: c.label }));
-  public readonly severityOptions = this.severities.map(s => ({ value: s.code, label: s.label }));
-  public readonly readStatusOptions = [
-    { value: 'ALL', label: 'Tất cả trạng thái' },
-    { value: 'UNREAD', label: 'Chưa đọc' },
-    { value: 'READ', label: 'Đã đọc' }
-  ];
+  public get severityOptions() {
+    return [{ value: 'ALL', label: this.t('ncen.sev_all') },
+      ...['INFO', 'SUCCESS', 'WARNING', 'DANGER'].map(code => ({ value: code, label: this.t('ntpl.sev_' + code.toLowerCase()) }))];
+  }
+
+  public get readStatusOptions() {
+    return [
+      { value: 'ALL', label: this.t('ntpl.status_all') },
+      { value: 'UNREAD', label: this.t('ncen.unread') },
+      { value: 'READ', label: this.t('ncen.read') }
+    ];
+  }
 
   ngOnInit(): void {
     this.loadData();

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   CreateBranchRequest, CreateEmployeeRequest, CreateUserRequest, Department, DepartmentFilter, DepartmentLevel, DepartmentRoleGrant,
@@ -30,6 +30,18 @@ export class OrgAdminService {
   // Department levels and departments
   departmentLevels(filter: ListFilter = { pageSize: 100 }): Observable<PagedResult<DepartmentLevel>> { return this.get('/hrm/department-levels', filter); }
   departments(filter: DepartmentFilter = { pageSize: 500 }): Observable<PagedResult<Department>> { return this.get('/hrm/departments', filter); }
+  /** Every department for dropdowns: the API serves at most 200 rows a page, so later pages are fetched in parallel. */
+  allDepartments(filter: DepartmentFilter = {}): Observable<Department[]> {
+    const size = 200;
+    return this.departments({ ...filter, pageIndex: 1, pageSize: size }).pipe(
+      switchMap(first => {
+        const pages = Math.ceil(first.totalCount / size);
+        if (pages <= 1) return of(first.items);
+        const rest = Array.from({ length: pages - 1 }, (_, i) => this.departments({ ...filter, pageIndex: i + 2, pageSize: size }));
+        return forkJoin(rest).pipe(map(r => [...first.items, ...r.flatMap(p => p.items)]));
+      })
+    );
+  }
   createDepartment(request: SaveDepartmentRequest): Observable<Department> { return this.post('/hrm/departments', request); }
   updateDepartment(id: number, request: SaveDepartmentRequest): Observable<Department> { return this.put(`/hrm/departments/${id}`, request); }
   deleteDepartment(id: number): Observable<boolean> { return this.delete(`/hrm/departments/${id}`); }

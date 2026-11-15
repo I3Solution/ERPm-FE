@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { BackButtonComponent } from '../back-button/back-button.component';
+import { ActionBarComponent } from '../action-bar/action-bar.component';
+import type { ListAction } from '../list-page/list-page.component';
 import { SkeletonComponent } from '../skeleton/skeleton.component';
 
 /**
@@ -13,7 +15,7 @@ import { SkeletonComponent } from '../skeleton/skeleton.component';
 @Component({
   selector: 'app-detail-page',
   standalone: true,
-  imports: [TranslatePipe, BackButtonComponent, SkeletonComponent],
+  imports: [TranslatePipe, BackButtonComponent, SkeletonComponent, ActionBarComponent],
   templateUrl: './detail-page.component.html',
   styleUrl: './detail-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -31,5 +33,8 @@ export class DetailPageComponent {
   public readonly backLink = input('/');
   public readonly backLabel = input('common.back_to_list');
 
+  /** Standard action bar, same declaration as list pages (see ListAction). */
+  public readonly actions = input<ListAction[]>([]);
+  public readonly actionSelect = output<string>();
   public readonly retry = output<void>();
 }

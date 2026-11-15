@@ -71,4 +71,12 @@ describe('apiInterceptor error banner', () => {
     backend.expectOne('/assets/i18n/system.json').flush({});
     expect(errors.message()).toBe('error.connection');
   });
+
+  it('sends the UI language and shows the server text for parameterized errors', () => {
+    http.post('/api/v1/sales/price-lists/1/versions/2/activate', {}).subscribe({ error: () => undefined });
+    const req = backend.expectOne('/api/v1/sales/price-lists/1/versions/2/activate');
+    expect(req.request.headers.get('Accept-Language')).toBeTruthy();
+    req.flush({ errorCode: 'error.sd.pricelist_version_overlap', message: 'Version V1 overlaps (01/01/2050 - open)' }, { status: 409, statusText: 'Conflict' });
+    expect(errors.message()).toBe('Version V1 overlaps (01/01/2050 - open)');
+  });
 });

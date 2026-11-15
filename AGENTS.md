@@ -33,6 +33,7 @@ Chào bạn AI Assistant, bạn đang làm việc trên repository **ERPm-FE** -
 
 4. **Kỷ luật Kỹ thuật Frontend (Angular 20 + Ionic 8):**
    - 100% Standalone Components, Signal State Management, OnPush Change Detection.
+   - **Ngoại lệ Angular Material:** `@angular/material` + `@angular/cdk` chỉ nằm trong `app-data-table` (app-data-table bọc Material: lõi bảng PC = mat-table/matSort; vỏ + mobile = Ionic), sửa tại chỗ, không tạo bảng thứ hai; theme bằng token ERPm. Màn hình chỉ dùng `<app-data-table>`, không gắn Material trực tiếp. Không dùng Material cho form, dialog, điều hướng; form giữ `<app-form-control>`. Chi tiết: `PROJECT_MASTER.md` §4.2.
    - **Standardized Reactive Forms (`FormGroup` + `<app-form-control>` / `<app-input-control>`):** Mọi biểu mẫu nhập liệu lưu dữ liệu (CRUD Modal, Chứng từ) bắt buộc dùng `FormGroup` (`ReactiveFormsModule`) và vẽ control qua `<app-form-control>` (`FormControlComponent`) hoặc `<app-input-control>` (`InputControlComponent`) bằng cách truyền `type` (`'text' | 'number' | 'currency' | 'date' | 'textarea' | 'select' | 'checkbox'`) và `dataSource` (`SelectOption[]`).
    - Triad 3-file tách bạch: Mỗi component bắt buộc có file `.ts`, `.html`, `.scss` riêng biệt. Không nhét inline template hoặc inline style.
    - Đa ngôn ngữ (i18n): Mọi text hiển thị bắt buộc qua pipe `translate`.

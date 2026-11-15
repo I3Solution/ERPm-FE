@@ -9,14 +9,21 @@
   TemplateRef,
   computed,
   contentChildren,
+  inject,
   signal
 } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { MatSortModule, Sort } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { IonCard, IonCardContent } from '@ionic/angular/standalone';
+import { map } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormArray, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../pipes/translate.pipe';
-import { TableColumn, TablePagination, TableSort } from './data-table.models';
-import { DataTableCellDirective } from './data-table-cell.directive';
-import { TableColumnComponent } from './table-column.component';
+import { TableColumn, TablePagination, TableSort } from './interfaces/data-table.models';
+import { DataTableCellDirective } from './directives/data-table-cell.directive';
+import { TableColumnComponent } from './components/table-column.component';
 import { FormControlComponent } from '../form-control/form-control.component';
 import { InputControlType } from '../input-control/input-control.component';
 
@@ -27,7 +34,11 @@ import { InputControlType } from '../input-control/input-control.component';
     CommonModule,
     ReactiveFormsModule,
     TranslatePipe,
-    FormControlComponent
+    FormControlComponent,
+    MatTableModule,
+    MatSortModule,
+    IonCard,
+    IonCardContent
   ],
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.scss'],
@@ -61,6 +72,10 @@ export class DataTableComponent<T = any> {
 
   // === Events & Outputs ===
   @Output() rowClick = new EventEmitter<T>();
+  /** Current sort as the list URL keeps it: "field" (asc) or "-field" (desc). Shows the header arrow after reload/Back. */
+  @Input() set sort(v: string | null | undefined) {
+    this.currentSort.set(v ? { column: v.replace(/^-/, ''), direction: v.startsWith('-') ? 'desc' : 'asc' } : null);
+  }
   @Output() sortChange = new EventEmitter<TableSort>();
   @Output() selectionChange = new EventEmitter<T[]>();
   @Output() pageChange = new EventEmitter<{ pageIndex: number; pageSize: number }>();
@@ -292,4 +307,70 @@ export class DataTableComponent<T = any> {
       pageSize: this.pagination.pageSize
     });
   }
+
+  // =========================================================================
+  // Material table (desktop) and cards (phone)
+  // =========================================================================
+
+  /** Phone width: the list view switches to Ionic cards. */
+  public isPhone = toSignal(
+    inject(BreakpointObserver).observe('(max-width: 767.98px)').pipe(map(r => r.matches)), { initialValue: false });
+
+  /** Material table only renders plain data; loading, empty and inline-edit keep the original markup. */
+  public get useMaterial(): boolean { return !this.loading && !this.isEditActive && this.data.length > 0 && !this.isPhone(); }
+  public get useCards(): boolean { return !this.loading && !this.isEditActive && this.data.length > 0 && this.isPhone(); }
+
+  /** Material column ids: utility columns first, then the declared ones. */
+  public matColumnKeys = computed(() => [
+    ...(this.selectable ? ['__select'] : []),
+    ...(this.showIndex ? ['__index'] : []),
+    ...this.effectiveColumns().map(c => c.key)
+  ]);
+
+  /**
+   * Column kind drives one shared width rule (see the data-kind rules in the stylesheet), so no screen sets its own
+   * widths: the width/minWidth a screen declares only applies to the loading, empty and inline-edit layout.
+   */
+  public colKind(col: TableColumn<T> | TableColumnComponent): 'actions' | 'status' | 'date' | 'number' | 'code' | 'text' {
+    if (col.key === 'actions' || col.type === 'actions') return 'actions';
+    if (col.type === 'badge' || col.key === 'status') return 'status';
+    if (col.type === 'date') return 'date';
+    if (col.type === 'number' || col.type === 'currency') return 'number';
+    if (/^code$|Code$|Number$/.test(col.key)) return 'code';
+    return 'text';
+  }
+
+  public matTrackBy = (index: number, row: T): any => this.getRowTrackId(row, index);
+
+  private sortedFor?: { data: T[]; sort: TableSort | null; rows: T[] };
+
+  /**
+   * Rows in display order. The table sorts the rows it was given when the host does not listen to
+   * (sortChange); a host that listens sorts on the server. Empty values stay last in both directions.
+   */
+  public get viewRows(): T[] {
+    const sort = this.currentSort();
+    if (!sort || this.sortChange.observed) return this.data;
+    if (this.sortedFor?.data === this.data && this.sortedFor.sort === sort) return this.sortedFor.rows;
+    const dir = sort.direction === 'asc' ? 1 : -1;
+    const sortValue = (this.effectiveColumns().find(c => c.key === sort.column) as TableColumnComponent | undefined)?.sortValue;
+    const valueOf = (row: T) => sortValue ? sortValue(row) : this.getCellValue(row, sort.column);
+    const rows = [...this.data].sort((a, b) => compareCells(valueOf(a), valueOf(b), dir));
+    this.sortedFor = { data: this.data, sort, rows };
+    return rows;
+  }
+
+  public onMatSort(sort: Sort): void {
+    const next: TableSort | null = sort.direction ? { column: sort.active, direction: sort.direction } : null;
+    this.currentSort.set(next);
+    if (next) this.sortChange.emit(next);
+  }
+}
+
+/** Numbers compare as numbers, everything else as text in the user locale; empty values stay last in both directions. */
+function compareCells(a: unknown, b: unknown, dir: number): number {
+  const emptyA = a == null || a === '', emptyB = b == null || b === '';
+  if (emptyA || emptyB) return emptyA === emptyB ? 0 : emptyA ? 1 : -1;
+  if (typeof a === 'number' && typeof b === 'number') return dir * (a - b);
+  return dir * String(a).localeCompare(String(b), undefined, { numeric: true });
 }

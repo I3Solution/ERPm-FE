@@ -1,4 +1,89 @@
 ﻿<div class="erpm-table-container" [style.min-height]="minHeight">
+  <ng-template #viewCell let-row="row" let-col="col" let-idx="idx">
+    @if (getCellTemplate(col, false); as customTpl) {
+      <ng-container *ngTemplateOutlet="customTpl; context: { $implicit: row, row: row, index: idx, column: col, canEdit: false }"></ng-container>
+    } @else {
+      @switch (col.type) {
+        @case ('currency') {
+          <span class="font-mono font-numeric">{{ getCellValue(row, col.key) | number:(col.numberFormat || '1.0-0') }}&nbsp;đ</span>
+        }
+        @case ('number') {
+          <span class="font-mono font-numeric">{{ getCellValue(row, col.key) | number:(col.numberFormat || '1.0-0') }}{{ col.suffix || '' }}</span>
+        }
+        @case ('date') {
+          <span class="font-mono">{{ getCellValue(row, col.key) | date:(col.dateFormat || 'dd/MM/yyyy') }}</span>
+        }
+        @case ('badge') {
+          <span class="erpm-status-badge" [ngClass]="getBadgeClass(col, row)">{{ getBadgeLabel(col, row) }}</span>
+        }
+        @default {
+          <span>{{ getCellValue(row, col.key) }}{{ col.suffix || '' }}</span>
+        }
+      }
+    }
+  </ng-template>
+
+  @if (useCards) {
+    <!-- Phone: one Ionic card per row -->
+    <div class="erpm-data-cards">
+      @for (row of viewRows; track getRowTrackId(row, $index); let idx = $index) {
+        <ion-card class="erpm-data-card" [class.clickable-row]="clickableRows" [class.selected-row]="isRowSelected(row)" (click)="onRowClick(row, $any($event))">
+          <ion-card-content>
+            @if (selectable) {
+              <label class="card-select" (click)="$event.stopPropagation()">
+                <input type="checkbox" class="erpm-checkbox" [checked]="isRowSelected(row)" (change)="toggleRowSelection(row, $event)" />
+              </label>
+            }
+            @for (col of effectiveColumns(); track col.key) {
+              @if (col.key !== 'actions') {
+                <div class="card-field">
+                  <span class="card-label">{{ col.label | translate }}</span>
+                  <span class="card-value"><ng-container *ngTemplateOutlet="viewCell; context: { row: row, col: col, idx: idx }"></ng-container></span>
+                </div>
+              }
+            }
+            @for (col of effectiveColumns(); track col.key) {
+              @if (col.key === 'actions') {
+                <div class="card-actions"><ng-container *ngTemplateOutlet="viewCell; context: { row: row, col: col, idx: idx }"></ng-container></div>
+              }
+            }
+          </ion-card-content>
+        </ion-card>
+      }
+    </div>
+  } @else if (useMaterial) {
+    <!-- Desktop: Material table core; cells wrap instead of widening the table, the actions column is pinned right -->
+    <div class="erpm-table-scroll erpm-mat-scroll" [style.padding-bottom]="paddingBottom">
+      <table mat-table matSort class="erpm-mat-table" [dataSource]="viewRows" [trackBy]="matTrackBy"
+        [matSortActive]="currentSort()?.column ?? ''" [matSortDirection]="currentSort()?.direction ?? ''" (matSortChange)="onMatSort($event)">
+        <ng-container matColumnDef="__select">
+          <th mat-header-cell *matHeaderCellDef class="table-col-checkbox text-center">
+            <input type="checkbox" class="erpm-checkbox" [checked]="isAllSelected()" [indeterminate]="isPartiallySelected()" (change)="toggleSelectAll($event)" />
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-col-checkbox text-center" (click)="$event.stopPropagation()">
+            <input type="checkbox" class="erpm-checkbox" [checked]="isRowSelected(row)" (change)="toggleRowSelection(row, $event)" />
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="__index">
+          <th mat-header-cell *matHeaderCellDef class="table-col-index text-center">#</th>
+          <td mat-cell *matCellDef="let row; let idx = index" class="table-col-index text-center text-slate-400 font-mono">{{ calculateRowIndex(idx) }}</td>
+        </ng-container>
+        @for (col of effectiveColumns(); track col.key) {
+          <ng-container [matColumnDef]="col.key" [sticky]="col.sticky === 'left'" [stickyEnd]="col.sticky === 'right' || col.key === 'actions'">
+            <th mat-header-cell *matHeaderCellDef [mat-sort-header]="col.key" [disabled]="!col.sortable"
+              [attr.data-kind]="colKind(col)" [class.text-center]="col.align === 'center'" [class.text-right]="col.align === 'right'">{{ col.label | translate }}</th>
+            <td mat-cell *matCellDef="let row; let idx = index" [attr.data-kind]="colKind(col)" [class.text-center]="col.align === 'center'" [class.text-right]="col.align === 'right'"
+              [class.money-cell]="col.type === 'currency' || col.nowrap">
+              <ng-container *ngTemplateOutlet="viewCell; context: { row: row, col: col, idx: idx }"></ng-container>
+            </td>
+          </ng-container>
+        }
+        <tr mat-header-row *matHeaderRowDef="matColumnKeys()"></tr>
+        <tr mat-row *matRowDef="let row; columns: matColumnKeys()" [class.clickable-row]="clickableRows" [class.selected-row]="isRowSelected(row)"
+          (click)="onRowClick(row, $any($event))"></tr>
+      </table>
+    </div>
+  } @else {
   <!-- Table Scroll Area -->
   <div class="erpm-table-scroll" [style.padding-bottom]="paddingBottom">
     <table
@@ -160,75 +245,13 @@
                 </div>
               </td>
             </tr>
-          } @else {
-            @for (row of data; track getRowTrackId(row, $index); let idx = $index) {
-              <tr
-                [class.clickable-row]="clickableRows"
-                [class.selected-row]="isRowSelected(row)"
-                (click)="onRowClick(row, $event)"
-              >
-                @if (selectable) {
-                  <td class="table-col-checkbox text-center" (click)="$event.stopPropagation()">
-                    <input
-                      type="checkbox"
-                      class="erpm-checkbox"
-                      [checked]="isRowSelected(row)"
-                      (change)="toggleRowSelection(row, $event)"
-                    />
-                  </td>
-                }
-
-                @if (showIndex) {
-                  <td class="table-col-index text-center text-slate-400 font-mono">
-                    {{ calculateRowIndex(idx) }}
-                  </td>
-                }
-
-                @for (col of effectiveColumns(); track col.key) {
-                  <td
-                    [style.width]="col.width"
-                    [style.min-width]="col.minWidth || col.width"
-                    [class.text-left]="!col.align || col.align === 'left'"
-                    [class.text-center]="col.align === 'center'"
-                    [class.text-right]="col.align === 'right'"
-                    [class.money-cell]="col.type === 'currency' || col.nowrap"
-                    [class.sticky-col-left]="col.sticky === 'left'"
-                    [class.sticky-col-right]="col.sticky === 'right'"
-                  >
-                    @if (getCellTemplate(col, isEditActive); as customTpl) {
-                      <ng-container
-                        *ngTemplateOutlet="customTpl; context: { $implicit: row, row: row, index: idx, column: col, canEdit: isEditActive }"
-                      ></ng-container>
-                    } @else {
-                      @switch (col.type) {
-                        @case ('currency') {
-                          <span class="font-mono font-numeric">{{ getCellValue(row, col.key) | number:(col.numberFormat || '1.0-0') }}&nbsp;đ</span>
-                        }
-                        @case ('number') {
-                          <span class="font-mono font-numeric">{{ getCellValue(row, col.key) | number:(col.numberFormat || '1.0-0') }}{{ col.suffix || '' }}</span>
-                        }
-                        @case ('date') {
-                          <span class="font-mono">{{ getCellValue(row, col.key) | date:(col.dateFormat || 'dd/MM/yyyy') }}</span>
-                        }
-                        @case ('badge') {
-                          <span class="erpm-status-badge" [ngClass]="getBadgeClass(col, row)">
-                            {{ getBadgeLabel(col, row) }}
-                          </span>
-                        }
-                        @default {
-                          <span>{{ getCellValue(row, col.key) }}{{ col.suffix || '' }}</span>
-                        }
-                      }
-                    }
-                  </td>
-                }
-              </tr>
-            }
           }
         }
       </tbody>
     </table>
   </div>
+
+  }
 
   <!-- Table Pagination Footer (If pagination is enabled) -->
   @if (pagination && !isEditActive) {

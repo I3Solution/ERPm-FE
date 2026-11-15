@@ -286,3 +286,60 @@
     color: var(--erpm-text-heading, #0f172a);
   }
 }
+
+/* ===== Material table core (desktop) and Ionic cards (phone) ===== */
+:host {
+  /* Map the Material table tokens onto ERPm tokens so light/dark follow the app theme. */
+  --mat-table-background-color: var(--erpm-bg-surface);
+  --mat-table-header-headline-color: var(--erpm-text-muted);
+  --mat-table-row-item-label-text-color: var(--erpm-text-body);
+  --mat-table-row-item-outline-color: var(--erpm-border);
+  --mat-table-header-container-height: 44px;
+  --mat-table-row-item-container-height: 52px;
+  --mat-sort-arrow-color: var(--erpm-text-muted);
+  --mat-table-header-headline-font: inherit;
+  --mat-table-row-item-label-text-font: inherit;
+}
+
+.erpm-mat-scroll { overflow-x: auto; }
+.erpm-mat-table { width: 100%; table-layout: auto; }
+/* Cells wrap instead of widening the table, so 1366px screens need no horizontal scroll. */
+.erpm-mat-table th.mat-mdc-header-cell,
+.erpm-mat-table td.mat-mdc-cell { padding: 0.5rem 0.75rem; overflow-wrap: anywhere; }
+.erpm-mat-table th.mat-mdc-header-cell { font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.03em; line-height: 1.2; }
+/* One width rule per column kind, shared by every screen (fixed layout: same kind, same width everywhere);
+   text columns share the remaining width and wrap. Row actions wrap inside their column. */
+.erpm-mat-table { table-layout: fixed; }
+.erpm-mat-table [data-kind='code'] { width: 9rem; }
+.erpm-mat-table [data-kind='date'] { width: 8rem; }
+.erpm-mat-table [data-kind='number'] { width: 8rem; }
+.erpm-mat-table [data-kind='status'] { width: 8rem; }
+.erpm-mat-table [data-kind='actions'] { width: 11rem; }
+.erpm-mat-table td[data-kind='actions'] > div { flex-wrap: wrap; }
+.erpm-mat-table .table-col-checkbox { width: 44px; }
+.erpm-mat-table .table-col-index { width: 56px; }
+/* A column that cannot sort shows no sort arrow. */
+.erpm-mat-table ::ng-deep .mat-sort-header-disabled .mat-sort-header-arrow,
+.erpm-mat-table ::ng-deep th[aria-disabled='true'] .mat-sort-header-arrow { display: none; }
+.erpm-mat-table td.mat-mdc-table-sticky,
+.erpm-mat-table th.mat-mdc-table-sticky { background: var(--erpm-bg-surface); }
+.erpm-mat-table tr.clickable-row { cursor: pointer; }
+.erpm-mat-table tr.clickable-row:hover td { background: var(--erpm-bg-surface-active); }
+.erpm-mat-table tr.selected-row td { background: var(--erpm-bg-surface-active); }
+
+.erpm-data-cards { display: flex; flex-direction: column; gap: 0.75rem; padding: 0.75rem; }
+.erpm-data-card {
+  margin: 0;
+  background: var(--erpm-bg-surface);
+  border: 1px solid var(--erpm-border);
+  box-shadow: none;
+  &.clickable-row { cursor: pointer; }
+  &.selected-row { border-color: var(--erpm-border-focus); }
+}
+.card-field { display: flex; justify-content: space-between; gap: 1rem; padding: 0.25rem 0; }
+.card-label { color: var(--erpm-text-muted); font-size: 0.8rem; }
+.card-value { text-align: right; color: var(--erpm-text-body); min-width: 0; overflow-wrap: anywhere; }
+.card-actions {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-end; margin-top: 0.5rem;
+  ::ng-deep .erpm-btn { min-height: 44px; min-width: 44px; }
+}

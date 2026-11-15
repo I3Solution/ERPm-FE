@@ -1,4 +1,5 @@
-﻿import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+﻿import { LocalizationService } from '../../../core/services/localization.service';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
@@ -23,6 +24,9 @@ import { DataTableComponent, TableColumnComponent } from '../../../shared/compon
 })
 export class UsersComponent implements OnInit {
   public auth = inject(AuthService);
+  private i18n = inject(LocalizationService);
+  /** Sorts the role column by the label the user reads, not the stored code. */
+  public roleLabel = (row: UserAccount): string => this.i18n.translate('acc.role.' + row.role);
   private api = inject(OrgAdminService);
 
   public users = signal<UserAccount[]>([]);

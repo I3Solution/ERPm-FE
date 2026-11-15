@@ -1,3 +1,4 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
@@ -33,6 +34,7 @@ describe('UsersComponent', () => {
     await TestBed.configureTestingModule({
       imports: [UsersComponent],
       providers: [
+        { provide: BreakpointObserver, useValue: { observe: () => of({ matches: false, breakpoints: {} }) } },
         { provide: OrgAdminService, useValue: api },
         { provide: AuthService, useValue: { can: (a: string) => granted.has(a), account: () => ({ isSuperAdmin: false } as Partial<Account>) } },
         { provide: LocalizationService, useValue: { currentLang: signal('vi'), translate: (key: string) => key } }

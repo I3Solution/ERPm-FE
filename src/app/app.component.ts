@@ -38,7 +38,8 @@ export class AppComponent {
   // before each dialog's own handler; confirm/preview dialogs opt out via their backdrop classes.
   private readonly blockBackdropClose = document.addEventListener('click', e => {
     const c = (e.target as HTMLElement | null)?.classList;
-    if (c?.contains('erpm-modal-backdrop') && !c.contains('app-dialog-backdrop') && !c.contains('print-dialog-backdrop')) {
+    const isBackdrop = c?.contains('erpm-modal-backdrop') || c?.contains('modal-backdrop') || c?.contains('drawer-backdrop');
+    if (isBackdrop && !c!.contains('app-dialog-backdrop') && !c!.contains('print-dialog-backdrop')) {
       e.stopPropagation();
     }
   }, true);

@@ -61,6 +61,10 @@ export class DataTableComponent<T = any> {
 
   // === Events & Outputs ===
   @Output() rowClick = new EventEmitter<T>();
+  /** Current sort as the list URL keeps it: "field" (asc) or "-field" (desc). Shows the header arrow after reload/Back. */
+  @Input() set sort(v: string | null | undefined) {
+    this.currentSort.set(v ? { column: v.replace(/^-/, ''), direction: v.startsWith('-') ? 'desc' : 'asc' } : null);
+  }
   @Output() sortChange = new EventEmitter<TableSort>();
   @Output() selectionChange = new EventEmitter<T[]>();
   @Output() pageChange = new EventEmitter<{ pageIndex: number; pageSize: number }>();

@@ -9,6 +9,7 @@ import { FormControlComponent } from '../../../shared/components/form-control/fo
 import { UserFormDialogComponent } from '../../../shared/components/user-form-dialog/user-form-dialog.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { DataTableComponent, TableColumnComponent } from '../../../shared/components/data-table';
+import { ListAction, ListPageComponent } from '../../../shared/components/list-page/list-page.component';
 
 /**
  * Internal accounts. A company administrator only receives the accounts of its own company's employees (the
@@ -17,7 +18,7 @@ import { DataTableComponent, TableColumnComponent } from '../../../shared/compon
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, FormControlComponent, UserFormDialogComponent, DataTableComponent, TableColumnComponent],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, FormControlComponent, UserFormDialogComponent, DataTableComponent, TableColumnComponent, ListPageComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
@@ -32,6 +33,14 @@ export class UsersComponent implements OnInit {
   public users = signal<UserAccount[]>([]);
   public branchTree = signal<OrgBranch[]>([]);
   public loading = signal(false);
+  public loadError = signal(false);
+
+  /** Header action bar of the shared list page. */
+  public readonly headerActions: ListAction[] = [{ id: 'create', label: 'usr.add', icon: '+', primary: true, permission: 'sys:user:create' }];
+
+  public onHeaderAction(id: string): void {
+    if (id === 'create') this.openCreate();
+  }
   public keyword = signal('');
   public keywordControl = new FormControl('');
 
@@ -58,9 +67,10 @@ export class UsersComponent implements OnInit {
 
   public load(): void {
     this.loading.set(true);
+    this.loadError.set(false);
     this.api.users().subscribe({
       next: users => { this.users.set(users); this.loading.set(false); },
-      error: () => this.loading.set(false)
+      error: () => { this.loadError.set(true); this.loading.set(false); }
     });
   }
 

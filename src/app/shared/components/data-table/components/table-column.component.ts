@@ -1,7 +1,7 @@
 ﻿import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
-import { ColumnAlign, ColumnType, TableBadgeConfig } from './data-table.models';
-import { InputControlType } from '../input-control/input-control.component';
-import { SelectOption } from '../custom-select/custom-select.component';
+import { ColumnAlign, ColumnType, TableBadgeConfig } from '../interfaces/data-table.models';
+import { InputControlType } from '../../input-control/input-control.component';
+import { SelectOption } from '../../custom-select/custom-select.component';
 
 /**
  * Declarative column definition component for enterprise DataTable.
@@ -28,6 +28,8 @@ export class TableColumnComponent {
   @Input() align?: ColumnAlign = 'left';
   @Input() type?: ColumnType = 'text';
   @Input() sortable = false;
+  /** Value to sort this column by when it differs from the cell value (e.g. a translated label). */
+  @Input() sortValue?: (row: any) => unknown;
   @Input() sticky?: 'left' | 'right';
   @Input() nowrap = false;
   @Input() dateFormat?: string;

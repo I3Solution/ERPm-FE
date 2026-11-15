@@ -1,0 +1,15 @@
+<button type="button" class="dm-trigger" aria-haspopup="menu" [attr.aria-expanded]="isOpen()"
+  [attr.aria-label]="label ? (label | translate) : null" (click)="toggle($event)">
+  <ng-content></ng-content>
+</button>
+
+@if (isOpen()) {
+  <div #panel class="dm-panel" role="menu" (click)="$event.stopPropagation()">
+    @for (item of items; track item.id) {
+      <button type="button" role="menuitem" class="dm-item" [class.is-danger]="item.danger" [class.mobile-only]="item.mobileOnly" [disabled]="item.disabled" (click)="choose(item, $event)">
+        @if (item.icon) { <span class="dm-icon" aria-hidden="true">{{ item.icon }}</span> }
+        <span>{{ item.label | translate }}</span>
+      </button>
+    }
+  </div>
+}

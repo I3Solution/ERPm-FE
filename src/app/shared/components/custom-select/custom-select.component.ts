@@ -4,7 +4,9 @@ import { ChangeDetectorRef, inject, ChangeDetectionStrategy,
   EventEmitter,
   HostListener,
   Input,
+  OnDestroy,
   Output,
+  ViewChild,
   computed,
   forwardRef,
   signal
@@ -38,7 +40,7 @@ export interface SelectOption {
     }
   ]
 })
-export class CustomSelectComponent implements ControlValueAccessor {
+export class CustomSelectComponent implements ControlValueAccessor, OnDestroy {
   private detector = inject(ChangeDetectorRef);
   @Input() inputId = '';
   public activeIndex = signal(0);
@@ -94,6 +96,58 @@ export class CustomSelectComponent implements ControlValueAccessor {
   });
 
   constructor(private elementRef: ElementRef) {}
+
+  private panelEl: HTMLElement | null = null;
+  private readonly reposition = () => { if (this.panelEl) this.placePanel(this.panelEl); };
+  private readonly panelKey = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') this.onEscape(); else this.onKey(event);
+  };
+
+  /**
+   * Called when the `@if`/`*ngIf` creates or destroys the panel. While open the panel lives under <body> with
+   * `position: fixed`, so a parent with overflow:hidden (such as .erpm-modal) cannot clip it.
+   */
+  @ViewChild('panel') set panel(ref: ElementRef<HTMLElement> | undefined) {
+    if (!ref) { this.detachPanel(); return; }
+    if (this.panelEl === ref.nativeElement) return;
+    this.panelEl = ref.nativeElement;
+    document.body.appendChild(this.panelEl);
+    this.placePanel(this.panelEl);
+    window.addEventListener('resize', this.reposition);
+    document.addEventListener('scroll', this.reposition, true);
+    // The panel is no longer inside the host, so keys typed in its search box need their own listener.
+    this.panelEl.addEventListener('keydown', this.panelKey);
+  }
+
+  ngOnDestroy(): void { this.detachPanel(); }
+
+  private detachPanel(): void {
+    if (!this.panelEl) return;
+    window.removeEventListener('resize', this.reposition);
+    document.removeEventListener('scroll', this.reposition, true);
+    this.panelEl.removeEventListener('keydown', this.panelKey);
+    // The panel lives under <body>, so destroying the component (modal closed, route changed) would leave it behind.
+    this.panelEl.remove();
+    this.panelEl = null;
+  }
+
+  /** Fixed position under the trigger, or above it when there is more room there. */
+  private placePanel(panel: HTMLElement): void {
+    const trigger = this.elementRef.nativeElement.querySelector('.custom-select-trigger') as HTMLElement | null;
+    if (!trigger) return;
+    const rect = trigger.getBoundingClientRect();
+    const below = window.innerHeight - rect.bottom;
+    const openBelow = below >= 300 || below >= rect.top;
+    const width = Math.min(Math.max(rect.width, 160), window.innerWidth - 16);
+    const style = panel.style;
+    style.position = 'fixed';
+    style.zIndex = '21000';
+    style.left = `${Math.max(8, Math.min(rect.left, window.innerWidth - width - 8))}px`;
+    style.width = `${width}px`;
+    style.minWidth = `${width}px`;
+    if (openBelow) { style.top = `${rect.bottom + 4}px`; style.bottom = 'auto'; }
+    else { style.bottom = `${window.innerHeight - rect.top + 4}px`; style.top = 'auto'; }
+  }
 
   // ControlValueAccessor methods
   writeValue(value: any): void {

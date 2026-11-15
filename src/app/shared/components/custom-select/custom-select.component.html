@@ -63,7 +63,7 @@
   </div>
 
   <!-- Dropdown Flyout Menu -->
-  <div *ngIf="isOpen()" class="custom-select-dropdown" (click)="$event.stopPropagation()">
+  <div *ngIf="isOpen()" #panel class="custom-select-dropdown" (click)="$event.stopPropagation()">
     <!-- Search Box (if searchable or options > 5) -->
     <div *ngIf="searchable || options.length > 5" class="dropdown-search">
       <span class="search-icon">🔍</span>

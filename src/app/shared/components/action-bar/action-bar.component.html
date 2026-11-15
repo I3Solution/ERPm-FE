@@ -1,0 +1,14 @@
+<div class="action-bar">
+  @if (primaryAction(); as main) {
+    <button type="button" class="erpm-btn erpm-btn-primary toolbar-primary" [disabled]="main.disabled"
+      [attr.aria-label]="main.label | translate" (click)="actionSelect.emit(main.id)">
+      @if (main.icon) { <span aria-hidden="true">{{ main.icon }}</span> }
+      <span class="toolbar-label">{{ main.label | translate }}</span>
+    </button>
+  }
+  @if (menuActions().length) {
+    <app-dropdown-menu class="toolbar-more" [items]="menuActions()" label="common.actions" (itemSelect)="actionSelect.emit($event)">
+      <span class="erpm-btn erpm-btn-secondary toolbar-more-btn" aria-hidden="true">⋯</span>
+    </app-dropdown-menu>
+  }
+</div>

@@ -27,6 +27,7 @@ export const routes: Routes = [
   { path: 'orders/:id', redirectTo: 'sales/orders/:id', pathMatch: 'full' },
   { path: 'sales/returns', loadComponent: () => import('./modules/SD/returns/returns.component').then(m => m.ReturnsComponent), canActivate: [permissionGuard('sd:return:view')] },
   { path: 'sales/returns/:id', loadComponent: () => import('./modules/SD/returns/return-detail/return-detail.component').then(m => m.ReturnDetailComponent), canActivate: [permissionGuard('sd:return:view')] },
+  { path: 'sales/analytics', loadComponent: () => import('./modules/SD/sales-analytics/sales-analytics.component').then(m => m.SalesAnalyticsComponent), canActivate: [permissionGuard('sd:report:view')] },
   { path: 'returns', redirectTo: 'sales/returns', pathMatch: 'full' },
   { path: 'returns/:id', redirectTo: 'sales/returns/:id', pathMatch: 'full' },
   { path: 'inventory', loadComponent: () => import('./modules/WMS/inventory/inventory.component').then(m => m.InventoryComponent), canActivate: [permissionGuard('wms:stock:view')] },

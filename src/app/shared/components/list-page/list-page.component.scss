@@ -1,6 +1,22 @@
-:host { display: block; }
-.header-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.list-filters { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
+:host { display: block; padding: 1.5rem; max-width: 1400px; margin: 0 auto; }
+@media (max-width: 700px) { :host { padding: 1rem; } }
+.header-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.toolbar-primary { display: inline-flex; align-items: center; gap: 0.375rem; }
+.toolbar-more-btn { min-width: 2.25rem; justify-content: center; }
+/* Phones: the main button keeps only its icon (the label stays as aria-label) so the title keeps the room. */
+@media (max-width: 480px) {
+  .erpm-page-header { flex-direction: row; align-items: flex-start; gap: 0.75rem; }
+  .header-info { min-width: 0; }
+  .header-actions { flex: none; flex-wrap: nowrap; }
+  .toolbar-primary:has(> [aria-hidden]) .toolbar-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+}
+/* Standard toolbar: one wrapping row, the same control widths on every list. Pages only project their controls. */
+.list-filters { margin-bottom: 1rem; }
+.list-filters ::ng-deep > [filters] { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; width: 100%; margin: 0; }
+.list-filters ::ng-deep > [filters] > app-form-control { flex: 1 1 12rem; min-width: 10rem; max-width: 16rem; }
+.list-filters ::ng-deep > [filters] > app-form-control:first-child,
+.list-filters ::ng-deep > [filters] > .search-box { flex: 1 1 14rem; max-width: 22rem; }
+.list-filters ::ng-deep > [filters] > app-form-control:has(input[type='checkbox']) { flex: 0 0 auto; min-width: 0; max-width: none; }
 .list-filters:empty { display: none; }
 .list-body { transition: opacity 0.15s; &.dimmed { opacity: 0.6; pointer-events: none; } }
 .list-progress {

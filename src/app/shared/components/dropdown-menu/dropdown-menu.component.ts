@@ -50,7 +50,7 @@ export class DropdownMenuComponent implements OnDestroy {
     window.addEventListener('resize', this.reposition);
     document.addEventListener('scroll', this.reposition, true);
     this.panelEl.addEventListener('keydown', this.panelKey);
-    this.panelEl.querySelector<HTMLElement>('[role="menuitem"]:not([disabled])')?.focus();
+    this.focusableItems()[0]?.focus();
   }
 
   ngOnDestroy(): void { this.detachPanel(); }
@@ -81,15 +81,25 @@ export class DropdownMenuComponent implements OnDestroy {
   @HostListener('keydown', ['$event'])
   onKey(event: KeyboardEvent): void {
     if (!this.isOpen()) return;
-    const buttons = Array.from(this.panelEl?.querySelectorAll<HTMLElement>('[role="menuitem"]:not([disabled])') ?? []);
+    const buttons = this.focusableItems();
     const current = buttons.indexOf(document.activeElement as HTMLElement);
     if (event.key === 'Escape') { event.preventDefault(); this.close(true); }
     else if (event.key === 'Tab') this.close(false);
+    else if (event.key === 'Home' || event.key === 'End') {
+      event.preventDefault();
+      buttons[event.key === 'Home' ? 0 : buttons.length - 1]?.focus();
+    }
     else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
       const next = event.key === 'ArrowDown' ? (current + 1) % buttons.length : (current <= 0 ? buttons.length - 1 : current - 1);
       buttons[next]?.focus();
     }
+  }
+
+  /** Enabled items that are actually shown: phone-only items are display:none on wide screens and must not take the focus. */
+  private focusableItems(): HTMLElement[] {
+    return Array.from(this.panelEl?.querySelectorAll<HTMLElement>('[role="menuitem"]:not([disabled])') ?? [])
+      .filter(el => el.getClientRects().length > 0);
   }
 
   private close(returnFocus: boolean): void {

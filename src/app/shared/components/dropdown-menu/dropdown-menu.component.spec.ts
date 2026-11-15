@@ -75,6 +75,27 @@ describe('DropdownMenuComponent', () => {
     expect(panel()).toBeNull();
   });
 
+  it('skips hidden items for focus and arrow keys, and Home/End jump to the ends', () => {
+    fixture.componentInstance.items = [{ id: 'lang', label: 'header.lang_en', mobileOnly: true }, { id: 'profile', label: 'menu.profile' }, { id: 'sign-out', label: 'auth.sign_out' }];
+    fixture.componentRef.changeDetectorRef.markForCheck();
+    const hide = document.createElement('style');
+    hide.textContent = '.dm-item.mobile-only { display: none; }';
+    document.head.appendChild(hide);
+    open();
+    expect(document.activeElement).toBe(items()[1]);
+    key('ArrowDown');
+    expect(document.activeElement).toBe(items()[2]);
+    key('ArrowDown');
+    expect(document.activeElement).toBe(items()[1]);
+    key('ArrowUp');
+    expect(document.activeElement).toBe(items()[2]);
+    key('Home');
+    expect(document.activeElement).toBe(items()[1]);
+    key('End');
+    expect(document.activeElement).toBe(items()[2]);
+    hide.remove();
+  });
+
   it('marks phone-only items so wider screens hide them', () => {
     fixture.componentInstance.items = [{ id: 'lang', label: 'header.lang_en', mobileOnly: true }, { id: 'sign-out', label: 'auth.sign_out' }];
     fixture.componentRef.changeDetectorRef.markForCheck();

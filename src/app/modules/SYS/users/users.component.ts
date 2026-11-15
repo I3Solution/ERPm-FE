@@ -18,19 +18,12 @@ import { ListAction, ListPageComponent } from '../../../shared/components/list-p
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, ListPageComponent, ReactiveFormsModule, TranslatePipe, FormControlComponent, UserFormDialogComponent, DataTableComponent, TableColumnComponent],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, FormControlComponent, UserFormDialogComponent, DataTableComponent, TableColumnComponent, ListPageComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
-  /** Header action bar of the shared list page. */
-  public readonly headerActions: ListAction[] = [{ id: 'create', label: 'usr.add', icon: '+', primary: true, permission: 'sys:user:create' }];
-
-  public onHeaderAction(id: string): void {
-    if (id === 'create') this.openCreate();
-  }
-
   public auth = inject(AuthService);
   private i18n = inject(LocalizationService);
   /** Sorts the role column by the label the user reads, not the stored code. */
@@ -40,6 +33,14 @@ export class UsersComponent implements OnInit {
   public users = signal<UserAccount[]>([]);
   public branchTree = signal<OrgBranch[]>([]);
   public loading = signal(false);
+  public loadError = signal(false);
+
+  /** Header action bar of the shared list page. */
+  public readonly headerActions: ListAction[] = [{ id: 'create', label: 'usr.add', icon: '+', primary: true, permission: 'sys:user:create' }];
+
+  public onHeaderAction(id: string): void {
+    if (id === 'create') this.openCreate();
+  }
   public keyword = signal('');
   public keywordControl = new FormControl('');
 
@@ -66,9 +67,10 @@ export class UsersComponent implements OnInit {
 
   public load(): void {
     this.loading.set(true);
+    this.loadError.set(false);
     this.api.users().subscribe({
       next: users => { this.users.set(users); this.loading.set(false); },
-      error: () => this.loading.set(false)
+      error: () => { this.loadError.set(true); this.loading.set(false); }
     });
   }
 

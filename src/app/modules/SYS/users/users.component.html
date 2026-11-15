@@ -1,10 +1,20 @@
-<app-list-page title="usr.title" subtitle="usr.subtitle" [loading]="loading()" [count]="rows().length" [total]="rows().length"
-  [pageSize]="1000000" emptyText="usr.empty" [actions]="headerActions" (actionSelect)="onHeaderAction($event)">
-  <div filters class="usr-toolbar">
-    <app-form-control class="usr-search" [formControl]="keywordControl" type="text" [placeholder]="'common.search' | translate"></app-form-control>
+<app-list-page
+  title="usr.title"
+  subtitle="usr.subtitle"
+  [loading]="loading()"
+  [error]="loadError()"
+  [count]="rows().length"
+  [total]="rows().length"
+  [pageSize]="5000"
+  emptyText="usr.empty"
+  (retry)="load()"
+  [actions]="headerActions"
+  (actionSelect)="onHeaderAction($event)">
+
+  <div filters>
+    <app-form-control [formControl]="keywordControl" type="text" [placeholder]="'common.search' | translate"></app-form-control>
   </div>
 
-  <div class="erpm-table-container">
     <app-data-table
       [data]="rows()"
       [loading]="loading()"
@@ -54,7 +64,6 @@
         </ng-template>
       </app-column>
     </app-data-table>
-  </div>
 </app-list-page>
 
 @if (dialogUser() !== undefined) {

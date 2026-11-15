@@ -18,7 +18,7 @@
         <div class="role-list-head">
           <app-form-control class="role-search" [formControl]="keywordControl" type="text" [placeholder]="'common.search' | translate"></app-form-control>
           @if (auth.can('sys:role:create')) {
-            <button type="button" class="erpm-btn erpm-btn-primary erpm-btn-sm" (click)="startNew()">{{ 'role.add' | translate }}</button>
+            <button type="button" class="erpm-btn erpm-btn-primary" (click)="startNew()">{{ 'role.add' | translate }}</button>
           }
         </div>
         <ul>
@@ -30,10 +30,10 @@
               </button>
               <span class="role-row-actions">
                 @if (auth.can('sys:role:create')) {
-                  <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="copy(role)">{{ 'role.copy' | translate }}</button>
+                  <button type="button" class="erpm-btn erpm-btn-secondary" (click)="copy(role)">{{ 'role.copy' | translate }}</button>
                 }
                 @if (!role.isSystemRole && auth.can('sys:role:delete')) {
-                  <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="remove(role)">{{ 'common.delete' | translate }}</button>
+                  <button type="button" class="erpm-btn erpm-btn-secondary" (click)="remove(role)">{{ 'common.delete' | translate }}</button>
                 }
               </span>
             </li>
@@ -87,7 +87,7 @@
 
             @if (conflict()) {
               <p class="role-note" role="alert">{{ 'role.conflict_hint' | translate }}
-                <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="reloadSelected()">{{ 'role.reload' | translate }}</button></p>
+                <button type="button" class="erpm-btn erpm-btn-secondary" (click)="reloadSelected()">{{ 'role.reload' | translate }}</button></p>
             }
             @if (!readOnly()) {
               <div class="role-actions">

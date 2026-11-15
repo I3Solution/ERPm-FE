@@ -21,9 +21,9 @@ import { map } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormArray, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../pipes/translate.pipe';
-import { TableColumn, TablePagination, TableSort } from './data-table.models';
-import { DataTableCellDirective } from './data-table-cell.directive';
-import { TableColumnComponent } from './table-column.component';
+import { TableColumn, TablePagination, TableSort } from './interfaces/data-table.models';
+import { DataTableCellDirective } from './directives/data-table-cell.directive';
+import { TableColumnComponent } from './components/table-column.component';
 import { FormControlComponent } from '../form-control/form-control.component';
 import { InputControlType } from '../input-control/input-control.component';
 
@@ -326,6 +326,19 @@ export class DataTableComponent<T = any> {
     ...(this.showIndex ? ['__index'] : []),
     ...this.effectiveColumns().map(c => c.key)
   ]);
+
+  /**
+   * Column kind drives one shared width rule (see the data-kind rules in the stylesheet), so no screen sets its own
+   * widths: the width/minWidth a screen declares only applies to the loading, empty and inline-edit layout.
+   */
+  public colKind(col: TableColumn<T> | TableColumnComponent): 'actions' | 'status' | 'date' | 'number' | 'code' | 'text' {
+    if (col.key === 'actions' || col.type === 'actions') return 'actions';
+    if (col.type === 'badge' || col.key === 'status') return 'status';
+    if (col.type === 'date') return 'date';
+    if (col.type === 'number' || col.type === 'currency') return 'number';
+    if (/^code$|Code$|Number$/.test(col.key)) return 'code';
+    return 'text';
+  }
 
   public matTrackBy = (index: number, row: T): any => this.getRowTrackId(row, index);
 

@@ -307,7 +307,13 @@
 .erpm-mat-table th.mat-mdc-header-cell,
 .erpm-mat-table td.mat-mdc-cell { padding: 0.5rem 0.75rem; overflow-wrap: anywhere; }
 .erpm-mat-table th.mat-mdc-header-cell { font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.03em; line-height: 1.2; }
-.erpm-mat-table .mat-column-actions { white-space: nowrap; }
+/* One width rule per column kind, shared by every screen; text columns share the remaining width. */
+.erpm-mat-table [data-kind='code'] { width: 9rem; min-width: 7rem; max-width: 12rem; }
+.erpm-mat-table [data-kind='date'] { width: 8rem; min-width: 7rem; }
+.erpm-mat-table [data-kind='number'] { width: 8rem; min-width: 6rem; }
+.erpm-mat-table [data-kind='status'] { width: 8rem; min-width: 7rem; }
+.erpm-mat-table [data-kind='actions'] { width: 1%; white-space: nowrap; }
+.erpm-mat-table [data-kind='text'] { min-width: 9rem; }
 .erpm-mat-table td.mat-mdc-table-sticky,
 .erpm-mat-table th.mat-mdc-table-sticky { background: var(--erpm-bg-surface); }
 .erpm-mat-table tr.clickable-row { cursor: pointer; }

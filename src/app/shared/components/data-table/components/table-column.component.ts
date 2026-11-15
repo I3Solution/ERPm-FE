@@ -1,7 +1,7 @@
 ﻿import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
-import { ColumnAlign, ColumnType, TableBadgeConfig } from './data-table.models';
-import { InputControlType } from '../input-control/input-control.component';
-import { SelectOption } from '../custom-select/custom-select.component';
+import { ColumnAlign, ColumnType, TableBadgeConfig } from '../interfaces/data-table.models';
+import { InputControlType } from '../../input-control/input-control.component';
+import { SelectOption } from '../../custom-select/custom-select.component';
 
 /**
  * Declarative column definition component for enterprise DataTable.

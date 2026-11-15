@@ -64,7 +64,7 @@ export class DataTableComponent<T = any> {
 
   // === Dimensions & Layout Controls ===
   @Input() tableMinWidth = '1100px';
-  @Input() minHeight = '360px';
+  @Input() minHeight = '0';
   @Input() paddingBottom = '0px';
 
   // === Pagination ===
@@ -338,6 +338,15 @@ export class DataTableComponent<T = any> {
     if (col.type === 'number' || col.type === 'currency') return 'number';
     if (/^code$|Code$|Number$/.test(col.key)) return 'code';
     return 'text';
+  }
+
+  /** Alignment comes from the column type, never from the screen: numbers/amounts right, date/status centered, text/code left, actions right. */
+  public alignOf(col: TableColumn<T> | TableColumnComponent): 'left' | 'center' | 'right' {
+    switch (this.colKind(col)) {
+      case 'number': case 'actions': return 'right';
+      case 'date': case 'status': return 'center';
+      default: return 'left';
+    }
   }
 
   public matTrackBy = (index: number, row: T): any => this.getRowTrackId(row, index);

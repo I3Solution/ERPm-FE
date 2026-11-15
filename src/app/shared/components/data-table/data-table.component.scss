@@ -305,7 +305,7 @@
 .erpm-mat-table { width: 100%; table-layout: auto; }
 /* Cells wrap instead of widening the table, so 1366px screens need no horizontal scroll. */
 .erpm-mat-table th.mat-mdc-header-cell,
-.erpm-mat-table td.mat-mdc-cell { padding: 0.5rem 0.75rem; overflow-wrap: anywhere; }
+.erpm-mat-table td.mat-mdc-cell { padding: 0.5rem 1rem; min-height: 48px; overflow-wrap: anywhere; }
 .erpm-mat-table th.mat-mdc-header-cell { font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.03em; line-height: 1.2; }
 /* One width rule per column kind, shared by every screen (fixed layout: same kind, same width everywhere);
    text columns share the remaining width and wrap. Row actions wrap inside their column. */
@@ -313,11 +313,16 @@
 .erpm-mat-table [data-kind='code'] { width: 9rem; }
 .erpm-mat-table [data-kind='date'] { width: 8rem; }
 .erpm-mat-table [data-kind='number'] { width: 8rem; }
-.erpm-mat-table [data-kind='status'] { width: 8rem; }
+.erpm-mat-table [data-kind='status'] { width: 10.5rem; }
 .erpm-mat-table [data-kind='actions'] { width: 11rem; }
 .erpm-mat-table td[data-kind='actions'] > div { flex-wrap: wrap; }
 .erpm-mat-table .table-col-checkbox { width: 44px; }
 .erpm-mat-table .table-col-index { width: 56px; }
+/* Header text follows the cell alignment (the sort header is a flex box, so text-align alone does nothing). */
+.erpm-mat-table [data-kind='number'] { text-align: right; }
+.erpm-mat-table th.text-center ::ng-deep .mat-sort-header-container { justify-content: center; }
+.erpm-mat-table th.text-right ::ng-deep .mat-sort-header-container,
+.erpm-mat-table th[data-kind='number'] ::ng-deep .mat-sort-header-container { justify-content: flex-end; }
 /* A column that cannot sort shows no sort arrow. */
 .erpm-mat-table ::ng-deep .mat-sort-header-disabled .mat-sort-header-arrow,
 .erpm-mat-table ::ng-deep th[aria-disabled='true'] .mat-sort-header-arrow { display: none; }

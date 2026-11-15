@@ -246,6 +246,70 @@
               </td>
             </tr>
           }
+          <!-- Edit mode without a formArray (canEdit + data) draws the rows with the custom edit cells -->
+            @for (row of data; track getRowTrackId(row, $index); let idx = $index) {
+              <tr
+                [class.clickable-row]="clickableRows"
+                [class.selected-row]="isRowSelected(row)"
+                (click)="onRowClick(row, $event)"
+              >
+                @if (selectable) {
+                  <td class="table-col-checkbox text-center" (click)="$event.stopPropagation()">
+                    <input
+                      type="checkbox"
+                      class="erpm-checkbox"
+                      [checked]="isRowSelected(row)"
+                      (change)="toggleRowSelection(row, $event)"
+                    />
+                  </td>
+                }
+
+                @if (showIndex) {
+                  <td class="table-col-index text-center text-slate-400 font-mono">
+                    {{ calculateRowIndex(idx) }}
+                  </td>
+                }
+
+                @for (col of effectiveColumns(); track col.key) {
+                  <td
+                    [style.width]="col.width"
+                    [style.min-width]="col.minWidth || col.width"
+                    [class.text-left]="!col.align || col.align === 'left'"
+                    [class.text-center]="col.align === 'center'"
+                    [class.text-right]="col.align === 'right'"
+                    [class.money-cell]="col.type === 'currency' || col.nowrap"
+                    [class.sticky-col-left]="col.sticky === 'left'"
+                    [class.sticky-col-right]="col.sticky === 'right'"
+                  >
+                    @if (getCellTemplate(col, isEditActive); as customTpl) {
+                      <ng-container
+                        *ngTemplateOutlet="customTpl; context: { $implicit: row, row: row, index: idx, column: col, canEdit: isEditActive }"
+                      ></ng-container>
+                    } @else {
+                      @switch (col.type) {
+                        @case ('currency') {
+                          <span class="font-mono font-numeric">{{ getCellValue(row, col.key) | number:(col.numberFormat || '1.0-0') }}&nbsp;đ</span>
+                        }
+                        @case ('number') {
+                          <span class="font-mono font-numeric">{{ getCellValue(row, col.key) | number:(col.numberFormat || '1.0-0') }}{{ col.suffix || '' }}</span>
+                        }
+                        @case ('date') {
+                          <span class="font-mono">{{ getCellValue(row, col.key) | date:(col.dateFormat || 'dd/MM/yyyy') }}</span>
+                        }
+                        @case ('badge') {
+                          <span class="erpm-status-badge" [ngClass]="getBadgeClass(col, row)">
+                            {{ getBadgeLabel(col, row) }}
+                          </span>
+                        }
+                        @default {
+                          <span>{{ getCellValue(row, col.key) }}{{ col.suffix || '' }}</span>
+                        }
+                      }
+                    }
+                  </td>
+                }
+              </tr>
+            }
         }
       </tbody>
     </table>

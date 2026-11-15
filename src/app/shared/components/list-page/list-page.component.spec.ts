@@ -3,16 +3,21 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
-import { ListPageComponent } from './list-page.component';
+import { ListAction, ListPageComponent } from './list-page.component';
 
 @Component({
   standalone: true,
   imports: [ListPageComponent],
   template: `<app-list-page title="t" [loading]="loading" [error]="error" [count]="count" [total]="total" [page]="page" [pageSize]="10"
-    (pageChange)="changed = $event" (retry)="retried = true"><p class="row">rows</p></app-list-page>`
+    [actions]="actions" (actionSelect)="picked.push($event)" (pageChange)="changed = $event" (retry)="retried = true"><p class="row">rows</p></app-list-page>`
 })
 class HostComponent {
-  loading = false; error = false; count = 0; total = 0; page = 1; changed = 0; retried = false;
+  loading = false; error = false; count = 0; total = 0; page = 1; changed = 0; retried = false; picked: string[] = [];
+  actions: ListAction[] = [
+    { id: 'create', label: 'common.create', icon: '➕', primary: true },
+    { id: 'export', label: 'common.actions' },
+    { id: 'secret', label: 'common.actions', permission: 'no:such:permission' }
+  ];
 }
 
 describe('ListPageComponent', () => {
@@ -57,5 +62,22 @@ describe('ListPageComponent', () => {
   it('pulls a page beyond the last page back to the last page', () => {
     host.count = 0; host.total = 25; host.page = 9; update();
     expect(host.changed).toBe(3);
+  });
+
+  it('draws the primary action as a button and reports its id', () => {
+    const btn = el().querySelector('.toolbar-primary') as HTMLButtonElement;
+    expect(btn).toBeTruthy();
+    btn.click();
+    expect(host.picked).toEqual(['create']);
+  });
+
+  it('puts the other actions in one menu and hides those the user may not use', () => {
+    expect(el().querySelectorAll('app-dropdown-menu').length).toBe(1);
+    (el().querySelector('.dm-trigger') as HTMLButtonElement).click();
+    update();
+    const items = Array.from(document.body.querySelectorAll('.dm-panel [role="menuitem"]'));
+    expect(items.length).toBe(1);
+    (items[0] as HTMLButtonElement).click();
+    expect(host.picked).toEqual(['export']);
   });
 });

@@ -1,7 +1,7 @@
 ﻿import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import { NotificationItem, NotificationListResponse } from '../../../../core/models/notification.model';
@@ -16,7 +16,7 @@ import { DataTableComponent, TableColumnComponent } from '../../../../shared/com
 @Component({
   selector: 'app-notification-center',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, TranslatePipe, RelativeTimePipe, FormControlComponent, DataTableComponent, TableColumnComponent, ListPageComponent],
+  imports: [CommonModule, FormsModule, TranslatePipe, RelativeTimePipe, FormControlComponent, DataTableComponent, TableColumnComponent, ListPageComponent],
   templateUrl: './notification-center.component.html',
   styleUrls: ['./notification-center.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

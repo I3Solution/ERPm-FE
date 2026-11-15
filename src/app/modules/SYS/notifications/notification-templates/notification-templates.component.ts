@@ -1,7 +1,7 @@
 ﻿import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import {
@@ -20,7 +20,7 @@ import { DataTableComponent, TableColumnComponent } from '../../../../shared/com
 @Component({
   selector: 'app-notification-templates',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, TranslatePipe, FormControlComponent, DataTableComponent, TableColumnComponent, ListPageComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslatePipe, FormControlComponent, DataTableComponent, TableColumnComponent, ListPageComponent],
   templateUrl: './notification-templates.component.html',
   styleUrls: ['./notification-templates.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -1,18 +1,20 @@
-<div class="usr-container">
-  <div class="erpm-page-header">
-    <div>
-      <h1 class="erpm-page-title">{{ 'usr.title' | translate }}</h1>
-      <p class="erpm-page-subtitle">{{ 'usr.subtitle' | translate }}</p>
-    </div>
-    @if (auth.can('sys:user:create')) {
-      <button type="button" class="erpm-btn erpm-btn-primary" (click)="openCreate()">{{ 'usr.add' | translate }}</button>
-    }
+<app-list-page
+  title="usr.title"
+  subtitle="usr.subtitle"
+  [loading]="loading()"
+  [error]="loadError()"
+  [count]="rows().length"
+  [total]="rows().length"
+  [pageSize]="5000"
+  emptyText="usr.empty"
+  (retry)="load()"
+  [actions]="headerActions"
+  (actionSelect)="onHeaderAction($event)">
+
+  <div filters>
+    <app-form-control [formControl]="keywordControl" type="text" [placeholder]="'common.search' | translate"></app-form-control>
   </div>
 
-  <div class="erpm-table-container">
-    <div class="usr-toolbar">
-      <app-form-control class="usr-search" [formControl]="keywordControl" type="text" [placeholder]="'common.search' | translate"></app-form-control>
-    </div>
     <app-data-table
       [data]="rows()"
       [loading]="loading()"
@@ -62,8 +64,7 @@
         </ng-template>
       </app-column>
     </app-data-table>
-  </div>
-</div>
+</app-list-page>
 
 @if (dialogUser() !== undefined) {
   <app-user-form-dialog [user]="dialogUser() ?? null" [branchTree]="branchTree()" [isSuperAdmin]="isSuperAdmin()"

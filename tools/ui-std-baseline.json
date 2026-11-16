@@ -1,0 +1,19 @@
+{
+  "src/app/modules/CRM/partners/partner-form/partner-form.component.scss": 1,
+  "src/app/modules/CRM/partners/partners.component.scss": 2,
+  "src/app/modules/dashboard/dashboard/dashboard.component.scss": 1,
+  "src/app/modules/HRM/org-tree/org-tree.component.scss": 1,
+  "src/app/modules/SD/orders/order-detail/order-detail.component.scss": 2,
+  "src/app/modules/SD/pos/pos.component.scss": 25,
+  "src/app/modules/SD/price-lists/price-list-detail/price-list-detail.component.scss": 1,
+  "src/app/modules/SD/print-preview/print-preview-dialog/print-preview-dialog.component.scss": 2,
+  "src/app/modules/SD/quotations/components/quotation-form-dialog/quotation-form-dialog.component.scss": 2,
+  "src/app/modules/SD/quotations/quotation-detail/quotation-detail.component.scss": 6,
+  "src/app/modules/SD/returns/components/return-form-dialog/return-form-dialog.component.scss": 2,
+  "src/app/modules/SD/returns/return-detail/return-detail.component.scss": 1,
+  "src/app/modules/SD/sales-analytics/sales-analytics.component.scss": 2,
+  "src/app/modules/SYS/admin-hub/admin-hub.component.scss": 3,
+  "src/app/modules/SYS/notifications/notification-center/notification-center.component.scss": 7,
+  "src/app/modules/SYS/notifications/notification-preferences/notification-preferences.component.scss": 4,
+  "src/app/modules/SYS/notifications/notification-templates/notification-templates.component.scss": 13
+}

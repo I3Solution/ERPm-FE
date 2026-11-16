@@ -38,6 +38,8 @@ jobs:
             fi
           fi
       - run: npm ci
+      - name: UI-STD lock (no hard-coded button/table sizes in screens)
+        run: node tools/check-ui-std.mjs
       - run: npm run build
       - run: npm test -- --watch=false --browsers=ChromeHeadless
         env:

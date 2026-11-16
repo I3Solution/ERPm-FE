@@ -40,6 +40,16 @@ describe('AppDialogComponent', () => {
     expect(await no).toBeFalse();
   });
 
+  it('ignores an Escape that was already handled (it opened this dialog)', () => {
+    void dialogs.confirm({ message: 'Q1' });
+    const handled = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true });
+    handled.preventDefault();
+    document.dispatchEvent(handled);
+    expect(dialogs.current()).not.toBeNull();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', cancelable: true }));
+    expect(dialogs.current()).toBeNull();
+  });
+
   it('counts Escape and a click outside as "no"', async () => {
     const byEscape = dialogs.confirm({ message: 'Q1' });
     fixture.detectChanges();

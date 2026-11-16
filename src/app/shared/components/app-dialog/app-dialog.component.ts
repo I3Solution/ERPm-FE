@@ -54,8 +54,13 @@ export class AppDialogComponent {
     }
   }
 
+  /** Escape that already opened this dialog (handled and prevented by handleModalEscape) must not also answer it. */
+  @HostListener('document:keydown.escape', ['$event'])
+  public onEscape(e: Event): void {
+    if (!e.defaultPrevented) this.cancel();
+  }
+
   /** Cancel button, Escape and a click outside the dialog all count as "no". */
-  @HostListener('document:keydown.escape')
   public cancel(): void {
     const request = this.dialogs.current();
     if (!request) return;

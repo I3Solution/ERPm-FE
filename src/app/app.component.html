@@ -102,10 +102,13 @@
       </a>
 
       <div class="nav-section-title">{{ 'menu.accounting' | translate }}</div>
-      <a class="nav-item nav-item-disabled" >
+      <a *ngIf="auth.can('acc:account:view')" routerLink="/accounting/chart-of-accounts" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">📖</span>
-        <span>{{ 'menu.accounting' | translate }}</span>
-        <span class="coming-soon">{{ 'common.coming_soon' | translate }}</span>
+        <span>{{ 'menu.acc_accounts' | translate }}</span>
+      </a>
+      <a *ngIf="auth.can('acc:posting-profile:view')" routerLink="/accounting/posting-profiles" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">🧮</span>
+        <span>{{ 'menu.acc_posting_profiles' | translate }}</span>
       </a>
 
     </nav>

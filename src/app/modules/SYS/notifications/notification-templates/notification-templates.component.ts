@@ -1,7 +1,7 @@
 ﻿import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import {
@@ -11,6 +11,8 @@ import {
   PreviewNotificationTemplateResponse
 } from '../../../../core/models/notification.model';
 import { NotificationStateService } from '../../../../core/services/notification-state.service';
+import { LocalizationService } from '../../../../core/services/localization.service';
+import { ListAction, ListPageComponent } from '../../../../shared/components/list-page/list-page.component';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { FormControlComponent } from '../../../../shared/components/form-control/form-control.component';
 import { DataTableComponent, TableColumnComponent } from '../../../../shared/components/data-table';
@@ -18,13 +20,26 @@ import { DataTableComponent, TableColumnComponent } from '../../../../shared/com
 @Component({
   selector: 'app-notification-templates',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, TranslatePipe, FormControlComponent, DataTableComponent, TableColumnComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslatePipe, FormControlComponent, DataTableComponent, TableColumnComponent, ListPageComponent],
   templateUrl: './notification-templates.component.html',
   styleUrls: ['./notification-templates.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NotificationTemplatesComponent implements OnInit {
   private http = inject(HttpClient);
+  private router = inject(Router);
+  private i18n = inject(LocalizationService);
+
+  /** Header action bar of the shared list page: Add is the primary button, the way back to the center sits in the menu. */
+  public readonly headerActions: ListAction[] = [
+    { id: 'create', label: 'ntpl.add', icon: '+', primary: true },
+    { id: 'back', label: 'notifications.back_to_center', icon: '←' }
+  ];
+
+  public onHeaderAction(id: string): void {
+    if (id === 'create') this.openCreateModal();
+    else if (id === 'back') void this.router.navigate(['/notifications']);
+  }
   public notifState = inject(NotificationStateService);
   private baseUrl = `${environment.apiBaseUrl}/api/v1/sys/notification-templates`;
 
@@ -78,32 +93,26 @@ export class NotificationTemplatesComponent implements OnInit {
     return lang === 'en' && this.formBodyEn() ? this.interpolate(this.formBodyEn()) : this.interpolate(this.formBodyVi());
   });
 
-  public readonly categories = [
-    { code: 'ALL', label: 'Tất cả phân hệ' },
-    { code: 'SD', label: '🛒 Bán hàng & POS (SD)' },
-    { code: 'WMS', label: '📦 Kho hàng & Tồn kho (WMS)' },
-    { code: 'PUR', label: '📥 Mua hàng (PUR)' },
-    { code: 'ACC', label: '💰 Kế toán (ACC)' },
-    { code: 'CRM', label: '👥 Khách hàng (CRM)' },
-    { code: 'HRM', label: '👤 Nhân sự & IAM (HRM)' },
-    { code: 'SYS', label: '⚙️ Hệ thống chung (SYS)' }
-  ];
+  private t(key: string): string { return this.i18n.translate(key); }
 
-  public readonly severities: Array<{ code: 'INFO' | 'SUCCESS' | 'WARNING' | 'DANGER'; label: string }> = [
-    { code: 'INFO', label: 'ℹ️ Thông tin (INFO)' },
-    { code: 'SUCCESS', label: '✓ Thành công (SUCCESS)' },
-    { code: 'WARNING', label: '⚠️ Cảnh báo (WARNING)' },
-    { code: 'DANGER', label: '🚨 Khẩn cấp (DANGER)' }
-  ];
+  public get categories() {
+    return ['ALL', 'SD', 'WMS', 'PUR', 'ACC', 'CRM', 'HRM', 'SYS'].map(code => ({ code, label: this.t('ntpl.cat_' + code.toLowerCase()) }));
+  }
 
-  public readonly filterCategoryOptions = this.categories.map(c => ({ value: c.code, label: c.label }));
-  public readonly formCategoryOptions = this.categories.filter(c => c.code !== 'ALL').map(c => ({ value: c.code, label: c.label }));
-  public readonly severityOptions = this.severities.map(s => ({ value: s.code, label: s.label }));
-  public readonly statusFilterOptions = [
-    { value: 'ALL', label: 'Tất cả trạng thái' },
-    { value: 'ACTIVE', label: 'Đang hoạt động' },
-    { value: 'INACTIVE', label: 'Tạm dừng' }
-  ];
+  public get severities(): Array<{ code: 'INFO' | 'SUCCESS' | 'WARNING' | 'DANGER'; label: string }> {
+    return (['INFO', 'SUCCESS', 'WARNING', 'DANGER'] as const).map(code => ({ code, label: this.t('ntpl.sev_' + code.toLowerCase()) }));
+  }
+
+  public get filterCategoryOptions() { return this.categories.map(c => ({ value: c.code, label: c.label })); }
+  public get formCategoryOptions() { return this.categories.filter(c => c.code !== 'ALL').map(c => ({ value: c.code, label: c.label })); }
+  public get severityOptions() { return this.severities.map(s => ({ value: s.code, label: s.label })); }
+  public get statusFilterOptions() {
+    return [
+      { value: 'ALL', label: this.t('ntpl.status_all') },
+      { value: 'ACTIVE', label: this.t('ntpl.status_active') },
+      { value: 'INACTIVE', label: this.t('ntpl.status_inactive') }
+    ];
+  }
 
   public readonly sampleVariables: Record<string, string> = {
     order_code: 'SO-2026-0042',
@@ -154,7 +163,7 @@ export class NotificationTemplatesComponent implements OnInit {
       },
       error: () => {
         this.isLoading.set(false);
-        this.showToast('Không thể tải danh sách mẫu thông báo');
+        this.showToast(this.t('ntpl.toast_load_failed'));
       }
     });
   }
@@ -238,12 +247,12 @@ export class NotificationTemplatesComponent implements OnInit {
 
   public saveTemplate(): void {
     if (!this.formName().trim()) {
-      this.showToast('Vui lòng nhập tên gợi nhớ cho mẫu');
+      this.showToast(this.t('ntpl.toast_name_required'));
       return;
     }
 
     if (!this.formTitleVi().trim() || !this.formBodyVi().trim()) {
-      this.showToast('Vui lòng nhập tiêu đề và nội dung tiếng Việt');
+      this.showToast(this.t('ntpl.toast_vi_required'));
       return;
     }
 
@@ -284,18 +293,18 @@ export class NotificationTemplatesComponent implements OnInit {
       this.http.put<{ data: NotificationTemplate }>(`${this.baseUrl}/${this.currentId()}`, payload).subscribe({
         next: res => {
           this.isSaving.set(false);
-          this.showToast('Cập nhật mẫu thông báo thành công!');
+          this.showToast(this.t('ntpl.toast_updated'));
           this.closeDrawer();
           this.loadTemplates();
         },
         error: () => {
           this.isSaving.set(false);
-          this.showToast('Lỗi khi lưu mẫu thông báo');
+          this.showToast(this.t('ntpl.toast_save_failed'));
         }
       });
     } else {
       if (!this.formCode().trim()) {
-        this.showToast('Vui lòng nhập mã định danh mẫu (Code)');
+        this.showToast(this.t('ntpl.toast_code_required'));
         this.isSaving.set(false);
         return;
       }
@@ -318,13 +327,13 @@ export class NotificationTemplatesComponent implements OnInit {
       this.http.post<{ data: NotificationTemplate }>(this.baseUrl, payload).subscribe({
         next: res => {
           this.isSaving.set(false);
-          this.showToast('Thêm mới mẫu thông báo thành công!');
+          this.showToast(this.t('ntpl.toast_created'));
           this.closeDrawer();
           this.loadTemplates();
         },
         error: err => {
           this.isSaving.set(false);
-          this.showToast(err?.error?.message || 'Lỗi khi tạo mới mẫu thông báo');
+          this.showToast(err?.error?.message || this.t('ntpl.toast_create_failed'));
         }
       });
     }
@@ -333,7 +342,7 @@ export class NotificationTemplatesComponent implements OnInit {
   public testSend(templateId?: number): void {
     const id = templateId || this.currentId();
     if (!id) {
-      this.showToast('Hãy lưu mẫu trước khi thử nghiệm');
+      this.showToast(this.t('ntpl.toast_save_first'));
       return;
     }
 
@@ -343,12 +352,12 @@ export class NotificationTemplatesComponent implements OnInit {
     this.http.post<{ success: boolean; data: any }>(`${this.baseUrl}/${id}/test-send`, payload).subscribe({
       next: res => {
         this.isTesting.set(false);
-        this.showToast('🔔 Đã bắn thông báo thử nghiệm! Hãy kiểm tra quả chuông và khay Toast.');
+        this.showToast(this.t('ntpl.toast_test_sent'));
         this.notifState.loadUnreadCount();
       },
       error: () => {
         this.isTesting.set(false);
-        this.showToast('Không thể gửi thông báo thử');
+        this.showToast(this.t('ntpl.toast_test_failed'));
       }
     });
   }
@@ -376,10 +385,10 @@ export class NotificationTemplatesComponent implements OnInit {
         this.templates.update(list =>
           list.map(t => (t.id === template.id ? { ...t, isActive: newStatus } : t))
         );
-        this.showToast(newStatus ? 'Đã kích hoạt mẫu thông báo' : 'Đã tạm dừng mẫu thông báo');
+        this.showToast(this.t(newStatus ? 'ntpl.toast_activated' : 'ntpl.toast_paused'));
       },
       error: () => {
-        this.showToast('Lỗi khi cập nhật trạng thái');
+        this.showToast(this.t('ntpl.toast_status_failed'));
       }
     });
   }

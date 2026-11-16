@@ -1,7 +1,7 @@
 import { AuthService } from './core/services/auth.service';
 import { ApiErrorService } from './core/services/api-error.service';
 import { BranchService } from './modules/SYS/services/branch.service';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, Injector, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, Injector, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { TranslatePipe } from './shared/pipes/translate.pipe';
@@ -37,7 +37,11 @@ import { DropdownMenuComponent, MenuItem } from './shared/components/dropdown-me
 })
 export class AppComponent {
   // Input modals: backdrop click is ignored and X/Cancel ask once edited (see guardModalDismiss).
-  private readonly guardModals = document.addEventListener('click', e => guardModalDismiss(e, () => this.injector.get(DialogService)), true);
+  private readonly guardModals = (() => {
+    const onClick = (e: MouseEvent) => guardModalDismiss(e, () => this.injector.get(DialogService));
+    document.addEventListener('click', onClick, true);
+    inject(DestroyRef).onDestroy(() => document.removeEventListener('click', onClick, true));
+  })();
 
   private readonly injector = inject(Injector);
   private readonly escapeCloseModal = document.addEventListener('keydown', e => handleModalEscape(e, () => this.injector.get(DialogService)));

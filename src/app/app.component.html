@@ -110,6 +110,14 @@
         <span class="nav-icon">🧮</span>
         <span>{{ 'menu.acc_posting_profiles' | translate }}</span>
       </a>
+      <a *ngIf="auth.can('acc:receipt-voucher:view')" routerLink="/accounting/receipt-vouchers" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">💵</span>
+        <span>{{ 'menu.acc_receipts' | translate }}</span>
+      </a>
+      <a *ngIf="auth.can('acc:payment-voucher:view')" routerLink="/accounting/payment-vouchers" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">💸</span>
+        <span>{{ 'menu.acc_payments' | translate }}</span>
+      </a>
 
     </nav>
 

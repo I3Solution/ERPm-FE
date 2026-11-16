@@ -1,12 +1,12 @@
 import { AuthService } from './core/services/auth.service';
 import { ApiErrorService } from './core/services/api-error.service';
 import { BranchService } from './modules/SYS/services/branch.service';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, Injector, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, Injector, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { TranslatePipe } from './shared/pipes/translate.pipe';
 import { LocalizationService } from './core/services/localization.service';
-import { handleModalEscape } from './shared/utils/modal-escape';
+import { guardModalDismiss, handleModalEscape } from './shared/utils/modal-escape';
 import { DialogService } from './core/services/dialog.service';
 import { ThemeService } from './core/services/theme.service';
 import { NavigationHistoryService } from './core/services/navigation-history.service';
@@ -36,15 +36,12 @@ import { DropdownMenuComponent, MenuItem } from './shared/components/dropdown-me
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  // Input modals must not close on backdrop click (accidental data loss). Capture phase runs
-  // before each dialog's own handler; confirm/preview dialogs opt out via their backdrop classes.
-  private readonly blockBackdropClose = document.addEventListener('click', e => {
-    const c = (e.target as HTMLElement | null)?.classList;
-    const isBackdrop = c?.contains('erpm-modal-backdrop') || c?.contains('modal-backdrop') || c?.contains('drawer-backdrop');
-    if (isBackdrop && !c!.contains('app-dialog-backdrop') && !c!.contains('print-dialog-backdrop')) {
-      e.stopPropagation();
-    }
-  }, true);
+  // Input modals: backdrop click is ignored and X/Cancel ask once edited (see guardModalDismiss).
+  private readonly guardModals = (() => {
+    const onClick = (e: MouseEvent) => guardModalDismiss(e, () => this.injector.get(DialogService));
+    document.addEventListener('click', onClick, true);
+    inject(DestroyRef).onDestroy(() => document.removeEventListener('click', onClick, true));
+  })();
 
   private readonly injector = inject(Injector);
   private readonly escapeCloseModal = document.addEventListener('keydown', e => handleModalEscape(e, () => this.injector.get(DialogService)));

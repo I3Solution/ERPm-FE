@@ -106,6 +106,10 @@
         <span class="nav-icon">📖</span>
         <span>{{ 'menu.acc_accounts' | translate }}</span>
       </a>
+      <a *ngIf="auth.can('acc:treasury:view')" routerLink="/accounting/treasury" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">💰</span>
+        <span>{{ 'menu.acc_treasury' | translate }}</span>
+      </a>
       <a *ngIf="auth.can('acc:posting-profile:view')" routerLink="/accounting/posting-profiles" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🧮</span>
         <span>{{ 'menu.acc_posting_profiles' | translate }}</span>

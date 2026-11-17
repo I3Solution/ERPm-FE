@@ -101,10 +101,14 @@
         <span>{{ 'menu.notification_templates' | translate }}</span>
       </a>
 
-      <div *ngIf="auth.canAny(['acc:account:view', 'acc:posting-profile:view', 'acc:receipt-voucher:view', 'acc:payment-voucher:view'])" class="nav-section-title">{{ 'menu.accounting' | translate }}</div>
+      <div *ngIf="auth.canAny(['acc:account:view', 'acc:posting-profile:view', 'acc:receipt-voucher:view', 'acc:payment-voucher:view', 'acc:treasury:view'])" class="nav-section-title">{{ 'menu.accounting' | translate }}</div>
       <a *ngIf="auth.can('acc:account:view')" routerLink="/accounting/chart-of-accounts" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">📖</span>
         <span>{{ 'menu.acc_accounts' | translate }}</span>
+      </a>
+      <a *ngIf="auth.can('acc:treasury:view')" routerLink="/accounting/treasury" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">💰</span>
+        <span>{{ 'menu.acc_treasury' | translate }}</span>
       </a>
       <a *ngIf="auth.can('acc:posting-profile:view')" routerLink="/accounting/posting-profiles" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🧮</span>

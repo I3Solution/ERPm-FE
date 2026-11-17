@@ -101,7 +101,7 @@
         <span>{{ 'menu.notification_templates' | translate }}</span>
       </a>
 
-      <div class="nav-section-title">{{ 'menu.accounting' | translate }}</div>
+      <div *ngIf="auth.canAny(['acc:account:view', 'acc:posting-profile:view', 'acc:receipt-voucher:view', 'acc:payment-voucher:view', 'acc:treasury:view'])" class="nav-section-title">{{ 'menu.accounting' | translate }}</div>
       <a *ngIf="auth.can('acc:account:view')" routerLink="/accounting/chart-of-accounts" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">📖</span>
         <span>{{ 'menu.acc_accounts' | translate }}</span>
@@ -113,6 +113,14 @@
       <a *ngIf="auth.can('acc:posting-profile:view')" routerLink="/accounting/posting-profiles" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🧮</span>
         <span>{{ 'menu.acc_posting_profiles' | translate }}</span>
+      </a>
+      <a *ngIf="auth.can('acc:receipt-voucher:view')" routerLink="/accounting/receipt-vouchers" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">💵</span>
+        <span>{{ 'menu.acc_receipts' | translate }}</span>
+      </a>
+      <a *ngIf="auth.can('acc:payment-voucher:view')" routerLink="/accounting/payment-vouchers" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">💸</span>
+        <span>{{ 'menu.acc_payments' | translate }}</span>
       </a>
 
     </nav>

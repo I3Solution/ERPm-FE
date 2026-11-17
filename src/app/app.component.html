@@ -197,6 +197,13 @@
           </svg>
         </button>
 
+        <!-- Long table cell mode: truncate with "..." and hover, or wrap -->
+        <button type="button" class="theme-toggle-btn desktop-only" (click)="toggleCellOverflow()"
+          [title]="(cellOverflow() === 'truncate' ? 'table.cell_overflow_truncate' : 'table.cell_overflow_wrap') | translate"
+          aria-label="Toggle long table cell mode">
+          <span class="theme-toggle-svg font-bold">{{ cellOverflow() === 'truncate' ? '…' : '↵' }}</span>
+        </button>
+
         <!-- Language Switcher Pill -->
         <div class="lang-switcher desktop-only">
           <button

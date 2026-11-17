@@ -9,6 +9,7 @@ import { LocalizationService } from './core/services/localization.service';
 import { guardModalDismiss, handleModalEscape } from './shared/utils/modal-escape';
 import { DialogService } from './core/services/dialog.service';
 import { ThemeService } from './core/services/theme.service';
+import { TableDisplayService } from './core/services/table-display.service';
 import { NavigationHistoryService } from './core/services/navigation-history.service';
 import { BranchTreeSelectComponent } from './shared/components/branch-tree-select/branch-tree-select.component';
 import { NotificationBellComponent } from './shared/components/notification-bell/notification-bell.component';
@@ -50,6 +51,7 @@ export class AppComponent {
     private localizationService: LocalizationService,
     public auth: AuthService, public apiErrors: ApiErrorService, private branches: BranchService,
     private themeService: ThemeService,
+    private tableDisplay: TableDisplayService,
     private router: Router,
     private navHistory: NavigationHistoryService
   ) {
@@ -102,6 +104,10 @@ export class AppComponent {
   public setLanguage(lang: 'vi' | 'en'): void {
     this.localizationService.setLanguage(lang);
   }
+
+  /** Global long-cell mode (truncate with hover, or wrap); see TableDisplayService. */
+  public get cellOverflow() { return this.tableDisplay.cellOverflow; }
+  public toggleCellOverflow(): void { this.tableDisplay.toggle(); }
 
   public toggleTheme(): void {
     this.themeService.toggleTheme();

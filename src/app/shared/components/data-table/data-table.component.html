@@ -74,7 +74,13 @@
               [attr.data-kind]="colKind(col)" [class.text-center]="alignOf(col) === 'center'" [class.text-right]="alignOf(col) === 'right'">{{ col.label | translate }}</th>
             <td mat-cell *matCellDef="let row; let idx = index" [attr.data-kind]="colKind(col)" [class.text-center]="alignOf(col) === 'center'" [class.text-right]="alignOf(col) === 'right'"
               [class.money-cell]="col.type === 'currency' || col.nowrap">
-              <ng-container *ngTemplateOutlet="viewCell; context: { row: row, col: col, idx: idx }"></ng-container>
+              @if (colKind(col) === 'actions') {
+                <ng-container *ngTemplateOutlet="viewCell; context: { row: row, col: col, idx: idx }"></ng-container>
+              } @else {
+                <div class="cell-content" appCellOverflowTitle>
+                  <ng-container *ngTemplateOutlet="viewCell; context: { row: row, col: col, idx: idx }"></ng-container>
+                </div>
+              }
             </td>
           </ng-container>
         }

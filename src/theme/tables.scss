@@ -360,3 +360,22 @@
     margin: 0 auto 1.25rem;
   }
 }
+
+/* --------------------------------------------------------------------------
+   LONG CELL CONTENT (global mode set by TableDisplayService on <html>)
+   truncate (default): clamp to N lines, "..." at the end, full text on hover.
+   wrap: show everything, the row grows.
+   -------------------------------------------------------------------------- */
+:root { --erpm-cell-clamp-lines: 2; }
+
+.erpm-mat-table .cell-content {
+  overflow-wrap: anywhere;
+}
+
+html[data-cell-overflow='truncate'] .erpm-mat-table .cell-content {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--erpm-cell-clamp-lines);
+  line-clamp: var(--erpm-cell-clamp-lines);
+  overflow: hidden;
+}

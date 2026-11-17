@@ -23,6 +23,7 @@ import { FormArray, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { TableColumn, TablePagination, TableSort } from './interfaces/data-table.models';
 import { DataTableCellDirective } from './directives/data-table-cell.directive';
+import { CellOverflowTitleDirective } from './directives/cell-overflow-title.directive';
 import { TableColumnComponent } from './components/table-column.component';
 import { FormControlComponent } from '../form-control/form-control.component';
 import { InputControlType } from '../input-control/input-control.component';
@@ -32,6 +33,7 @@ import { InputControlType } from '../input-control/input-control.component';
   standalone: true,
   imports: [
     CommonModule,
+    CellOverflowTitleDirective,
     ReactiveFormsModule,
     TranslatePipe,
     FormControlComponent,

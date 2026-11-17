@@ -560,7 +560,35 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    flex-wrap: wrap;
     gap: 0.75rem;
+
+    /* A select/field in the footer shrinks and wraps instead of overflowing on phones */
+    > app-form-control { flex: 1 1 8rem; min-width: 0; max-width: 14rem; }
+    @media (max-width: 600px) { > app-form-control { max-width: none; flex-basis: 100%; } }
+  }
+}
+
+/* Standard tab strip: <div class="erpm-tabs" role="tablist"><button class="erpm-tab active"> */
+.erpm-tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--erpm-border);
+  margin-bottom: 1rem;
+  overflow-x: auto;
+
+  .erpm-tab {
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    padding: 0.5rem 1rem;
+    color: var(--erpm-text-muted);
+    font: inherit;
+    white-space: nowrap;
+
+    &:hover { color: var(--erpm-text-heading); }
+    &.active { color: var(--erpm-primary); border-bottom-color: var(--erpm-primary); font-weight: 600; }
   }
 }
 

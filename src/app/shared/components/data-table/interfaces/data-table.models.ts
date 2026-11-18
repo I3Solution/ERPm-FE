@@ -32,6 +32,8 @@ export interface TableColumn<T = any> {
   sticky?: 'left' | 'right';
   badgeMap?: Record<string, TableBadgeConfig>;
   nowrap?: boolean;
+  /** Per-column long-text mode, overrides the table and global mode: '2lines' = clamp 2 lines + ellipsis, 'wrap' = show all. */
+  overflow?: CellOverflow;
   dateFormat?: string; // e.g. 'dd/MM/yyyy' or 'dd/MM/yyyy HH:mm'
   numberFormat?: string; // e.g. '1.0-0' or '1.2-2'
   visible?: boolean;
@@ -63,3 +65,6 @@ export interface TablePagination {
   totalItems: number;
   pageSizeOptions?: number[];
 }
+
+
+export type CellOverflow = '2lines' | 'wrap';

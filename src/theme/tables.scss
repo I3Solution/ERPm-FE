@@ -379,3 +379,19 @@ html[data-cell-overflow='truncate'] .erpm-mat-table .cell-content {
   line-clamp: var(--erpm-cell-clamp-lines);
   overflow: hidden;
 }
+
+/* Per-table / per-column override of the global mode (set via [overflow] on app-data-table or app-column). */
+html .erpm-mat-table .cell-content[data-overflow='2lines'] {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+html .erpm-mat-table .cell-content[data-overflow='wrap'] {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
+}

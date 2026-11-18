@@ -77,7 +77,7 @@
               @if (colKind(col) === 'actions') {
                 <ng-container *ngTemplateOutlet="viewCell; context: { row: row, col: col, idx: idx }"></ng-container>
               } @else {
-                <div class="cell-content" appCellOverflowTitle>
+                <div class="cell-content" appCellOverflowTitle [attr.data-overflow]="col.overflow || overflow || null">
                   <ng-container *ngTemplateOutlet="viewCell; context: { row: row, col: col, idx: idx }"></ng-container>
                 </div>
               }

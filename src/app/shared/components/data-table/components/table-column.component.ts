@@ -1,5 +1,5 @@
 ﻿import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
-import { ColumnAlign, ColumnType, TableBadgeConfig } from '../interfaces/data-table.models';
+import { CellOverflow, ColumnAlign, ColumnType, TableBadgeConfig } from '../interfaces/data-table.models';
 import { InputControlType } from '../../input-control/input-control.component';
 import { SelectOption } from '../../custom-select/custom-select.component';
 
@@ -32,6 +32,8 @@ export class TableColumnComponent {
   @Input() sortValue?: (row: any) => unknown;
   @Input() sticky?: 'left' | 'right';
   @Input() nowrap = false;
+  /** Long-text mode for this column: '2lines' or 'wrap'; unset follows the table, then the global mode. */
+  @Input() overflow?: CellOverflow;
   @Input() dateFormat?: string;
   @Input() numberFormat?: string;
   @Input() badgeMap?: Record<string, TableBadgeConfig>;

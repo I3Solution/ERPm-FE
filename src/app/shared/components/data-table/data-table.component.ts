@@ -21,7 +21,7 @@ import { map } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormArray, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../pipes/translate.pipe';
-import { TableColumn, TablePagination, TableSort } from './interfaces/data-table.models';
+import { CellOverflow, TableColumn, TablePagination, TableSort } from './interfaces/data-table.models';
 import { DataTableCellDirective } from './directives/data-table-cell.directive';
 import { CellOverflowTitleDirective } from './directives/cell-overflow-title.directive';
 import { TableColumnComponent } from './components/table-column.component';
@@ -61,6 +61,8 @@ export class DataTableComponent<T = any> {
   @Input() selectable = false;
   @Input() showIndex = true;
   @Input() clickableRows = false;
+  /** Long-text mode for every column of this table ('2lines' | 'wrap'); a column's own overflow wins. */
+  @Input() overflow?: CellOverflow;
   @Input() loading = false;
   @Input() emptyMessage = 'common.empty';
 

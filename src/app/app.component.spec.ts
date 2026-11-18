@@ -91,6 +91,7 @@ describe('MVP regression checks', () => {
       {} as any,
       { branches: signal([]), branchTree: signal([]), currentBranch: signal(null), loadBranches: () => {} } as any,
       { isDarkMode: signal(false) } as any,
+      { cellOverflow: signal('truncate'), toggle: () => {} } as any,
       mockRouter,
       { back: () => {} } as any
     ));

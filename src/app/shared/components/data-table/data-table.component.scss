@@ -19,6 +19,14 @@
   }
 }
 
+/* A screen may already wrap <app-data-table> in its own .erpm-table-container card; drop the inner card chrome so no empty band shows under the last row. */
+:host-context(.erpm-table-container) .erpm-table-container {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  margin-bottom: 0;
+}
+
 .erpm-table-scroll {
   flex: 1 1 auto;
   width: 100%;

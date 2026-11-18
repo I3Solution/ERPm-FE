@@ -9,6 +9,7 @@ export interface MenuItem {
   icon?: string;
   danger?: boolean;
   disabled?: boolean;
+  current?: boolean;
   /** Shown only below 768px, for actions the header has room for on larger screens. */
   mobileOnly?: boolean;
 }

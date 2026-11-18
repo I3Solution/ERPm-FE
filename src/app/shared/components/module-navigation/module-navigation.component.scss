@@ -1,0 +1,35 @@
+:host { display: block; }
+
+app-tree-view {
+  --tree-indent: 0.875rem;
+  --tree-marker-size: 0.625rem;
+}
+
+.nav-link, .nav-group {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-inline-size: 0;
+  color: var(--erpm-text-body);
+  overflow-wrap: anywhere;
+}
+
+.nav-link {
+  min-block-size: 2.75rem;
+  padding-inline: 0.625rem;
+  border-radius: var(--erpm-radius-sm);
+  text-decoration: none;
+
+  &:hover { background: var(--erpm-bg-surface-subtle); }
+  &:focus-visible { outline: 2px solid var(--erpm-border-focus); outline-offset: -2px; }
+}
+
+.nav-group { font-weight: 600; }
+.nav-icon { flex: none; }
+
+.active {
+  color: var(--erpm-primary-700);
+  font-weight: 700;
+}
+
+.nav-link.active { background: var(--erpm-primary-50); }

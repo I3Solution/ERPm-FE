@@ -1,16 +1,57 @@
+import { authGuard } from './core/auth.guard';
+import { permissionGuard } from './core/permission.guard';
+import { unsavedChangesGuard } from './core/unsaved-changes.guard';
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './modules/dashboard/dashboard.component';
-import { ItemsComponent } from './modules/WMS/items.component';
-import { PosComponent } from './modules/SD/pos.component';
-import { InventoryComponent } from './modules/WMS/inventory.component';
-import { PartnersComponent } from './modules/CRM/partners.component';
 
 export const routes: Routes = [
+  { path: 'login', loadComponent: () => import('./core/login/login.component').then(m => m.LoginComponent) },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'catalog', component: ItemsComponent },
-  { path: 'sales', component: PosComponent },
-  { path: 'inventory', component: InventoryComponent },
-  { path: 'partners', component: PartnersComponent },
+  { path: 'dashboard', loadComponent: () => import('./modules/dashboard/dashboard/dashboard.component').then(m => m.DashboardComponent), canActivate: [permissionGuard('dashboard:metrics:view')] },
+  { path: 'catalog', loadComponent: () => import('./modules/WMS/items/items.component').then(m => m.ItemsComponent), canActivate: [permissionGuard('wms:item:view')] },
+  { path: 'catalog/new', loadComponent: () => import('./modules/WMS/item-detail/item-detail.component').then(m => m.ItemDetailComponent), canActivate: [permissionGuard('wms:item:create')], canDeactivate: [unsavedChangesGuard] },
+  { path: 'catalog/:id', loadComponent: () => import('./modules/WMS/item-detail/item-detail.component').then(m => m.ItemDetailComponent), canActivate: [permissionGuard('wms:item:view')], canDeactivate: [unsavedChangesGuard] },
+  { path: 'sales', loadComponent: () => import('./modules/SD/pos/pos.component').then(m => m.PosComponent), canActivate: [permissionGuard('sd:invoice:view')] },
+  { path: 'sales/price-lists', loadComponent: () => import('./modules/SD/price-lists/price-lists.component').then(m => m.PriceListsComponent), canActivate: [permissionGuard('sd:pricelist:view', 'pur:pricelist:view')] },
+  { path: 'sales/price-lists/:id', loadComponent: () => import('./modules/SD/price-lists/price-list-detail/price-list-detail.component').then(m => m.PriceListDetailComponent), canActivate: [permissionGuard('sd:pricelist:view', 'pur:pricelist:view')] },
+  { path: 'price-lists', redirectTo: 'sales/price-lists', pathMatch: 'full' },
+  { path: 'price-lists/:id', redirectTo: 'sales/price-lists/:id', pathMatch: 'full' },
+  { path: 'sales/quotations', loadComponent: () => import('./modules/SD/quotations/quotations.component').then(m => m.QuotationsComponent), canActivate: [permissionGuard('sd:quotation:view')] },
+  { path: 'sales/quotations/:id', loadComponent: () => import('./modules/SD/quotations/quotation-detail/quotation-detail.component').then(m => m.QuotationDetailComponent), canActivate: [permissionGuard('sd:quotation:view')] },
+  { path: 'quotations', redirectTo: 'sales/quotations', pathMatch: 'full' },
+  { path: 'quotations/:id', redirectTo: 'sales/quotations/:id', pathMatch: 'full' },
+  { path: 'sales/orders', loadComponent: () => import('./modules/SD/orders/orders.component').then(m => m.OrdersComponent), canActivate: [permissionGuard('sd:order:view')] },
+  { path: 'sales/orders/new', loadComponent: () => import('./modules/SD/orders/order-detail/order-detail.component').then(m => m.OrderDetailComponent), canActivate: [permissionGuard('sd:order:create')] },
+  { path: 'sales/orders/:id', loadComponent: () => import('./modules/SD/orders/order-detail/order-detail.component').then(m => m.OrderDetailComponent), canActivate: [permissionGuard('sd:order:view')] },
+  { path: 'orders', redirectTo: 'sales/orders', pathMatch: 'full' },
+  { path: 'orders/new', redirectTo: 'sales/orders/new', pathMatch: 'full' },
+  { path: 'orders/:id', redirectTo: 'sales/orders/:id', pathMatch: 'full' },
+  { path: 'sales/returns', loadComponent: () => import('./modules/SD/returns/returns.component').then(m => m.ReturnsComponent), canActivate: [permissionGuard('sd:return:view')] },
+  { path: 'sales/returns/:id', loadComponent: () => import('./modules/SD/returns/return-detail/return-detail.component').then(m => m.ReturnDetailComponent), canActivate: [permissionGuard('sd:return:view')] },
+  { path: 'sales/analytics', loadComponent: () => import('./modules/SD/sales-analytics/sales-analytics.component').then(m => m.SalesAnalyticsComponent), canActivate: [permissionGuard('sd:report:view')] },
+  { path: 'returns', redirectTo: 'sales/returns', pathMatch: 'full' },
+  { path: 'returns/:id', redirectTo: 'sales/returns/:id', pathMatch: 'full' },
+  { path: 'inventory', loadComponent: () => import('./modules/WMS/inventory/inventory.component').then(m => m.InventoryComponent), canActivate: [permissionGuard('wms:stock:view')] },
+  { path: 'crm/partners', loadComponent: () => import('./modules/CRM/partners/partners.component').then(m => m.PartnersComponent), canActivate: [permissionGuard('crm:partner:view')] },
+  { path: 'crm/partners/new', loadComponent: () => import('./modules/CRM/partners/partner-form/partner-form.component').then(m => m.PartnerFormComponent), canActivate: [permissionGuard('crm:partner:create')] },
+  { path: 'crm/partners/:id/edit', loadComponent: () => import('./modules/CRM/partners/partner-form/partner-form.component').then(m => m.PartnerFormComponent), canActivate: [permissionGuard('crm:partner:view')] },
+  { path: 'partners', loadComponent: () => import('./modules/CRM/partners/partners.component').then(m => m.PartnersComponent), canActivate: [permissionGuard('crm:partner:view')] },
+  { path: 'partners/new', redirectTo: 'crm/partners/new', pathMatch: 'full' },
+  { path: 'partners/:id/edit', redirectTo: 'crm/partners/:id/edit', pathMatch: 'full' },
+  { path: 'org', loadComponent: () => import('./modules/HRM/org-tree/org-tree.component').then(m => m.OrgTreeComponent), canActivate: [permissionGuard('hrm:department:view')] },
+  { path: 'employees/:id/work-history', loadComponent: () => import('./modules/HRM/work-histories/work-histories.component').then(m => m.WorkHistoriesComponent), canActivate: [permissionGuard('hrm:work-history:view')] },
+  { path: 'department-levels', loadComponent: () => import('./modules/HRM/department-levels/department-levels.component').then(m => m.DepartmentLevelsComponent), canActivate: [permissionGuard('hrm:department:view')] },
+  { path: 'job-positions', loadComponent: () => import('./modules/HRM/job-positions/job-positions.component').then(m => m.JobPositionsComponent), canActivate: [permissionGuard('hrm:job-position:view')] },
+  { path: 'employees', loadComponent: () => import('./modules/HRM/employees/employees.component').then(m => m.EmployeesComponent), canActivate: [permissionGuard('hrm:employee:view')] },
+  { path: 'employees/new', loadComponent: () => import('./modules/HRM/employee-detail/employee-detail.component').then(m => m.EmployeeDetailComponent), canActivate: [permissionGuard('hrm:employee:create')], canDeactivate: [unsavedChangesGuard] },
+  { path: 'employees/:id', loadComponent: () => import('./modules/HRM/employee-detail/employee-detail.component').then(m => m.EmployeeDetailComponent), canActivate: [permissionGuard('hrm:employee:view')], canDeactivate: [unsavedChangesGuard] },
+  { path: 'users', loadComponent: () => import('./modules/SYS/users/users.component').then(m => m.UsersComponent), canActivate: [permissionGuard('sys:user:view')] },
+  { path: 'accounting', loadChildren: () => import('./modules/ACC/acc.routes').then(m => m.ACC_ROUTES) },
+  { path: 'roles', loadComponent: () => import('./modules/SYS/roles/roles.component').then(m => m.RolesComponent), canActivate: [permissionGuard('sys:role:view')] },
+  { path: 'admin', loadComponent: () => import('./modules/SYS/admin-hub/admin-hub.component').then(m => m.AdminHubComponent), canActivate: [authGuard] },
+  { path: 'more', loadComponent: () => import('./modules/SYS/module-menu/module-menu.component').then(m => m.ModuleMenuComponent), canActivate: [authGuard] },
+  { path: 'notifications', loadComponent: () => import('./modules/SYS/notifications/notification-center/notification-center.component').then(m => m.NotificationCenterComponent), canActivate: [authGuard] },
+  { path: 'notifications/preferences', loadComponent: () => import('./modules/SYS/notifications/notification-preferences/notification-preferences.component').then(m => m.NotificationPreferencesComponent), canActivate: [authGuard] },
+  { path: 'notifications/templates', loadComponent: () => import('./modules/SYS/notifications/notification-templates/notification-templates.component').then(m => m.NotificationTemplatesComponent), canActivate: [permissionGuard('sys:notification:view')] },
+  { path: 'forbidden', loadComponent: () => import('./core/forbidden/forbidden.component').then(m => m.ForbiddenComponent), canActivate: [authGuard] },
   { path: '**', redirectTo: 'dashboard' }
 ];

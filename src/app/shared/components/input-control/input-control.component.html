@@ -1,0 +1,214 @@
+<div
+  class="erpm-input-control-host"
+  [class.size-sm]="size === 'sm'"
+  [class.size-lg]="size === 'lg'"
+  [class.is-disabled]="disabled"
+  [class.is-invalid]="invalid"
+>
+  <ng-container [ngSwitch]="type">
+    <!-- 1. Select / Dropdown via CustomSelectComponent -->
+    <ng-container *ngSwitchCase="'select'">
+      <app-custom-select [inputId]="inputId"
+        [options]="dataSource"
+        [value]="internalValue()"
+        (valueChange)="onSelectValueChange($event)"
+        (selectionChange)="onSelectOptionChange($event)"
+        (searchChange)="searchChange.emit($event)"
+        [placeholder]="placeholder"
+        [searchable]="searchable"
+        [allowClear]="allowClear"
+        [size]="size"
+        [minWidth]="minWidth"
+        [disabled]="disabled || readonly"
+      ></app-custom-select>
+    </ng-container>
+
+    <!-- 1b. Organization tree picker -->
+    <ng-container *ngSwitchCase="'branch-tree'">
+      <app-branch-select [inputId]="inputId"
+        [tree]="branchTree"
+        [nodeTypeFilter]="nodeTypeFilter"
+        [scopeRootId]="scopeRootId"
+        [scopeMode]="scopeMode"
+        [excludeSubtreeOf]="excludeSubtreeOf"
+        [value]="internalValue()"
+        (valueChange)="onSelectValueChange($event)"
+        (selectionChange)="onBranchSelectionChange($event)"
+        [placeholder]="placeholder"
+        [allowClear]="allowClear"
+        [size]="size"
+        [minWidth]="minWidth"
+        [disabled]="disabled || readonly"
+      ></app-branch-select>
+    </ng-container>
+
+    <!-- 2. Multi-line Textarea -->
+    <ng-container *ngSwitchCase="'textarea'">
+      <textarea [id]="inputId"
+        class="erpm-input erpm-textarea"
+        [rows]="rows"
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [readOnly]="readonly"
+        [ngModel]="internalValue() ?? ''"
+        (ngModelChange)="onTextChange($event)"
+        (blur)="onBlur()"
+      ></textarea>
+    </ng-container>
+
+    <!-- 3. Checkbox / Boolean Toggle -->
+    <ng-container *ngSwitchCase="'checkbox'">
+      <label class="erpm-checkbox-wrap" [class.disabled]="disabled">
+        <input [id]="inputId"
+          type="checkbox"
+          class="erpm-checkbox-input"
+          [disabled]="disabled"
+          [ngModel]="!!internalValue()"
+          (ngModelChange)="onCheckboxChange($event)"
+          (blur)="onBlur()"
+        />
+        <span class="erpm-checkbox-text" *ngIf="checkboxLabel || placeholder">
+          {{ checkboxLabel || placeholder }}
+        </span>
+      </label>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'boolean'">
+      <label class="erpm-checkbox-wrap" [class.disabled]="disabled">
+        <input [id]="inputId"
+          type="checkbox"
+          class="erpm-checkbox-input"
+          [disabled]="disabled"
+          [ngModel]="!!internalValue()"
+          (ngModelChange)="onCheckboxChange($event)"
+          (blur)="onBlur()"
+        />
+        <span class="erpm-checkbox-text" *ngIf="checkboxLabel || placeholder">
+          {{ checkboxLabel || placeholder }}
+        </span>
+      </label>
+    </ng-container>
+
+    <!-- 4. Number & Currency Input -->
+    <ng-container *ngSwitchCase="'number'">
+      <div class="erpm-input-affix-wrap">
+        <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
+        <input [id]="inputId"
+          type="number"
+          class="erpm-input font-numeric"
+          [class.has-prefix]="!!prefix"
+          [class.has-suffix]="!!suffix"
+          [placeholder]="placeholder"
+          [disabled]="disabled"
+          [readOnly]="readonly"
+          [attr.min]="min ?? null"
+          [attr.max]="max ?? null"
+          [attr.step]="step"
+          [ngModel]="internalValue()"
+          (ngModelChange)="onNumberChange($event)"
+          (blur)="onBlur()"
+        />
+        <span *ngIf="suffix" class="input-affix suffix">{{ suffix }}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'currency'">
+      <div class="erpm-input-affix-wrap">
+        <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
+        <input [id]="inputId"
+          type="text"
+          inputmode="numeric"
+          erpmCurrencyInput
+          class="erpm-input font-numeric font-bold text-right"
+          [class.has-prefix]="!!prefix"
+          [class.has-suffix]="true"
+          [placeholder]="placeholder || '0'"
+          [disabled]="disabled"
+          [readOnly]="readonly"
+          [ngModel]="internalValue()"
+          (ngModelChange)="onNumberChange($event)"
+          (blur)="onBlur()"
+        />
+        <span class="input-affix suffix">{{ suffix || 'đ' }}</span>
+      </div>
+    </ng-container>
+
+    <!-- 4b. Date-only input (yyyy-MM-dd, what the API expects for date fields) and date-time inputs below -->
+    <ng-container *ngSwitchCase="'date'">
+      <div class="erpm-input-affix-wrap">
+        <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
+        <input [id]="inputId"
+          type="date"
+          class="erpm-input font-numeric"
+          [class.has-prefix]="!!prefix"
+          [class.has-suffix]="!!suffix"
+          [placeholder]="placeholder"
+          [disabled]="disabled"
+          [readOnly]="readonly"
+          [value]="formattedDateValue()"
+          (input)="onDateTimeInputChange($event)"
+          (blur)="onBlur()"
+        />
+        <span *ngIf="suffix" class="input-affix suffix">{{ suffix }}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'datetime'">
+      <div class="erpm-input-affix-wrap">
+        <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
+        <input [id]="inputId"
+          type="datetime-local"
+          class="erpm-input font-numeric"
+          [class.has-prefix]="!!prefix"
+          [class.has-suffix]="!!suffix"
+          [placeholder]="placeholder"
+          [disabled]="disabled"
+          [readOnly]="readonly"
+          [value]="formattedDateTimeValue()"
+          (input)="onDateTimeInputChange($event)"
+          (blur)="onBlur()"
+        />
+        <span *ngIf="suffix" class="input-affix suffix">{{ suffix }}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'datetime-local'">
+      <div class="erpm-input-affix-wrap">
+        <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
+        <input [id]="inputId"
+          type="datetime-local"
+          class="erpm-input font-numeric"
+          [class.has-prefix]="!!prefix"
+          [class.has-suffix]="!!suffix"
+          [placeholder]="placeholder"
+          [disabled]="disabled"
+          [readOnly]="readonly"
+          [value]="formattedDateTimeValue()"
+          (input)="onDateTimeInputChange($event)"
+          (blur)="onBlur()"
+        />
+        <span *ngIf="suffix" class="input-affix suffix">{{ suffix }}</span>
+      </div>
+    </ng-container>
+
+    <!-- 5. Default Standard Input (text, email, tel, password) -->
+    <ng-container *ngSwitchDefault>
+      <div class="erpm-input-affix-wrap">
+        <span *ngIf="prefix" class="input-affix prefix">{{ prefix }}</span>
+        <input [id]="inputId"
+          [type]="type"
+          class="erpm-input"
+          [class.has-prefix]="!!prefix"
+          [class.has-suffix]="!!suffix"
+          [placeholder]="placeholder"
+          [disabled]="disabled"
+          [readOnly]="readonly"
+          [ngModel]="internalValue() ?? ''"
+          (ngModelChange)="onTextChange($event)"
+          (blur)="onBlur()"
+        />
+        <span *ngIf="suffix" class="input-affix suffix">{{ suffix }}</span>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

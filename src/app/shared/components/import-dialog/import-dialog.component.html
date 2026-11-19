@@ -1,0 +1,80 @@
+<div class="erpm-modal-backdrop" (click)="close()">
+  <div class="erpm-modal erpm-import-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+    <div class="erpm-modal-header">
+      <h2 class="modal-title">{{ titleKey() | translate }}</h2>
+      <button type="button" class="modal-close-btn" (click)="close()" [title]="'common.cancel' | translate">✕</button>
+    </div>
+
+    <div class="erpm-modal-body import-body">
+      @if (templateUrl()) {
+        <div class="import-template-row">
+          <span>{{ 'transfer.template_hint' | translate }}</span>
+          <button
+            type="button"
+            class="erpm-btn erpm-btn-secondary"
+            [disabled]="downloadingTemplate()"
+            (click)="downloadTemplate()">
+            {{ 'transfer.download_template' | translate }}
+          </button>
+        </div>
+      }
+
+      <label class="import-dropzone">
+        <input type="file" class="import-file-input" [accept]="accept()" (change)="onFileChange($event)" />
+        <span class="import-file-label">
+          @if (selectedFile(); as file) {
+            {{ file.name }} ({{ (file.size / 1024).toFixed(1) }} KB)
+          } @else {
+            {{ 'transfer.choose_file' | translate }}
+          }
+        </span>
+      </label>
+
+      @if (clientError(); as errKey) {
+        <div class="import-alert-error">{{ errKey | translate }}</div>
+      }
+
+      @if (summary(); as s) {
+        <div class="import-summary">
+          <span>{{ 'transfer.total_rows' | translate }}: <strong>{{ s.totalRows }}</strong></span>
+          <span>{{ 'transfer.valid_rows' | translate }}: <strong>{{ s.validCount }}</strong></span>
+          <span>{{ 'transfer.error_rows' | translate }}: <strong>{{ s.errorCount }}</strong></span>
+        </div>
+      }
+
+      @if (errors().length > 0) {
+        <div class="import-errors-wrap">
+          <table class="import-errors-table">
+            <thead>
+              <tr>
+                <th>{{ 'transfer.col_row' | translate }}</th>
+                <th>{{ 'transfer.col_column' | translate }}</th>
+                <th>{{ 'transfer.col_message' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (err of errors(); track $index) {
+                <tr>
+                  <td>{{ err.rowNumber }}</td>
+                  <td>{{ err.column || '-' }}</td>
+                  <td>{{ err.message }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
+    <div class="erpm-modal-footer import-footer">
+      <button type="button" class="erpm-btn erpm-btn-secondary" (click)="close()">{{ 'common.cancel' | translate }}</button>
+      <button
+        type="button"
+        class="erpm-btn erpm-btn-primary"
+        [disabled]="!selectedFile() || uploading()"
+        (click)="submit()">
+        {{ (uploading() ? 'transfer.importing' : 'transfer.import_action') | translate }}
+      </button>
+    </div>
+  </div>
+</div>

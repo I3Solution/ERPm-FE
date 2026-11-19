@@ -1,0 +1,397 @@
+﻿import {
+  ChangeDetectionStrategy,
+  Component,
+  ContentChildren,
+  EventEmitter,
+  Input,
+  Output,
+  QueryList,
+  TemplateRef,
+  computed,
+  contentChildren,
+  inject,
+  input,
+  signal
+} from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { MatSortModule, Sort } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { IonCard, IonCardContent } from '@ionic/angular/standalone';
+import { map } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { FormArray, ReactiveFormsModule } from '@angular/forms';
+import { TranslatePipe } from '../../pipes/translate.pipe';
+import { CellOverflow, TableColumn, TablePagination, TableSort } from './interfaces/data-table.models';
+import { DataTableCellDirective } from './directives/data-table-cell.directive';
+import { CellOverflowTitleDirective } from './directives/cell-overflow-title.directive';
+import { TableColumnComponent } from './components/table-column.component';
+import { FormControlComponent } from '../form-control/form-control.component';
+import { InputControlType } from '../input-control/input-control.component';
+
+@Component({
+  selector: 'app-data-table',
+  standalone: true,
+  imports: [
+    CommonModule,
+    CellOverflowTitleDirective,
+    ReactiveFormsModule,
+    TranslatePipe,
+    FormControlComponent,
+    MatTableModule,
+    MatSortModule,
+    IonCard,
+    IonCardContent
+  ],
+  templateUrl: './data-table.component.html',
+  styleUrls: ['./data-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class DataTableComponent<T = any> {
+  // === Data & Column Inputs ===
+  @Input() columns: TableColumn<T>[] = [];
+  @Input() data: T[] = [];
+  @Input() trackBy: string | keyof T | ((item: T) => any) = 'id';
+
+  // === Mode & Form Configuration ===
+  @Input() mode: 'list' | 'editable' = 'list';
+  @Input() formArray?: FormArray;
+  @Input() canEdit = false;
+
+  // === Features & Interactions ===
+  private readonly selectionEnabled = signal(false);
+  @Input() set selectable(value: boolean) { this.selectionEnabled.set(value); }
+  get selectable(): boolean { return this.selectionEnabled(); }
+  /** Controlled selection when a host exposes row actions in its toolbar. */
+  public readonly selection = input<readonly T[]>();
+  public readonly selectionLabel = input<(row: T) => string>();
+  public readonly cardTemplate = input<TemplateRef<{ $implicit: T }>>();
+  @Input() showIndex = true;
+  @Input() clickableRows = false;
+  /** Long-text mode for every column of this table ('2lines' | 'wrap'); a column's own overflow wins. */
+  @Input() overflow?: CellOverflow;
+  @Input() loading = false;
+  @Input() emptyMessage = 'common.empty';
+
+  // === Dimensions & Layout Controls ===
+  @Input() tableMinWidth = '1100px';
+  @Input() minHeight = '0';
+  @Input() paddingBottom = '0px';
+
+  // === Pagination ===
+  @Input() pagination?: TablePagination;
+
+  // === Events & Outputs ===
+  @Output() rowClick = new EventEmitter<T>();
+  /** Current sort as the list URL keeps it: "field" (asc) or "-field" (desc). Shows the header arrow after reload/Back. */
+  @Input() set sort(v: string | null | undefined) {
+    this.currentSort.set(v ? { column: v.replace(/^-/, ''), direction: v.startsWith('-') ? 'desc' : 'asc' } : null);
+  }
+  @Output() sortChange = new EventEmitter<TableSort>();
+  @Output() selectionChange = new EventEmitter<T[]>();
+  @Output() pageChange = new EventEmitter<{ pageIndex: number; pageSize: number }>();
+
+  // === Reactive State (Signals) ===
+  public selectedRows = signal<T[]>([]);
+  private readonly selectedKeys = computed(() => new Set((this.selection() ?? this.selectedRows()).map(row => this.selectionKey(row))));
+  public currentSort = signal<TableSort | null>(null);
+
+  // Template projections
+  @ContentChildren(DataTableCellDirective)
+  private customCells!: QueryList<DataTableCellDirective>;
+
+  // Declarative Column Children (Angular Signal Query)
+  public columnChildren = contentChildren(TableColumnComponent);
+
+  /**
+   * Computed effective columns list:
+   * Uses projected <app-column> components when present, otherwise falls back to the columns input.
+   */
+  public effectiveColumns = computed<TableColumn[]>(() => {
+    const children = this.columnChildren();
+    if (children && children.length > 0) {
+      return children.filter(c => c.visible !== false) as unknown as TableColumn[];
+    }
+    return this.columns;
+  });
+
+  /**
+   * Determines if the table is currently in interactive edit mode.
+   */
+  public get isEditActive(): boolean {
+    return this.canEdit || this.mode === 'editable';
+  }
+
+  /**
+   * Total number of rendered columns including utility columns.
+   */
+  public totalColumnCount = computed(() => {
+    let count = this.effectiveColumns().length;
+    if (this.selectable) count++;
+    if (this.showIndex) count++;
+    return count;
+  });
+
+  /**
+   * Lookup custom cell template registered for the specified column key or column component.
+   */
+  public getCellTemplate(col: TableColumn | TableColumnComponent, isEdit: boolean): TemplateRef<any> | null {
+    const c = col as any;
+    if (isEdit && c.editTemplate) {
+      return c.editTemplate;
+    }
+    if (!isEdit && c.viewTemplate) {
+      return c.viewTemplate;
+    }
+    if (c.cellTemplate) {
+      return c.cellTemplate;
+    }
+    return this.getCustomTemplate(col.key);
+  }
+
+  /**
+   * Legacy lookup for DataTableCellDirective.
+   */
+  public getCustomTemplate(key: string): TemplateRef<any> | null {
+    if (!this.customCells) return null;
+    const match = this.customCells.find(c => c.columnKey === key);
+    return match ? match.templateRef : null;
+  }
+
+  /**
+   * Resolves the appropriate InputControlType for auto-rendered form controls.
+   */
+  public getControlType(col: TableColumn | TableColumnComponent): InputControlType {
+    if (col.controlType) return col.controlType;
+    if (col.type === 'currency') return 'currency';
+    if (col.type === 'number') return 'number';
+    if (col.type === 'date') return 'date';
+    return 'text';
+  }
+
+  /**
+   * Checks whether the given form group has a control registered with key.
+   */
+  public hasFormControl(ctrl: any, key: string): boolean {
+    return !!(ctrl && typeof ctrl.get === 'function' && ctrl.get(key));
+  }
+
+  /**
+   * Safe value resolver supporting dot-notation property paths (e.g. 'partner.name').
+   */
+  public getCellValue(row: any, path: string): any {
+    if (!row || !path) return '';
+    if (!path.includes('.')) return row[path] ?? '';
+    const parts = path.split('.');
+    let cur = row;
+    for (const p of parts) {
+      if (cur === null || cur === undefined) return '';
+      cur = cur[p];
+    }
+    return cur ?? '';
+  }
+
+  /**
+   * Calculates the display row index taking pagination into account.
+   */
+  public calculateRowIndex(localIndex: number): number {
+    if (this.pagination) {
+      return this.pagination.pageIndex * this.pagination.pageSize + localIndex + 1;
+    }
+    return localIndex + 1;
+  }
+
+  /**
+   * Row trackBy identifier.
+   */
+  public getRowTrackId(row: T, index: number): any {
+    if (typeof this.trackBy === 'function') {
+      return this.trackBy(row);
+    }
+    const key = this.trackBy as keyof T;
+    return row && row[key] !== undefined ? row[key] : index;
+  }
+
+  // =========================================================================
+  // Selection Handlers
+  // =========================================================================
+
+  public isRowSelected(row: T): boolean {
+    return this.selectable && this.selectedKeys().has(this.selectionKey(row));
+  }
+
+  public isAllSelected(): boolean {
+    return this.data.length > 0 && this.data.every(row => this.isRowSelected(row));
+  }
+
+  public isPartiallySelected(): boolean {
+    return this.data.some(row => this.isRowSelected(row)) && !this.isAllSelected();
+  }
+
+  public toggleSelectAll(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.updateSelection(checked ? [...this.data] : []);
+  }
+
+  public toggleRowSelection(row: T, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    const key = this.selectionKey(row);
+    const keys = new Set(this.selectedKeys());
+    if (checked) keys.add(key);
+    else keys.delete(key);
+    this.updateSelection(this.data.filter(item => keys.has(this.selectionKey(item))));
+  }
+
+  public rowSelectionLabel(row: T): string {
+    const label = this.selectionLabel();
+    return label ? label(row) : String(this.selectionKey(row));
+  }
+
+  private selectionKey(row: T): unknown {
+    return typeof this.trackBy === 'function' ? this.trackBy(row) ?? row : row?.[this.trackBy as keyof T] ?? row;
+  }
+
+  private updateSelection(rows: T[]): void {
+    if (this.selection() === undefined) this.selectedRows.set(rows);
+    this.selectionChange.emit(rows);
+  }
+
+  public onRowClick(row: T, event: MouseEvent): void {
+    if (!this.clickableRows) return;
+    // Ignore click if clicking on an interactive control (input, button, select, a)
+    const target = event.target as HTMLElement;
+    if (target.closest('button, input, select, a, app-async-select, app-custom-select, .erpm-btn')) {
+      return;
+    }
+    this.rowClick.emit(row);
+  }
+
+  // =========================================================================
+  // Sorting Handlers
+  // =========================================================================
+
+  public onHeaderClick(col: TableColumn<T>): void {
+    if (!col.sortable) return;
+    const cur = this.currentSort();
+    let nextDirection: 'asc' | 'desc' = 'asc';
+    if (cur && cur.column === col.key) {
+      nextDirection = cur.direction === 'asc' ? 'desc' : 'asc';
+    }
+    const nextSort: TableSort = { column: col.key, direction: nextDirection };
+    this.currentSort.set(nextSort);
+    this.sortChange.emit(nextSort);
+  }
+
+  // =========================================================================
+  // Status Badge Helpers
+  // =========================================================================
+
+  public getBadgeClass(col: TableColumn<T>, row: T): string {
+    const val = String(this.getCellValue(row, col.key) || '');
+    if (col.badgeMap && col.badgeMap[val]) {
+      return col.badgeMap[val].class;
+    }
+    return 'badge-neutral';
+  }
+
+  public getBadgeLabel(col: TableColumn<T>, row: T): string {
+    const val = String(this.getCellValue(row, col.key) || '');
+    if (col.badgeMap && col.badgeMap[val]?.label) {
+      return col.badgeMap[val].label!;
+    }
+    return val;
+  }
+
+  // =========================================================================
+  // Pagination Handlers
+  // =========================================================================
+
+  public getTotalPages(): number {
+    if (!this.pagination || this.pagination.pageSize <= 0) return 1;
+    return Math.ceil(this.pagination.totalItems / this.pagination.pageSize) || 1;
+  }
+
+  public onPageChange(newPageIndex: number): void {
+    if (!this.pagination) return;
+    if (newPageIndex < 0 || newPageIndex >= this.getTotalPages()) return;
+    this.pageChange.emit({
+      pageIndex: newPageIndex,
+      pageSize: this.pagination.pageSize
+    });
+  }
+
+  // =========================================================================
+  // Material table (desktop) and cards (phone)
+  // =========================================================================
+
+  /** Phone width: the list view switches to Ionic cards. */
+  public isPhone = toSignal(
+    inject(BreakpointObserver).observe('(max-width: 767.98px)').pipe(map(r => r.matches)), { initialValue: false });
+
+  /** Material table only renders plain data; loading, empty and inline-edit keep the original markup. */
+  public get useMaterial(): boolean { return !this.loading && !this.isEditActive && this.data.length > 0 && !this.isPhone(); }
+  public get useCards(): boolean { return !this.loading && !this.isEditActive && this.data.length > 0 && this.isPhone(); }
+
+  /** Material column ids: utility columns first, then the declared ones. */
+  public matColumnKeys = computed(() => [
+    ...(this.selectable ? ['__select'] : []),
+    ...(this.showIndex ? ['__index'] : []),
+    ...this.effectiveColumns().map(c => c.key)
+  ]);
+
+  /**
+   * Column kind drives one shared width rule (see the data-kind rules in the stylesheet), so no screen sets its own
+   * widths: the width/minWidth a screen declares only applies to the loading, empty and inline-edit layout.
+   */
+  public colKind(col: TableColumn<T> | TableColumnComponent): 'actions' | 'status' | 'date' | 'number' | 'code' | 'text' {
+    if (col.key === 'actions' || col.type === 'actions') return 'actions';
+    if (col.type === 'badge' || col.key === 'status') return 'status';
+    if (col.type === 'date') return 'date';
+    if (col.type === 'number' || col.type === 'currency') return 'number';
+    if (/^code$|Code$|Number$/.test(col.key)) return 'code';
+    return 'text';
+  }
+
+  /** Alignment comes from the column type, never from the screen: numbers/amounts right, date/status centered, text/code left, actions right. */
+  public alignOf(col: TableColumn<T> | TableColumnComponent): 'left' | 'center' | 'right' {
+    switch (this.colKind(col)) {
+      case 'number': case 'actions': return 'right';
+      case 'date': case 'status': return 'center';
+      default: return 'left';
+    }
+  }
+
+  public matTrackBy = (index: number, row: T): any => this.getRowTrackId(row, index);
+
+  private sortedFor?: { data: T[]; sort: TableSort | null; rows: T[] };
+
+  /**
+   * Rows in display order. The table sorts the rows it was given when the host does not listen to
+   * (sortChange); a host that listens sorts on the server. Empty values stay last in both directions.
+   */
+  public get viewRows(): T[] {
+    const sort = this.currentSort();
+    if (!sort || this.sortChange.observed) return this.data;
+    if (this.sortedFor?.data === this.data && this.sortedFor.sort === sort) return this.sortedFor.rows;
+    const dir = sort.direction === 'asc' ? 1 : -1;
+    const sortValue = (this.effectiveColumns().find(c => c.key === sort.column) as TableColumnComponent | undefined)?.sortValue;
+    const valueOf = (row: T) => sortValue ? sortValue(row) : this.getCellValue(row, sort.column);
+    const rows = [...this.data].sort((a, b) => compareCells(valueOf(a), valueOf(b), dir));
+    this.sortedFor = { data: this.data, sort, rows };
+    return rows;
+  }
+
+  public onMatSort(sort: Sort): void {
+    const next: TableSort | null = sort.direction ? { column: sort.active, direction: sort.direction } : null;
+    this.currentSort.set(next);
+    if (next) this.sortChange.emit(next);
+  }
+}
+
+/** Numbers compare as numbers, everything else as text in the user locale; empty values stay last in both directions. */
+function compareCells(a: unknown, b: unknown, dir: number): number {
+  const emptyA = a == null || a === '', emptyB = b == null || b === '';
+  if (emptyA || emptyB) return emptyA === emptyB ? 0 : emptyA ? 1 : -1;
+  if (typeof a === 'number' && typeof b === 'number') return dir * (a - b);
+  return dir * String(a).localeCompare(String(b), undefined, { numeric: true });
+}

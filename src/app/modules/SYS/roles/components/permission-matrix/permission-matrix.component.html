@@ -1,0 +1,47 @@
+<div class="role-matrix-tools">
+  <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="expandAll(true)">{{ 'role.expand_all' | translate }}</button>
+  <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="expandAll(false)">{{ 'role.collapse_all' | translate }}</button>
+  <span class="role-legend">{{ 'role.legend' | translate }}</span>
+</div>
+@for (group of modules(); track group.module) {
+  <div class="role-module">
+    <div class="role-module-head">
+      <button type="button" class="role-module-toggle" [attr.aria-expanded]="isOpen(group.module)" (click)="toggleModule(group.module)">
+        <span class="role-caret" [class.open]="isOpen(group.module)">▸</span>
+        <strong>{{ group.module | uppercase }}</strong>
+      </button>
+      <span class="role-count">{{ allowedCount(group.module) }} / {{ group.count }}</span>
+      @if (!readOnly()) {
+        <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="setModule(group.module, true)">{{ 'role.select_all' | translate }}</button>
+        <button type="button" class="erpm-btn erpm-btn-secondary erpm-btn-sm" (click)="setModule(group.module, false)">{{ 'role.clear_all' | translate }}</button>
+      }
+    </div>
+    @if (isOpen(group.module)) {
+      <div class="erpm-table-scroll">
+        <table class="erpm-table role-grid">
+          <tbody>
+            @for (resource of group.resources; track resource.resource) {
+              <tr>
+                <th scope="row">{{ resource.resource }}</th>
+                @for (item of resource.items; track item.action) {
+                  <td>
+                    <span class="role-cell" [class.deny]="isDenied(item.action)">
+                      <label class="role-check" [title]="item.action">
+                        <input type="checkbox" [checked]="isAllowed(item.action)" [disabled]="readOnly()" (change)="toggleAllow(item.action)">
+                        <span>{{ ('role.verb.' + item.verb) | translate: item.verb }}</span>
+                      </label>
+                      <label class="role-deny" [title]="'role.deny_hint' | translate">
+                        <input type="checkbox" [checked]="isDenied(item.action)" [disabled]="readOnly()" (change)="toggleDeny(item.action)">
+                        <span>{{ 'role.deny' | translate }}</span>
+                      </label>
+                    </span>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+}

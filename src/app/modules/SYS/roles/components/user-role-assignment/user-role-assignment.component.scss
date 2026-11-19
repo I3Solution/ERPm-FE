@@ -1,0 +1,3 @@
+.role-hint { overflow-wrap: anywhere; color: var(--erpm-text-muted); font-size: 0.85rem; margin: 0 0 0.5rem; }
+.role-checks { list-style: none; padding: 0; margin: 0 0 1rem; label { display: flex; gap: 0.5rem; cursor: pointer; padding: 0.2rem 0; } small { color: var(--erpm-text-muted); } }
+.role-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem; }

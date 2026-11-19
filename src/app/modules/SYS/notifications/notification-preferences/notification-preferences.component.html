@@ -1,0 +1,96 @@
+<div class="preferences-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-titles">
+      <div class="breadcrumb">
+        <a routerLink="/notifications">← {{ 'notifications.back_to_center' | translate }}</a>
+      </div>
+      <h1 class="page-title">{{ 'notifications.preferences_title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'notifications.preferences_subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  <div *ngIf="isSavedToastVisible()" class="saved-banner">
+    ✓ {{ 'common.saved' | translate }}
+  </div>
+
+  <!-- Notification Channel Matrix Card -->
+  <div class="card mb-4">
+    <h3 class="card-title">Cấu hình nhận tin theo phân hệ</h3>
+    <p class="card-description">
+      Chọn các kênh bạn muốn nhận thông báo cho từng phân hệ ERP.
+    </p>
+
+    <div class="table-responsive">
+      <table class="erpm-table matrix-table">
+        <thead>
+          <tr>
+            <th>Phân hệ</th>
+            <th *ngFor="let ch of channels" class="text-center">{{ ch.name }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let mod of modules">
+            <td>
+              <div class="module-row-info">
+                <span class="module-icon">{{ mod.icon }}</span>
+                <span class="module-name">{{ mod.name }}</span>
+              </div>
+            </td>
+            <td *ngFor="let ch of channels" class="text-center">
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  [checked]="isChannelEnabled(mod.code, ch.code)"
+                  (change)="toggleChannel(mod.code, ch.code, $event)"
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Quiet Hours Card -->
+  <div class="card">
+    <div class="quiet-header">
+      <div>
+        <h3 class="card-title">Chế độ Giờ yên tĩnh (Quiet Hours)</h3>
+        <p class="card-description">
+          Trong khung giờ này, hệ thống sẽ không rung chuông hoặc phát âm thanh báo động.
+        </p>
+      </div>
+      <label class="switch">
+        <input
+          type="checkbox"
+          [ngModel]="quietHoursEnabled()"
+          (ngModelChange)="quietHoursEnabled.set($event); saveQuietHours()"
+        />
+        <span class="slider round"></span>
+      </label>
+    </div>
+
+    <div *ngIf="quietHoursEnabled()" class="quiet-times-row">
+      <div class="time-field">
+        <label>Bắt đầu từ:</label>
+        <input
+          type="time"
+          class="time-input"
+          [ngModel]="quietStart()"
+          (ngModelChange)="quietStart.set($event); saveQuietHours()"
+        />
+      </div>
+      <div class="time-field">
+        <label>Đến:</label>
+        <input
+          type="time"
+          class="time-input"
+          [ngModel]="quietEnd()"
+          (ngModelChange)="quietEnd.set($event); saveQuietHours()"
+        />
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+﻿import { LocalizationService } from '../../../core/services/localization.service';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../../../core/services/auth.service';
+import { OrgAdminService } from '../services/org-admin.service';
+import { OrgBranch, UserAccount } from '../../../core/models/org.models';
+import { FormControlComponent } from '../../../shared/components/form-control/form-control.component';
+import { UserFormDialogComponent } from '../../../shared/components/user-form-dialog/user-form-dialog.component';
+import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+import { DataTableComponent, TableColumnComponent } from '../../../shared/components/data-table';
+import { ListAction, ListPageComponent } from '../../../shared/components/list-page/list-page.component';
+
+/**
+ * Internal accounts. A company administrator only receives the accounts of its own company's employees (the
+ * server filters); each account shows the employee it is linked to. Create and edit use the shared account dialog.
+ */
+@Component({
+  selector: 'app-users',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, FormControlComponent, UserFormDialogComponent, DataTableComponent, TableColumnComponent, ListPageComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './users.component.html',
+  styleUrls: ['./users.component.scss']
+})
+export class UsersComponent implements OnInit {
+  public auth = inject(AuthService);
+  private i18n = inject(LocalizationService);
+  /** Sorts the role column by the label the user reads, not the stored code. */
+  public roleLabel = (row: UserAccount): string => this.i18n.translate('acc.role.' + row.role);
+  private api = inject(OrgAdminService);
+
+  public users = signal<UserAccount[]>([]);
+  public branchTree = signal<OrgBranch[]>([]);
+  public loading = signal(false);
+  public loadError = signal(false);
+
+  /** Header action bar of the shared list page. */
+  public readonly headerActions: ListAction[] = [{ id: 'create', label: 'usr.add', icon: '+', primary: true, permission: 'sys:user:create' }];
+
+  public onHeaderAction(id: string): void {
+    if (id === 'create') this.openCreate();
+  }
+  public keyword = signal('');
+  public keywordControl = new FormControl('');
+
+  /** Dialog target: `undefined` closed, `null` create, an account to edit. */
+  public dialogUser = signal<UserAccount | null | undefined>(undefined);
+
+  public isSuperAdmin = computed(() => !!this.auth.account()?.isSuperAdmin);
+
+  public rows = computed(() => {
+    const keyword = this.keyword().trim().toLowerCase();
+    return this.users()
+      .filter(u => !keyword || [u.userName, u.displayName, u.employeeCode ?? '', u.employeeName ?? ''].some(text => text.toLowerCase().includes(keyword)))
+      .map(u => ({ ...u, employeeLabel: u.employeeId ? `${u.employeeCode} - ${u.employeeName}` : '' }));
+  });
+
+  constructor() {
+    this.keywordControl.valueChanges.subscribe(text => this.keyword.set(text ?? ''));
+  }
+
+  ngOnInit(): void {
+    this.load();
+    this.api.branchTree().subscribe(tree => this.branchTree.set(tree));
+  }
+
+  public load(): void {
+    this.loading.set(true);
+    this.loadError.set(false);
+    this.api.users().subscribe({
+      next: users => { this.users.set(users); this.loading.set(false); },
+      error: () => { this.loadError.set(true); this.loading.set(false); }
+    });
+  }
+
+  public openCreate(): void { this.dialogUser.set(null); }
+  public openEdit(user: UserAccount): void { this.dialogUser.set(user); }
+  public closeDialog(): void { this.dialogUser.set(undefined); }
+  public onSaved(): void { this.closeDialog(); this.load(); }
+}

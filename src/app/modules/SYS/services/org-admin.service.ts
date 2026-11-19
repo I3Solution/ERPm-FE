@@ -1,0 +1,106 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, forkJoin, map, of, switchMap } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import {
+  CreateBranchRequest, CreateEmployeeRequest, CreateUserRequest, Department, DepartmentFilter, DepartmentLevel, DepartmentRoleGrant,
+  EffectivePermission, Employee, SaveDepartmentLevelRequest, SaveWorkHistoryRequest, WorkHistory, EmployeeFilter, JobPosition, ListFilter, OrgBranch, PagedResult, PermissionCatalogItem, Role, SaveBranchRequest, SaveRoleRequest, UserAccessPolicy,
+  SaveDepartmentRequest, SaveJobPositionRequest, UpdateEmployeeRequest, UpdateUserRequest, UserAccount
+} from '../../../core/models/org.models';
+
+interface ApiEnvelope<T> { success: boolean; data: T; message?: string; }
+
+/**
+ * Typed client of the organization, HRM and IAM administration endpoints. Stateless: screens keep their own
+ * signals, so several screens can use it at once without sharing list state.
+ */
+@Injectable({ providedIn: 'root' })
+export class OrgAdminService {
+  private readonly api = `${environment.apiBaseUrl}/api/v1`;
+
+  constructor(private http: HttpClient) {}
+
+  // Branches (group / company / branch tree)
+  branchTree(): Observable<OrgBranch[]> { return this.get<OrgBranch[]>('/branches/tree'); }
+  branches(): Observable<OrgBranch[]> { return this.get<OrgBranch[]>('/branches'); }
+  createBranch(request: CreateBranchRequest): Observable<OrgBranch> { return this.post<OrgBranch>('/branches', request); }
+  updateBranch(id: number, request: SaveBranchRequest): Observable<OrgBranch> { return this.put<OrgBranch>(`/branches/${id}`, request); }
+  deleteBranch(id: number): Observable<boolean> { return this.delete(`/branches/${id}`); }
+
+  // Department levels and departments
+  departmentLevels(filter: ListFilter = { pageSize: 100 }): Observable<PagedResult<DepartmentLevel>> { return this.get('/hrm/department-levels', filter); }
+  departments(filter: DepartmentFilter = { pageSize: 500 }): Observable<PagedResult<Department>> { return this.get('/hrm/departments', filter); }
+  /** Every department for dropdowns: the API serves at most 200 rows a page, so later pages are fetched in parallel. */
+  allDepartments(filter: DepartmentFilter = {}): Observable<Department[]> {
+    const size = 200;
+    return this.departments({ ...filter, pageIndex: 1, pageSize: size }).pipe(
+      switchMap(first => {
+        const pages = Math.ceil(first.totalCount / size);
+        if (pages <= 1) return of(first.items);
+        const rest = Array.from({ length: pages - 1 }, (_, i) => this.departments({ ...filter, pageIndex: i + 2, pageSize: size }));
+        return forkJoin(rest).pipe(map(r => [...first.items, ...r.flatMap(p => p.items)]));
+      })
+    );
+  }
+  createDepartment(request: SaveDepartmentRequest): Observable<Department> { return this.post('/hrm/departments', request); }
+  updateDepartment(id: number, request: SaveDepartmentRequest): Observable<Department> { return this.put(`/hrm/departments/${id}`, request); }
+  deleteDepartment(id: number): Observable<boolean> { return this.delete(`/hrm/departments/${id}`); }
+
+  createDepartmentLevel(request: SaveDepartmentLevelRequest): Observable<DepartmentLevel> { return this.post('/hrm/department-levels', request); }
+  updateDepartmentLevel(id: number, request: SaveDepartmentLevelRequest): Observable<DepartmentLevel> { return this.put(`/hrm/department-levels/${id}`, request); }
+  deleteDepartmentLevel(id: number): Observable<boolean> { return this.delete(`/hrm/department-levels/${id}`); }
+
+  // Work history (QTCT) of one employee
+  employee(id: number): Observable<Employee> { return this.get(`/hrm/employees/${id}`); }
+  workHistories(employeeId: number): Observable<PagedResult<WorkHistory>> { return this.get('/hrm/work-histories', { employeeId, pageSize: 200 }); }
+  createWorkHistory(request: SaveWorkHistoryRequest): Observable<WorkHistory> { return this.post('/hrm/work-histories', request); }
+  updateWorkHistory(id: number, request: SaveWorkHistoryRequest): Observable<WorkHistory> { return this.put(`/hrm/work-histories/${id}`, request); }
+  deleteWorkHistory(id: number): Observable<boolean> { return this.delete(`/hrm/work-histories/${id}`); }
+
+  // Job positions and their default roles
+  jobPositions(filter: ListFilter = { pageSize: 200 }): Observable<PagedResult<JobPosition>> { return this.get('/hrm/job-positions', filter); }
+  createJobPosition(request: SaveJobPositionRequest): Observable<JobPosition> { return this.post('/hrm/job-positions', request); }
+  updateJobPosition(id: number, request: SaveJobPositionRequest): Observable<JobPosition> { return this.put(`/hrm/job-positions/${id}`, request); }
+  deleteJobPosition(id: number): Observable<boolean> { return this.delete(`/hrm/job-positions/${id}`); }
+  jobPositionRoles(id: number): Observable<number[]> { return this.get(`/sys/roles/job-positions/${id}`); }
+  setJobPositionRoles(id: number, roleIds: number[]): Observable<number[]> { return this.put(`/sys/roles/job-positions/${id}`, { roleIds }); }
+
+  // Employees
+  employees(filter: EmployeeFilter = { pageSize: 50 }): Observable<PagedResult<Employee>> { return this.get('/hrm/employees', filter); }
+  createEmployee(request: CreateEmployeeRequest): Observable<Employee> { return this.post('/hrm/employees', request); }
+  updateEmployee(id: number, request: UpdateEmployeeRequest): Observable<Employee> { return this.put(`/hrm/employees/${id}`, request); }
+  deleteEmployee(id: number): Observable<boolean> { return this.delete(`/hrm/employees/${id}`); }
+
+  // Roles
+  roles(): Observable<Role[]> { return this.get('/sys/roles'); }
+  createRole(request: SaveRoleRequest): Observable<Role> { return this.post('/sys/roles', request); }
+  updateRole(id: number, request: SaveRoleRequest): Observable<Role> { return this.put(`/sys/roles/${id}`, request); }
+  deleteRole(id: number): Observable<boolean> { return this.delete(`/sys/roles/${id}`); }
+  userAccess(userId: number): Observable<UserAccessPolicy> { return this.get(`/sys/roles/users/${userId}`); }
+  setUserAccess(userId: number, request: UserAccessPolicy): Observable<UserAccessPolicy> { return this.put(`/sys/roles/users/${userId}`, request); }
+  userEffective(userId: number): Observable<EffectivePermission[]> { return this.get(`/sys/roles/users/${userId}/effective`); }
+  departmentRoles(departmentId: number): Observable<DepartmentRoleGrant[]> { return this.get(`/sys/roles/departments/${departmentId}`); }
+  setDepartmentRoles(departmentId: number, grants: DepartmentRoleGrant[]): Observable<DepartmentRoleGrant[]> { return this.put(`/sys/roles/departments/${departmentId}`, grants); }
+  permissionCatalog(): Observable<PermissionCatalogItem[]> { return this.get('/sys/permissions/catalog'); }
+
+  // Accounts
+  users(): Observable<UserAccount[]> { return this.get('/auth/users'); }
+  createUser(request: CreateUserRequest): Observable<UserAccount> { return this.post('/auth/users', request); }
+  updateUser(id: number, request: UpdateUserRequest): Observable<UserAccount> { return this.put(`/auth/users/${id}`, request); }
+
+  private get<T>(path: string, filter?: object): Observable<T> {
+    return this.http.get<ApiEnvelope<T>>(this.api + path, { params: toParams(filter) }).pipe(map(res => res.data));
+  }
+  private post<T>(path: string, body: unknown): Observable<T> { return this.http.post<ApiEnvelope<T>>(this.api + path, body).pipe(map(res => res.data)); }
+  private put<T>(path: string, body: unknown): Observable<T> { return this.http.put<ApiEnvelope<T>>(this.api + path, body).pipe(map(res => res.data)); }
+  private delete(path: string): Observable<boolean> { return this.http.delete<ApiEnvelope<boolean>>(this.api + path).pipe(map(res => res.data)); }
+}
+
+/** Query string from a filter object; undefined and empty values are dropped. */
+function toParams(filter?: object): HttpParams {
+  let params = new HttpParams();
+  for (const [key, value] of Object.entries(filter ?? {})) {
+    if (value !== undefined && value !== null && value !== '') params = params.set(key, String(value));
+  }
+  return params;
+}

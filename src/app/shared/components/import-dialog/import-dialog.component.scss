@@ -1,0 +1,90 @@
+.erpm-import-modal {
+  max-width: 640px;
+  width: 100%;
+}
+
+.import-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.import-template-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--erpm-surface-subtle, #f8fafc);
+  font-size: 0.875rem;
+}
+
+.import-dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  border: 2px dashed var(--erpm-border-color, #cbd5e1);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  user-select: none;
+
+  &:hover {
+    border-color: var(--ion-color-primary, #2563eb);
+  }
+}
+
+.import-file-input {
+  display: none;
+}
+
+.import-file-label {
+  font-size: 0.9rem;
+  color: var(--erpm-text-secondary, #475569);
+}
+
+.import-alert-error {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 0.875rem;
+}
+
+.import-summary {
+  display: flex;
+  gap: 16px;
+  font-size: 0.875rem;
+}
+
+.import-errors-wrap {
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--erpm-border-color, #e2e8f0);
+  border-radius: 6px;
+}
+
+.import-errors-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+
+  th, td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--erpm-border-color, #e2e8f0);
+    text-align: left;
+  }
+
+  th {
+    background: var(--erpm-surface-subtle, #f8fafc);
+    font-weight: 600;
+  }
+}
+
+.import-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

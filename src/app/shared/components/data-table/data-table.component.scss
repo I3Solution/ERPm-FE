@@ -1,0 +1,380 @@
+﻿:host {
+  display: block;
+  width: 100%;
+}
+
+.erpm-table-container {
+  display: flex;
+  flex-direction: column;
+  background: var(--erpm-bg-surface, #ffffff);
+  border: 1px solid var(--erpm-border, #cbd5e1);
+  border-radius: var(--erpm-radius-lg, 0.75rem);
+  box-shadow: var(--erpm-shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  overflow: hidden;
+  margin-bottom: 1rem;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: var(--erpm-shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+  }
+}
+
+/* A screen may already wrap <app-data-table> in its own .erpm-table-container card; drop the inner card chrome so no empty band shows under the last row. */
+:host-context(.erpm-table-container) .erpm-table-container {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  margin-bottom: 0;
+}
+
+.erpm-table-scroll {
+  flex: 1 1 auto;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: var(--erpm-bg-surface-subtle, #f8fafc);
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--erpm-border-strong, #94a3b8);
+    border-radius: 9999px;
+  }
+}
+
+.erpm-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.875rem;
+  text-align: left;
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: var(--erpm-bg-surface-subtle, #f8fafc);
+    color: var(--erpm-text-muted, #64748b);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--erpm-border, #cbd5e1);
+    user-select: none;
+
+    &.sortable {
+      cursor: pointer;
+      &:hover {
+        background-color: var(--erpm-bg-surface-active, #f1f5f9);
+        color: var(--erpm-text-heading, #0f172a);
+      }
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+
+      &.justify-end {
+        justify-content: flex-end;
+      }
+      &.justify-center {
+        justify-content: center;
+      }
+    }
+
+    .sort-icon {
+      font-size: 0.7rem;
+      color: var(--erpm-primary-600, #4f46e5);
+
+      .sort-neutral {
+        color: var(--erpm-text-muted, #94a3b8);
+        opacity: 0.5;
+      }
+    }
+  }
+
+  tbody tr {
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: var(--erpm-bg-surface-subtle, #f8fafc);
+    }
+
+    &.clickable-row {
+      cursor: pointer;
+    }
+
+    &.selected-row {
+      background-color: var(--erpm-primary-50, rgba(99, 102, 241, 0.08));
+    }
+
+    /* Stacking context so active dropdowns/inputs float on top */
+    &:focus-within,
+    &:hover {
+      position: relative;
+      z-index: 20;
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--erpm-border-subtle, #e2e8f0);
+      color: var(--erpm-text-body, #334155);
+      vertical-align: middle;
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  /* FormArray inline editable rows adjustments */
+  &.erpm-table-editable {
+    tbody td {
+      padding: 0.5rem 0.65rem;
+    }
+  }
+}
+
+/* Alignment utilities */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* Non-breaking currency and monetary cells */
+.money-cell {
+  white-space: nowrap !important;
+}
+
+/* Status Badges */
+.erpm-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+
+  &.badge-success { background: #dcfce7; color: #15803d; }
+  &.badge-warning { background: #fef3c7; color: #b45309; }
+  &.badge-danger { background: #fee2e2; color: #b91c1c; }
+  &.badge-info { background: #e0e7ff; color: #4338ca; }
+  &.badge-neutral { background: #f1f5f9; color: #475569; }
+}
+
+/* Checkbox Column */
+.table-col-checkbox {
+  width: 44px;
+  min-width: 44px;
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+
+}
+
+.erpm-checkbox {
+  cursor: pointer;
+  inline-size: 1rem;
+  block-size: 1rem;
+  accent-color: var(--erpm-primary-600, #4f46e5);
+}
+
+/* Sticky Column Support */
+.sticky-col-left {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background-color: var(--erpm-bg-surface, #ffffff);
+}
+
+.sticky-col-right {
+  position: sticky;
+  right: 0;
+  z-index: 3;
+  background-color: var(--erpm-bg-surface, #ffffff);
+}
+
+/* Skeleton Loading Animation */
+.skeleton-row td {
+  padding: 0.85rem 1rem;
+}
+
+.skeleton-box {
+  height: 16px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+  width: 80%;
+
+  &.sm {
+    width: 24px;
+    margin: 0 auto;
+  }
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Empty State */
+.empty-state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--erpm-text-muted, #64748b);
+
+  .empty-icon {
+    font-size: 2rem;
+  }
+
+  .empty-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 0;
+  }
+}
+
+/* Pagination Footer */
+.table-pagination-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--erpm-border, #cbd5e1);
+  background: var(--erpm-bg-surface, #ffffff);
+  font-size: 0.85rem;
+  color: var(--erpm-text-muted, #64748b);
+
+  .pagination-info strong {
+    color: var(--erpm-text-heading, #0f172a);
+  }
+
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--erpm-border, #cbd5e1);
+    background: var(--erpm-bg-surface, #ffffff);
+    border-radius: 0.375rem;
+    color: var(--erpm-text-heading, #0f172a);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover:not(:disabled) {
+      border-color: var(--erpm-primary-500, #6366f1);
+      color: var(--erpm-primary-600, #4f46e5);
+      background: var(--erpm-primary-50, rgba(99, 102, 241, 0.08));
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  .pagination-page-label {
+    font-weight: 600;
+    color: var(--erpm-text-heading, #0f172a);
+  }
+}
+
+/* ===== Material table core (desktop) and Ionic cards (phone) ===== */
+:host {
+  /* Map the Material table tokens onto ERPm tokens so light/dark follow the app theme. */
+  --mat-table-background-color: var(--erpm-bg-surface);
+  --mat-table-header-headline-color: var(--erpm-text-muted);
+  --mat-table-row-item-label-text-color: var(--erpm-text-body);
+  --mat-table-row-item-outline-color: var(--erpm-border);
+  --mat-table-header-container-height: 44px;
+  --mat-table-row-item-container-height: 52px;
+  --mat-sort-arrow-color: var(--erpm-text-muted);
+  --mat-table-header-headline-font: inherit;
+  --mat-table-row-item-label-text-font: inherit;
+}
+
+.erpm-mat-scroll { overflow-x: auto; }
+.erpm-mat-table { width: 100%; table-layout: auto; }
+/* Cells wrap instead of widening the table, so 1366px screens need no horizontal scroll. */
+.erpm-mat-table th.mat-mdc-header-cell,
+.erpm-mat-table td.mat-mdc-cell { padding: 0.5rem 1rem; min-height: 48px; overflow-wrap: anywhere; }
+.erpm-mat-table th.mat-mdc-header-cell { font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.03em; line-height: 1.2; }
+/* One width rule per column kind, shared by every screen (fixed layout: same kind, same width everywhere);
+   text columns share the remaining width and wrap. Row actions wrap inside their column. */
+.erpm-mat-table { table-layout: fixed; }
+.erpm-mat-table [data-kind='code'] { width: 9rem; }
+.erpm-mat-table [data-kind='date'] { width: 8rem; }
+.erpm-mat-table [data-kind='number'] { width: 8rem; }
+.erpm-mat-table [data-kind='status'] { width: 10.5rem; }
+.erpm-mat-table [data-kind='actions'] { width: 11rem; }
+.erpm-mat-table td[data-kind='actions'] > div { flex-wrap: wrap; }
+.erpm-mat-table .table-col-checkbox { width: 44px; }
+.erpm-mat-table .table-col-index { width: 56px; }
+/* Header text follows the cell alignment (the sort header is a flex box, so text-align alone does nothing). */
+.erpm-mat-table [data-kind='number'] { text-align: right; }
+.erpm-mat-table th.text-center ::ng-deep .mat-sort-header-container { justify-content: center; }
+.erpm-mat-table th.text-right ::ng-deep .mat-sort-header-container,
+.erpm-mat-table th[data-kind='number'] ::ng-deep .mat-sort-header-container { justify-content: flex-end; }
+/* A column that cannot sort shows no sort arrow. */
+.erpm-mat-table ::ng-deep .mat-sort-header-disabled .mat-sort-header-arrow,
+.erpm-mat-table ::ng-deep th[aria-disabled='true'] .mat-sort-header-arrow { display: none; }
+.erpm-mat-table td.mat-mdc-table-sticky,
+.erpm-mat-table th.mat-mdc-table-sticky { background: var(--erpm-bg-surface); }
+.erpm-mat-table tr.clickable-row { cursor: pointer; }
+.erpm-mat-table tr.clickable-row:hover td { background: var(--erpm-bg-surface-active); }
+.erpm-mat-table tr.selected-row td { background: var(--erpm-bg-surface-active); }
+
+.erpm-data-cards { display: flex; flex-direction: column; gap: 0.75rem; padding: 0.75rem; }
+.erpm-table-container:has(> .custom-cards) {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.custom-cards { padding: 0; }
+
+.card-content { display: flex; align-items: flex-start; gap: 0.5rem; }
+.card-fields { min-inline-size: 0; flex: 1; }
+
+.card-select-all, .card-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-block-size: 2.75rem;
+  cursor: pointer;
+  color: var(--erpm-text-body);
+}
+
+.card-select-all { align-self: flex-start; padding-inline: 0.5rem; font-size: 0.875rem; }
+.card-select { flex: none; padding-inline: 0.375rem; }
+.erpm-data-card {
+  margin: 0;
+  background: var(--erpm-bg-surface);
+  border: 1px solid var(--erpm-border);
+  box-shadow: none;
+  &.clickable-row { cursor: pointer; }
+  &.selected-row { border-color: var(--erpm-border-focus); }
+}
+.card-field { display: flex; justify-content: space-between; gap: 1rem; padding: 0.25rem 0; }
+.card-label { color: var(--erpm-text-muted); font-size: 0.8rem; }
+.card-value { text-align: right; color: var(--erpm-text-body); min-width: 0; overflow-wrap: anywhere; }
+.card-actions {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-end; margin-top: 0.5rem;
+  ::ng-deep .erpm-btn { min-height: 44px; min-width: 44px; }
+}

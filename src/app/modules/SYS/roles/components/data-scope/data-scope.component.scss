@@ -1,0 +1,10 @@
+.role-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.75rem; align-items: end; }
+.role-hint { overflow-wrap: anywhere; color: var(--erpm-text-muted); font-size: 0.85rem; margin: 0 0 0.5rem; }
+.role-error { color: var(--erpm-danger, #c0392b); margin: 0; }
+
+.role-branches { margin-top: 0.5rem; }
+.role-chips {
+  list-style: none; padding: 0; margin: 0.5rem 0 0; display: flex; flex-wrap: wrap; gap: 0.35rem;
+  li { background: var(--erpm-surface-alt, rgba(127, 127, 127, 0.15)); border-radius: 999px; padding: 0.15rem 0.6rem; }
+  button { background: none; border: 0; cursor: pointer; color: inherit; }
+}

@@ -1,0 +1,426 @@
+﻿<div *ngIf="toastMessage()" class="toast-banner" role="alert">
+  {{ toastMessage() }}
+</div>
+
+<app-list-page
+  title="notifications.templates_title"
+  subtitle="notifications.templates_subtitle"
+  [loading]="isLoading()"
+  [count]="filteredTemplates().length"
+  [total]="filteredTemplates().length"
+  [pageSize]="5000"
+  emptyText="ntpl.empty"
+  (retry)="loadTemplates()"
+  [actions]="headerActions"
+  (actionSelect)="onHeaderAction($event)">
+
+  <div filters>
+    <app-form-control
+      type="text"
+      [placeholder]="'ntpl.search_ph' | translate"
+      [ngModel]="searchQuery()"
+      (ngModelChange)="searchQuery.set($event)"
+    ></app-form-control>
+
+    <app-form-control
+      type="select"
+      [options]="filterCategoryOptions"
+      [ngModel]="filterCategory()"
+      (ngModelChange)="filterCategory.set($event)"
+    ></app-form-control>
+
+    <app-form-control
+      type="select"
+      [options]="statusFilterOptions"
+      [ngModel]="filterStatus()"
+      (ngModelChange)="filterStatus.set($event)"
+    ></app-form-control>
+  </div>
+
+  <app-data-table
+    [data]="filteredTemplates()"
+    [showIndex]="false"
+    [tableMinWidth]="'1100px'"
+  >
+    <app-column key="code" label="ntpl.col_code" width="170px" minWidth="160px" [sortable]="true">
+      <ng-template let-row="row">
+        <span class="tpl-code" [title]="row.code"><span aria-hidden="true">{{ getCategoryIcon(row.category) }}</span> <span class="code-badge">{{ row.code }}</span></span>
+      </ng-template>
+    </app-column>
+
+    <app-column key="name" label="ntpl.col_name" width="180px" minWidth="170px">
+      <ng-template let-row="row">
+        <span class="font-medium text-slate-800 tpl-ellipsis" [title]="row.name">{{ row.name }}</span>
+      </ng-template>
+    </app-column>
+
+    <app-column key="content" label="ntpl.col_content" minWidth="250px">
+      <ng-template let-row="row">
+        <div class="tpl-content-cell">
+          <span class="tpl-title-preview" [title]="row.titleTemplate">{{ row.titleTemplate }}</span>
+          <span class="tpl-body-preview" [title]="row.bodyTemplate">{{ row.bodyTemplate }}</span>
+        </div>
+      </ng-template>
+    </app-column>
+
+    <app-column key="defaultSeverity" label="ntpl.col_severity" type="badge" width="120px" minWidth="110px" align="center">
+      <ng-template let-row="row">
+        <span class="severity-badge" [ngClass]="'badge-' + row.defaultSeverity.toLowerCase()">
+          {{ row.defaultSeverity }}
+        </span>
+      </ng-template>
+    </app-column>
+
+    <app-column key="channels" label="ntpl.col_channels" type="date" width="140px" minWidth="130px" align="center">
+      <ng-template let-row="row">
+        <div class="channels-cell">
+          <span *ngIf="row.supportedChannels?.includes('IN_APP')" class="channel-pill" title="In-App">🔔</span>
+          <span *ngIf="row.supportedChannels?.includes('PUSH_MOBILE')" class="channel-pill" title="Push Mobile">📱</span>
+          <span *ngIf="row.supportedChannels?.includes('EMAIL')" class="channel-pill" title="Email">✉️</span>
+          <span *ngIf="row.supportedChannels?.includes('SMS')" class="channel-pill" title="SMS">💬</span>
+        </div>
+      </ng-template>
+    </app-column>
+
+    <app-column key="isActive" label="ntpl.col_active" type="date" width="100px" minWidth="90px" align="center">
+      <ng-template let-row="row">
+        <div class="text-center">
+          <label class="switch switch-sm" (click)="$event.stopPropagation()">
+            <input
+              type="checkbox"
+              [checked]="row.isActive"
+              (change)="toggleActive(row, $event)"
+            />
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </ng-template>
+    </app-column>
+
+    <app-column key="actions" label="common.actions" width="150px" minWidth="140px" align="right">
+      <ng-template let-row="row">
+        <div class="actions-group justify-end" (click)="$event.stopPropagation()">
+          <button
+            type="button"
+            class="btn-icon"
+            (click)="testSend(row.id)"
+            [title]="'ntpl.test_send_title' | translate"
+          >
+            🚀
+          </button>
+          <button
+            type="button"
+            class="erpm-btn erpm-btn-secondary btn-sm"
+            [title]="'common.edit' | translate"
+            (click)="openEditModal(row)"
+          >
+            ✏️
+          </button>
+        </div>
+      </ng-template>
+    </app-column>
+  </app-data-table>
+</app-list-page>
+
+<!-- Slide-over Drawer / Modal Editor -->
+<div class="drawer-backdrop" *ngIf="isDrawerOpen()" (click)="closeDrawer()">
+  <div class="drawer-panel" (click)="$event.stopPropagation()">
+    <div class="drawer-header">
+      <div>
+        <h2 class="drawer-title">
+          {{ (isEditing() ? 'ntpl.drawer_edit' : 'ntpl.drawer_create') | translate }}
+        </h2>
+        <p class="drawer-subtitle">
+          {{ 'ntpl.drawer_sub' | translate }}
+        </p>
+      </div>
+      <button type="button" class="close-btn" (click)="closeDrawer()">&times;</button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Basic Information -->
+      <div class="form-section">
+        <h4 class="section-title">{{ 'ntpl.sec_basic' | translate }}</h4>
+        <div class="form-grid">
+          <app-form-control
+            type="text"
+            [label]="'ntpl.col_code' | translate"
+            [required]="true"
+            placeholder="VD: SD_ORDER_CONFIRMED"
+            [hint]="'ntpl.f_code_hint' | translate"
+            [disabled]="isEditing()"
+            [ngModel]="formCode()"
+            (ngModelChange)="formCode.set($event)"
+          ></app-form-control>
+
+          <app-form-control
+            type="text"
+            [label]="'ntpl.col_name' | translate"
+            [required]="true"
+            [placeholder]="'ntpl.f_name_ph' | translate"
+            [ngModel]="formName()"
+            (ngModelChange)="formName.set($event)"
+          ></app-form-control>
+
+          <app-form-control
+            type="select"
+            [label]="'ntpl.f_category' | translate"
+            [options]="formCategoryOptions"
+            [ngModel]="formCategory()"
+            (ngModelChange)="formCategory.set($event)"
+          ></app-form-control>
+
+          <app-form-control
+            type="select"
+            [label]="'ntpl.f_severity' | translate"
+            [options]="severityOptions"
+            [ngModel]="formSeverity()"
+            (ngModelChange)="formSeverity.set($event)"
+          ></app-form-control>
+
+          <div class="full-width">
+            <app-form-control
+              type="text"
+              [label]="'ntpl.f_action_url' | translate"
+              placeholder="VD: /sales/orders/{order_code}"
+              [hint]="'ntpl.f_action_url_hint' | translate"
+              [ngModel]="formActionUrl()"
+              (ngModelChange)="formActionUrl.set($event)"
+            ></app-form-control>
+          </div>
+        </div>
+      </div>
+
+      <!-- Channels Selection -->
+      <div class="form-section">
+        <h4 class="section-title">{{ 'ntpl.sec_channels' | translate }}</h4>
+        <div class="channels-checkbox-grid">
+          <label class="checkbox-card" [class.selected]="channelInApp()">
+            <input
+              type="checkbox"
+              [ngModel]="channelInApp()"
+              (ngModelChange)="channelInApp.set($event)"
+            />
+            <div class="checkbox-content">
+              <span class="channel-icon">🔔</span>
+              <span class="channel-label">{{ 'ntpl.ch_inapp' | translate }}</span>
+              <span class="channel-desc">{{ 'ntpl.ch_inapp_desc' | translate }}</span>
+            </div>
+          </label>
+
+          <label class="checkbox-card" [class.selected]="channelPush()">
+            <input
+              type="checkbox"
+              [ngModel]="channelPush()"
+              (ngModelChange)="channelPush.set($event)"
+            />
+            <div class="checkbox-content">
+              <span class="channel-icon">📱</span>
+              <span class="channel-label">Mobile Push</span>
+              <span class="channel-desc">{{ 'ntpl.ch_push_desc' | translate }}</span>
+            </div>
+          </label>
+
+          <label class="checkbox-card" [class.selected]="channelEmail()">
+            <input
+              type="checkbox"
+              [ngModel]="channelEmail()"
+              (ngModelChange)="channelEmail.set($event)"
+            />
+            <div class="checkbox-content">
+              <span class="channel-icon">✉️</span>
+              <span class="channel-label">Email</span>
+              <span class="channel-desc">{{ 'ntpl.ch_email_desc' | translate }}</span>
+            </div>
+          </label>
+
+          <label class="checkbox-card" [class.selected]="channelSms()">
+            <input
+              type="checkbox"
+              [ngModel]="channelSms()"
+              (ngModelChange)="channelSms.set($event)"
+            />
+            <div class="checkbox-content">
+              <span class="channel-icon">💬</span>
+              <span class="channel-label">SMS / ZNS</span>
+              <span class="channel-desc">{{ 'ntpl.ch_sms_desc' | translate }}</span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Parameter Helper Chips -->
+      <div class="form-section">
+        <div class="flex items-center justify-between">
+          <h4 class="section-title">{{ 'ntpl.sec_tokens' | translate }}</h4>
+          <span class="text-xs text-slate-500">{{ 'ntpl.tokens_hint' | translate }}</span>
+        </div>
+        <div class="chips-container">
+          <button
+            *ngFor="let entry of sampleVariables | keyvalue"
+            type="button"
+            class="param-chip"
+            (click)="insertPlaceholder('body', entry.key)"
+            [title]="('ntpl.sample_value' | translate) + ': ' + entry.value"
+          >
+            {{ getChipDisplay(entry.key) }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Bilingual Tabs Content -->
+      <div class="form-section">
+        <div class="tabs-header">
+          <button
+            type="button"
+            class="tab-btn"
+            [class.active]="activeTab() === 'vi'"
+            (click)="activeTab.set('vi')"
+          >
+            {{ 'ntpl.tab_vi' | translate }}
+          </button>
+          <button
+            type="button"
+            class="tab-btn"
+            [class.active]="activeTab() === 'en'"
+            (click)="activeTab.set('en')"
+          >
+            {{ 'ntpl.tab_en' | translate }}
+          </button>
+        </div>
+
+        <div class="tab-content" *ngIf="activeTab() === 'vi'">
+          <div class="mb-3">
+            <app-form-control
+              type="text"
+              [label]="'ntpl.f_title_vi' | translate"
+              [required]="true"
+              [placeholder]="'ntpl.f_title_vi_ph' | translate"
+              [ngModel]="formTitleVi()"
+              (ngModelChange)="formTitleVi.set($event)"
+            ></app-form-control>
+          </div>
+
+          <div>
+            <app-form-control
+              type="textarea"
+              [rows]="3"
+              [label]="'ntpl.f_body_vi' | translate"
+              [required]="true"
+              [placeholder]="'ntpl.f_body_vi_ph' | translate"
+              [ngModel]="formBodyVi()"
+              (ngModelChange)="formBodyVi.set($event)"
+            ></app-form-control>
+          </div>
+        </div>
+
+        <div class="tab-content" *ngIf="activeTab() === 'en'">
+          <div class="mb-3">
+            <app-form-control
+              type="text"
+              [label]="'ntpl.f_title_en' | translate"
+              [placeholder]="'ntpl.f_title_en_ph' | translate"
+              [ngModel]="formTitleEn()"
+              (ngModelChange)="formTitleEn.set($event)"
+            ></app-form-control>
+          </div>
+
+          <div>
+            <app-form-control
+              type="textarea"
+              [rows]="3"
+              [label]="'ntpl.f_body_en' | translate"
+              [placeholder]="'ntpl.f_body_en_ph' | translate"
+              [ngModel]="formBodyEn()"
+              (ngModelChange)="formBodyEn.set($event)"
+            ></app-form-control>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-time Live Preview Box -->
+      <div class="form-section">
+        <h4 class="section-title">{{ 'ntpl.sec_preview' | translate }}</h4>
+        <div class="preview-toast-card" [ngClass]="'toast-' + formSeverity().toLowerCase()">
+          <div class="toast-icon">
+            {{ getCategoryIcon(formCategory()) }}
+          </div>
+          <div class="toast-body">
+            <div class="toast-top">
+              <span class="toast-category">{{ formCategory() }}</span>
+              <span class="toast-time">{{ 'ntpl.just_now' | translate }}</span>
+            </div>
+            <h5 class="toast-title">
+              {{ previewTitle() || ('ntpl.preview_no_title' | translate) }}
+            </h5>
+            <p class="toast-message">
+              {{ previewBody() || ('ntpl.preview_no_body' | translate) }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Batching / Digest Settings -->
+      <div class="form-section">
+        <h4 class="section-title">{{ 'ntpl.sec_batch' | translate }}</h4>
+        <div class="flex items-center justify-between mb-2">
+          <div>
+            <span class="font-medium text-slate-800 text-sm">{{ 'ntpl.batch_allow' | translate }}</span>
+            <p class="text-xs text-slate-500 m-0">
+              {{ 'ntpl.batch_desc' | translate }}
+            </p>
+          </div>
+          <label class="switch">
+            <input
+              type="checkbox"
+              [ngModel]="formIsDigest()"
+              (ngModelChange)="formIsDigest.set($event)"
+            />
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <div *ngIf="formIsDigest()" class="digest-window-field mt-3">
+          <app-form-control
+            type="number"
+            [label]="'ntpl.batch_window' | translate"
+            [hint]="'ntpl.batch_window_hint' | translate"
+            [min]="10"
+            [max]="3600"
+            [ngModel]="formDigestWindow()"
+            (ngModelChange)="formDigestWindow.set($event)"
+          ></app-form-control>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drawer Actions Footer -->
+    <div class="drawer-footer">
+      <div class="footer-left">
+        <button
+          *ngIf="isEditing()"
+          type="button"
+          class="erpm-btn erpm-btn-secondary"
+          [disabled]="isTesting()"
+          (click)="testSend()"
+        >
+          {{ (isTesting() ? 'ntpl.testing' : 'ntpl.test_btn') | translate }}
+        </button>
+      </div>
+
+      <div class="footer-right">
+        <button type="button" class="erpm-btn erpm-btn-secondary" (click)="closeDrawer()">
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button
+          type="button"
+          class="erpm-btn erpm-btn-primary"
+          [disabled]="isSaving()"
+          (click)="saveTemplate()"
+        >
+          {{ (isSaving() ? 'common.saving' : (isEditing() ? 'ntpl.update' : 'ntpl.create')) | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

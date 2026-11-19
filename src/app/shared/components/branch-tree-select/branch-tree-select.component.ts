@@ -1,4 +1,4 @@
-import {
+import { ChangeDetectionStrategy,
   Component,
   ElementRef,
   HostListener,
@@ -10,9 +10,10 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../pipes/translate.pipe';
-import { ALL_BRANCHES_OPTION, BranchDto, BranchService } from '../../../core/services/branch.service';
+import { ALL_BRANCHES_OPTION, BranchDto, BranchService } from '../../../modules/SYS/services/branch.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-branch-tree-select',
   standalone: true,
   imports: [CommonModule, FormsModule, TranslatePipe],
@@ -26,7 +27,7 @@ export class BranchTreeSelectComponent implements OnInit {
   public readonly allBranchesOption = ALL_BRANCHES_OPTION;
   public isOpen = signal<boolean>(false);
   public searchKeyword = signal<string>('');
-  public expandedIds = signal<Set<string>>(new Set());
+  public expandedIds = signal<Set<number>>(new Set());
 
   // Filtered tree supporting keyword search
   public displayedTree = computed<BranchDto[]>(() => {
@@ -55,12 +56,7 @@ export class BranchTreeSelectComponent implements OnInit {
             ...node,
             children: matchedChildren
           });
-          // Auto expand matched parent
-          this.expandedIds.update(set => {
-            const next = new Set(set);
-            next.add(node.id);
-            return next;
-          });
+
         }
       }
       return result;
@@ -94,7 +90,7 @@ export class BranchTreeSelectComponent implements OnInit {
     this.searchKeyword.set('');
   }
 
-  public toggleExpand(id: string, event: Event): void {
+  public toggleExpand(id: number, event: Event): void {
     event.stopPropagation();
     this.expandedIds.update(set => {
       const next = new Set(set);
@@ -107,8 +103,8 @@ export class BranchTreeSelectComponent implements OnInit {
     });
   }
 
-  public isExpanded(id: string): boolean {
-    return this.expandedIds().has(id);
+  public isExpanded(id: number): boolean {
+    return !!this.searchKeyword().trim() || this.expandedIds().has(id);
   }
 
   public isSelected(node: BranchDto): boolean {
@@ -132,11 +128,12 @@ export class BranchTreeSelectComponent implements OnInit {
   }
 
   public getNodeIcon(node: BranchDto, depth: number): string {
-    if (depth === 0) return '🏛️'; // Root / Tập đoàn
+    if (depth === 0) return '🏛️';
+    if (node.orgUnitType === 3) return '📦';
     if (node.children && node.children.length > 0) {
-      return depth === 1 ? '🌐' : '🏢'; // Khối / Chi nhánh cha
+      return depth === 1 ? '🌐' : '🏢';
     }
-    return depth >= 3 ? '🏪' : '🏬'; // Cửa hàng / Điểm bán
+    return depth >= 3 ? '🏪' : '🏬';
   }
 
   @HostListener('document:click', ['$event'])

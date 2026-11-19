@@ -182,7 +182,7 @@
     }
   }
 
-  /* Compact / High-Density variant for Accounting Sổ Cái */
+
   &.erpm-table-compact {
     thead th {
       padding: 0.5rem 0.75rem;
@@ -359,4 +359,39 @@
     max-width: 380px;
     margin: 0 auto 1.25rem;
   }
+}
+
+/* --------------------------------------------------------------------------
+   LONG CELL CONTENT (global mode set by TableDisplayService on <html>)
+   truncate (default): clamp to N lines, "..." at the end, full text on hover.
+   wrap: show everything, the row grows.
+   -------------------------------------------------------------------------- */
+:root { --erpm-cell-clamp-lines: 2; }
+
+.erpm-mat-table .cell-content {
+  overflow-wrap: anywhere;
+}
+
+html[data-cell-overflow='truncate'] .erpm-mat-table .cell-content {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--erpm-cell-clamp-lines);
+  line-clamp: var(--erpm-cell-clamp-lines);
+  overflow: hidden;
+}
+
+/* Per-table / per-column override of the global mode (set via [overflow] on app-data-table or app-column). */
+html .erpm-mat-table .cell-content[data-overflow='2lines'] {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+html .erpm-mat-table .cell-content[data-overflow='wrap'] {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
 }

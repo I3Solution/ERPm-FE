@@ -1,6 +1,9 @@
+:host { display: block; min-width: 0; }
+
 .branch-select-container {
   position: relative;
   display: inline-block;
+  max-width: 100%; /* lets the header on a phone narrow the box instead of pushing the account menu off screen */
   user-select: none;
 }
 
@@ -21,7 +24,7 @@
   caret-color: transparent !important;
   text-align: left;
   transition: var(--erpm-transition-fast);
-  max-width: 340px;
+  max-width: min(340px, 100%);
 
   * {
     cursor: pointer !important;

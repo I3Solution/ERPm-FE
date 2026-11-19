@@ -1,0 +1,21 @@
+.role-hint { overflow-wrap: anywhere; color: var(--erpm-text-muted); font-size: 0.85rem; margin: 0 0 0.5rem; }
+.role-empty { color: var(--erpm-text-muted); padding: 1rem; margin: 0; }
+.role-preview-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem; .active { outline: 2px solid var(--erpm-primary); } }
+.role-effective-module { border-top: 1px solid var(--erpm-border); padding: 0.4rem 0; summary { cursor: pointer; font-weight: 600; } }
+
+.role-badge {
+  display: inline-block; padding: 0.1rem 0.55rem; border-radius: 999px; font-size: 0.8rem;
+  &.allowed { background: rgba(39, 174, 96, 0.18); color: #1e8449; }
+  &.denied { background: rgba(192, 57, 43, 0.2); color: #c0392b; font-weight: 600; }
+  &.notgranted { background: rgba(127, 127, 127, 0.15); color: var(--erpm-text-muted); }
+}
+.role-source {
+  display: inline-block; margin: 0 0.25rem 0.15rem 0; padding: 0.05rem 0.5rem; font-size: 0.8rem; border-radius: 4px;
+  background: rgba(127, 127, 127, 0.15);
+  &.deny { background: rgba(192, 57, 43, 0.2); color: #c0392b; }
+}
+
+:host-context([data-theme='dark']), :host-context(.dark) {
+  .role-badge.allowed { color: #58d68d; }
+  .role-badge.denied, .role-source.deny { color: #ff8a7a; }
+}

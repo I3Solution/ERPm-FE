@@ -1,27 +1,9 @@
-# Client
+# ERPm Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.17.
+Angular 17.3, Ionic 8, standalone/Signals/OnPush. Clone recursive 10 submodules trước npm ci. npm start mở http://localhost:4200 và proxy /api tới http://localhost:5000. Backend cần chạy cùng lúc; dùng tài khoản nội bộ đã bootstrap. Không có dữ liệu demo fallback.
 
-## Development server
+Xem [hướng dẫn local và credentials](../docs/LOCAL_DEVELOPMENT.md), [.ai/status.md](.ai/status.md), [Step 19](.ai/steps/step-19-stabilization-and-internal-accounts.md).
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Build: npm run build. Type-check: npx tsc --noEmit -p tsconfig.spec.json. Test: npm test -- --watch=false --browsers=ChromeHeadless; đặt CHROME_BIN nếu cần.
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+CI chưa chạy remote; private submodules cần SUBMODULES_TOKEN. Commit module trước rồi cập nhật gitlink FE/umbrella. Native scanner/ESC-POS/offline chưa triển khai; in hiện là browser print.

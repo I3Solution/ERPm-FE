@@ -1,0 +1,86 @@
+:host {
+  display: block;
+  --tree-indent: 1.125rem;
+  --tree-control-size: 2.75rem;
+}
+
+.tree-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-inline-size: 0;
+  min-block-size: var(--tree-control-size);
+  border-radius: var(--erpm-radius-sm);
+}
+
+.tree-content {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.tree-toggle, .tree-marker {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--tree-control-size);
+  block-size: var(--tree-control-size);
+}
+
+.tree-marker { inline-size: var(--tree-marker-size, var(--tree-control-size)); }
+
+.tree-toggle {
+  border: 0;
+  border-radius: var(--erpm-radius-sm);
+  color: var(--erpm-text-body);
+  background: transparent;
+  cursor: pointer;
+
+  &:hover { background: var(--erpm-bg-surface-subtle); }
+  &:focus-visible { outline: 2px solid var(--erpm-border-focus); outline-offset: -2px; }
+}
+
+.tree-toggle-label {
+  display: flex;
+  gap: 0.625rem;
+  flex: 1;
+  min-inline-size: 0;
+  padding-inline: 0.75rem;
+  text-align: start;
+  font: inherit;
+}
+
+.tree-chevron {
+  inline-size: 0.45rem;
+  block-size: 0.45rem;
+  border-block-start: 2px solid currentColor;
+  border-inline-end: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.tree-toggle[aria-expanded='true'] .tree-chevron {
+  transform: translateY(-0.125rem) rotate(135deg);
+}
+
+.tree-marker::before {
+  content: '';
+  inline-size: 0.3rem;
+  block-size: 0.3rem;
+  border-radius: 50%;
+  background: var(--erpm-text-subtle);
+}
+
+.tree-children {
+  margin-inline-start: var(--tree-indent);
+  padding-inline-start: 0.375rem;
+  border-inline-start: 1px solid var(--erpm-border-strong);
+}
+
+@media (max-width: 480px) {
+  :host { --tree-indent: 0.625rem; }
+}

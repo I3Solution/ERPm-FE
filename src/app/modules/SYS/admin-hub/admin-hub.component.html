@@ -1,0 +1,50 @@
+<div class="admin-hub-container">
+  <!-- Page Header -->
+  <header class="erpm-page-header">
+    <div class="header-info">
+      <div class="header-title-row">
+        <span class="hub-header-icon" aria-hidden="true">⚙️</span>
+        <h1 class="erpm-page-title">{{ 'admin_hub.title' | translate }}</h1>
+      </div>
+      <p class="erpm-page-subtitle">{{ 'admin_hub.subtitle' | translate }}</p>
+    </div>
+  </header>
+
+  <!-- Content with Category Sections -->
+  <div class="hub-content" *ngIf="hasAnyVisibleItem; else emptyState">
+    <ng-container *ngFor="let section of sections">
+      <section class="hub-section" *ngIf="hasVisibleItems(section)">
+        <h2 class="section-title">{{ section.titleKey | translate }}</h2>
+        <div class="hub-grid">
+          <ng-container *ngFor="let item of section.items">
+            <a
+              *ngIf="auth.can(item.permission)"
+              [routerLink]="item.route"
+              class="hub-card"
+              [attr.data-testid]="'admin-card-' + item.id"
+            >
+              <div class="card-icon-box" aria-hidden="true">
+                <span class="card-icon">{{ item.icon }}</span>
+              </div>
+              <div class="card-body">
+                <div class="card-title-row">
+                  <h3 class="card-title">{{ item.titleKey | translate }}</h3>
+                  <span class="card-arrow" aria-hidden="true">&rsaquo;</span>
+                </div>
+                <p class="card-desc">{{ item.descKey | translate }}</p>
+              </div>
+            </a>
+          </ng-container>
+        </div>
+      </section>
+    </ng-container>
+  </div>
+
+  <!-- Fallback state when user holds no administration privileges -->
+  <ng-template #emptyState>
+    <div class="hub-empty-state" role="status">
+      <div class="empty-icon" aria-hidden="true">🔒</div>
+      <p class="empty-message">{{ 'admin_hub.empty' | translate }}</p>
+    </div>
+  </ng-template>
+</div>

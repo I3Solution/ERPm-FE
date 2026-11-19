@@ -1,0 +1,124 @@
+:host {
+  display: contents;
+}
+
+.page-toolbar:not(:has(> :not(:empty))),
+.page-toolbar > :empty {
+  display: none;
+}
+
+.page-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--erpm-border);
+  border-radius: var(--erpm-radius-md);
+  background: var(--erpm-bg-surface);
+}
+
+.toolbar-filters {
+  flex: 1 1 16rem;
+  min-inline-size: 0;
+}
+
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  max-inline-size: 100%;
+  margin-inline-start: auto;
+}
+
+.toolbar-selection {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--erpm-text-body);
+  background: var(--erpm-bg-surface-subtle);
+  border-radius: var(--erpm-radius-sm);
+  padding-inline: 0.5rem 0.125rem;
+
+  button {
+    min-block-size: 2.75rem;
+    padding-inline: 0.5rem;
+  }
+}
+
+.toolbar-primary,
+.toolbar-more-btn {
+  min-block-size: 2.75rem;
+  padding-inline: 0.75rem;
+}
+
+.toolbar-primary {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.toolbar-more-btn {
+  min-inline-size: 2.75rem;
+}
+
+.toolbar-primary:focus-visible {
+  outline: 2px solid var(--erpm-border-focus);
+  outline-offset: 2px;
+}
+
+/* Existing pages project their own filter controls and action groups. */
+:host ::ng-deep {
+  .toolbar-filters > [filters] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    margin: 0;
+  }
+
+  .toolbar-filters > [filters] > app-form-control {
+    flex: 1 1 12rem;
+    min-inline-size: 0;
+    max-inline-size: 16rem;
+  }
+
+  .toolbar-filters > [filters] > app-form-control:first-child,
+  .toolbar-filters > [filters] > .search-box {
+    flex: 1 1 14rem;
+    max-inline-size: 22rem;
+  }
+
+  .toolbar-filters > [filters] > app-form-control:has(input[type='checkbox']) {
+    flex: 0 0 auto;
+    max-inline-size: 100%;
+  }
+
+  .toolbar-filters app-form-control .erpm-form-group {
+    margin-block-end: 0;
+  }
+
+  .toolbar-actions > [actions] {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    .toolbar-filters > [filters],
+    .toolbar-filters > [filters] > app-form-control,
+    .toolbar-filters > [filters] > :has(> app-form-control) {
+      max-inline-size: none;
+    }
+
+    .toolbar-filters > [filters] > :has(> app-form-control) {
+      flex-grow: 1;
+      min-inline-size: 0;
+    }
+  }
+}

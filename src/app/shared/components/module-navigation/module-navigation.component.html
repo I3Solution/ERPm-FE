@@ -1,0 +1,18 @@
+<nav [attr.aria-label]="'menu.modules' | translate">
+  <app-tree-view [nodes]="nodes()" [nodeTemplate]="entry" [expanded]="expanded()" (expandedChange)="onExpandedChange($event)" [toggleFromLabel]="true"></app-tree-view>
+</nav>
+
+<ng-template #entry let-node>
+  @if (node.data.route; as route) {
+    <a class="nav-link" [routerLink]="route" routerLinkActive="active" ariaCurrentWhenActive="page"
+      [routerLinkActiveOptions]="node.data.exact ? exactPath : nestedPath">
+      <span class="nav-icon" aria-hidden="true">{{ node.data.icon }}</span>
+      <span>{{ node.label | translate }}</span>
+    </a>
+  } @else {
+    <span class="nav-group" [class.active]="activeGroup() === node.id">
+      <span class="nav-icon" aria-hidden="true">{{ node.data.icon }}</span>
+      <span>{{ node.label | translate }}</span>
+    </span>
+  }
+</ng-template>

@@ -1,0 +1,46 @@
+name: Verify frontend
+on:
+  # Run once per change: PRs get the pull_request run; only master needs a push run (feature-branch pushes would run twice).
+  push:
+    branches: [master]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.SUBMODULES_TOKEN || github.token }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      # The dictionary is shared with the backend and must match it byte for byte. Change the backend file first (or in the same
+      # change set), then this one; a frontend-only change fails here instead of failing later in the root repository.
+      - uses: actions/checkout@v4
+        with:
+          repository: I3Solution/ERPm-BE
+          path: be-dictionary
+          sparse-checkout: src/ERPm.Infrastructure/Persistence/Seeders/system_dictionary.json
+          sparse-checkout-cone-mode: false
+          token: ${{ secrets.SUBMODULES_TOKEN || github.token }}
+      - name: Verify the dictionary matches the backend
+        # shortcut: on a PR a mismatch is only a warning (the backend PR normally merges first, so a red PR is noise); master stays strict.
+        run: |
+          if ! cmp src/assets/i18n/system.json be-dictionary/src/ERPm.Infrastructure/Persistence/Seeders/system_dictionary.json; then
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              echo "::warning::Dictionary differs from backend master. Merge the backend dictionary PR first, then re-run this check."
+            else
+              exit 1
+            fi
+          fi
+      - run: npm ci
+      - name: UI-STD lock (no hard-coded button/table sizes in screens)
+        run: node tools/check-ui-std.mjs
+      - run: npm run build
+      - run: npm test -- --watch=false --browsers=ChromeHeadless
+        env:
+          CHROME_BIN: /usr/bin/google-chrome

@@ -1,5 +1,19 @@
 # 📘 PROJECT MASTER: ERPm - HỆ THỐNG KẾ TOÁN & QUẢN TRỊ BÁN HÀNG TỒN KHO HYBRID
 
+## Baseline triển khai đã xác minh — Step 19 (2026-10-29)
+
+- Backend .NET 10.0.403 / EF Core 10.0.14; PostgreSQL 18 local, workflow CI nhắm PostgreSQL 16. Frontend Angular 17.3 và Ionic 8. Capacitor, offline và Dapper reporting chưa được nghiệm thu.
+- FE có 10 submodule: ACC, SD, PUR, WMS, CRM, HRM, MFG, SCM, PM, dashboard. Luồng đang hoạt động chủ yếu ở SD/WMS/CRM/dashboard; module còn lại là khung hoặc backlog.
+- Danh mục hàng hóa nằm ở WMS, POS ở SD, đối tác ở CRM. Login/core/layout ở repo FE. Không tạo đường dẫn catalog/inventory/sales/partners theo sơ đồ cũ.
+- Nguồn schema chuẩn là EF migrations/snapshot; SQL trong database/ chỉ để tham chiếu, không dùng để reset hay triển khai trực tiếp. Nâng cấp UUID cũ bảo toàn ExternalId và các bảng legacy; DB tạo thủ công bằng script cũ cần quy trình adoption riêng.
+- Tài khoản nội bộ với opaque bearer token của ASP.NET Core, 1 giờ; Admin/Operator/Viewer và scope chi nhánh server-side. TenantId chưa phải cơ chế cách ly SaaS hoàn chỉnh.
+- Posting phải đi qua service nghiệp vụ trong transaction, advisory lock, mã sequence, RequestId/request hash, kiểm tra tài khoản/bút toán. Posted/Cancelled bất biến; hủy hóa đơn tạo reversal, không xóa lịch sử.
+- Quantity/price/value là decimal(18,4). InventoryValue là giá trị tồn lưu sổ; AverageCostPrice là đơn giá bình quân làm tròn. Khi xuất hết tồn, phân bổ toàn bộ giá trị còn lại vào CostAmount để không để lại số dư do làm tròn.
+- Form lưu dữ liệu dùng FormGroup và app-form-control/app-input-control; searchChange hỗ trợ lookup server. Shared controls và component nghiệp vụ dùng OnPush/Signals; không ghi signal trong computed/effect nếu chưa tách untracked đúng chỗ.
+- Không seed giao dịch hoặc trả số demo khi lỗi API. Từ điển hệ thống VI/EN được đồng bộ vào app_dictionaries; master data giữ JSONB translations.
+- Kết quả chạy và phần còn lại ở .ai/status.md và Step 19; không suy diễn toàn bộ phase đã hoàn thành từ việc có controller/entity.
+
+
 > **Tài liệu chuẩn kiến trúc & Quy tắc phát triển phần mềm dành cho Developers và AI Agents.**  
 > Mọi thay đổi, bổ sung code trong dự án **bắt buộc tuân thủ** các quy tắc trong tài liệu này.
 
@@ -18,16 +32,16 @@ Xây dựng một hệ thống phần mềm **Quản trị Bán hàng - Tồn kh
 ### 1.2. Tech Stack Cốt Lõi
 | Thành phần | Công nghệ được chọn | Lý do & Vai trò |
 | :--- | :--- | :--- |
-| **Backend API** | **C# / .NET 8 (LTS)** | Hiệu năng cao, Type-safe mạnh, Clean Architecture, dễ bảo trì enterprise. |
+| **Backend API** | **C# / .NET 10 (LTS)** | Hiệu năng cao, Type-safe mạnh, Clean Architecture, dễ bảo trì enterprise. |
 | **Database** | **PostgreSQL 16+** | Hỗ trợ JSONB linh hoạt, ACID chuẩn xác cho tài chính, miễn phí, hỗ trợ mở rộng partitioning sau này. |
-| **ORM & Data Access** | **EF Core 8 + Dapper** | EF Core cho nghiệp vụ Command/Transaction; Dapper cho Query báo cáo & Dashboard tốc độ cao. |
-| **Frontend Framework** | **Angular 18+ (Standalone Components)** | Cấu trúc module rõ ràng, Dependency Injection, Signals phản ứng nhanh, Type-safe tuyệt đối. |
+| **ORM & Data Access** | **EF Core 10 + Dapper** | EF Core cho nghiệp vụ Command/Transaction; Dapper cho Query báo cáo & Dashboard tốc độ cao. |
+| **Frontend Framework** | **Angular 20 (Standalone Components)** | Cấu trúc module rõ ràng, Dependency Injection, Signals phản ứng nhanh, Type-safe tuyệt đối. |
 | **Hybrid UI Framework** | **Ionic Framework 8 + Capacitor** | Bộ UI tối ưu đồng thời cho Mobile & Desktop Web, tích hợp Camera quét mã vạch native, Single Codebase build Android/iOS. |
 | **Kiến trúc Mã nguồn** | **Clean Architecture (Domain-Driven)** | Tách biệt hoàn toàn Domain Logic, Application Layer, Infrastructure và Presentation. |
 
 ---
 
-## 2. QUY CHUẨN KIẾN TRÚC BACKEND (.NET 8)
+## 2. QUY CHUẨN KIẾN TRÚC BACKEND (.NET 10)
 
 ### 2.1. Cấu trúc Solution (Clean Architecture)
 ```text
@@ -42,7 +56,7 @@ ERPm/
 │   │   └── Entities/Accounting/      # Account (Hệ thống TK), JournalEntry, JournalEntryLine
 │   │
 │   ├── ERPm.Application/             # Use Cases, CQRS/Service Layer, DTOs, Mappers, Validators
-│   │   ├── Common/                   # Interfaces (IDbContext, ICurrentUserService, IDateTime)
+│   │   ├── Common/                   # Interfaces (IDbContext, ICurrentUser, IDateTime)
 │   │   ├── Features/Catalog/         # Items CRUD, Category tree
 │   │   ├── Features/Sales/           # Lập đơn, Xuất hóa đơn, Tính tiền, Trừ kho
 │   │   ├── Features/Inventory/       # Nhập kho, Xuất kho, Kiểm kê, Tính giá vốn
@@ -66,12 +80,13 @@ ERPm/
    - Private field: `_camelCase`.
    - Interface luôn bắt đầu bằng chữ `I` (vd: `IItemRepository`, `IUnitOfWork`).
    - DTOs đặt tên rõ nghĩa theo hành vi: `CreateItemRequest`, `ItemDetailResponse`, `SalesInvoiceFilterQuery`.
-2. **Entity Standards:**
-   - Mọi Entity chính kế thừa từ `BaseAuditableEntity`:
-     - `Id` (Guid UUIDv7 hoặc long identity). Khuyến nghị dùng `Guid` để mobile app có thể offline-generate ID khi cần sync.
+2. **Entity Standards (Dual-Key Architecture):**
+   - Mọi Entity chính kế thừa từ `BaseAuditableEntity` (và các bảng chi tiết kế thừa `BaseEntity`):
+     - `Id` (`int` tự tăng - `GENERATED BY DEFAULT AS IDENTITY`): Dùng làm **Primary Key (PK)** và **Foreign Key (FK)** cho toàn bộ `JOIN` nội bộ, Dapper Query và các API `GET`/`PUT`/`DELETE` nội bộ.
+     - `ExternalId` (`Guid` chuẩn **UUIDv7** sắp xếp theo thời gian RFC 9562): Tự động sinh qua `Uuid7Generator.NewUuid7()` phục vụ đồng bộ Offline Mobile, tích hợp đối ngoại và bảo mật URL khi cần. Được đánh **Unique Covering Index** (`CREATE UNIQUE INDEX ... ON (external_id) INCLUDE (id, is_deleted) WITH (fillfactor = 95)`) để đạt *Index-Only Scan* và chống phân mảnh B-Tree.
      - `CreatedAtUtc`, `CreatedBy`, `LastModifiedAtUtc`, `LastModifiedBy`.
      - `IsDeleted` (Soft-delete mặc định cho toàn bộ chứng từ & danh mục).
-     - `CompanyId` / `TenantId` (Sẵn sàng mở rộng đa chi nhánh / đa công ty).
+     - `CompanyId` / `TenantId` (`int?` sẵn sàng mở rộng đa chi nhánh / đa công ty).
 3. **Immutability trong Kế toán & Kho:**
    - **Tuyệt đối không xóa cứng (Hard Delete)** các bản ghi hóa đơn, phiếu nhập/xuất kho đã ghi sổ (`Status = Posted`).
    - Mọi điều chỉnh đều phải thông qua **Phiếu hủy (Cancel)**, **Bút toán đảo (Storno/Reversal)**, hoặc **Phiếu điều chỉnh**.
@@ -169,10 +184,9 @@ client/
 │   │   │
 │   │   ├── modules/ (hoặc features/)
 │   │   │   ├── dashboard/           # Báo cáo tổng quan, biểu đồ Chart.js
-│   │   │   ├── catalog/             # Quản lý Items, Danh mục, Đơn vị tính
-│   │   │   ├── inventory/           # Tồn kho, Phiếu nhập, Phiếu xuất, Kiểm kê
-│   │   │   ├── sales/               # POS bán hàng, Tạo đơn, Danh sách hóa đơn
-│   │   │   └── partners/            # Khách hàng, Nhà cung cấp, Sổ công nợ
+│   │   │   ├── WMS/             # Quản lý Items, Danh mục, Đơn vị tính
+│   │   │   ├── SD/               # POS bán hàng, Tạo đơn, Danh sách hóa đơn
+│   │   │   └── CRM/            # Khách hàng, Nhà cung cấp, Sổ công nợ
 │   │   │
 │   │   └── app.routes.ts            # Standalone lazy routes
 │   └── theme/                       # SCSS variables, responsive utilities
@@ -187,6 +201,11 @@ client/
    - Trên Desktop: Hỗ trợ đầu đọc mã vạch USB (lắng nghe sự kiện phím nhanh `keyup` buffer).
 3. **State Management & Signals:**
    - Sử dụng Angular Signals (`computed()`, `signal()`, `effect()`) cho state quản lý giỏ hàng bán hàng, bộ lọc tìm kiếm và bảng dữ liệu.
+4. **Quy chuẩn Biểu mẫu Nhập liệu (`FormGroup` + `FormControlComponent` & `InputControlComponent`):**
+   - Toàn bộ các Form nhập liệu đi lưu dữ liệu (CRUD Modal, Phiếu nhập/xuất, Đơn hàng, Đối tác, Thanh toán) bắt buộc sử dụng **`FormGroup` (`ReactiveFormsModule`)** thay vì biến rời `[(ngModel)]`.
+   - Không vẽ thẻ `<input>`, `<textarea>`, `<select>` thủ công lặp lại trên từng màn hình; bắt buộc sử dụng bộ đôi component chuẩn hóa:
+     - [`InputControlComponent`](src/app/shared/components/input-control/input-control.component.ts) (`<app-input-control>`): Nhận `type` (`'text' | 'number' | 'currency' | 'date' | 'email' | 'tel' | 'textarea' | 'select' | 'checkbox'`), `dataSource` (`SelectOption[]`), `prefix`/`suffix` và tự động xử lý ép kiểu, định dạng số/tiền tệ hoặc render `<app-custom-select>`.
+     - [`FormControlComponent`](src/app/shared/components/form-control/form-control.component.ts) (`<app-form-control>`): Bọc `<app-input-control>`, tự động nhận `formControlName`, hiển thị `label`, `unit`, dấu `*` (`required` tự nhận diện từ `Validators.required`) và thông báo lỗi validation chuẩn hóa.
 
 ---
 
@@ -244,4 +263,13 @@ Khi thực hiện bất kỳ nhiệm vụ nào trong dự án, AI Agent **phải
    - Mọi tài liệu log bước thực hiện (`.ai/steps/`), tài liệu quản trị (`.ai/status.md`) và trao đổi, giải thích với người dùng trong hội thoại viết bằng Tiếng Việt chuẩn mực, mạch lạc, chuyên nghiệp.
 7. **CODE COMMENTS TRONG MÃ NGUỒN PHẢI DÙNG TIẾNG ANH (ENGLISH COMMENTS ONLY):**
    - Mọi comment chú thích trong source code (C#, TypeScript, HTML templates, SCSS styles, SQL scripts) bắt buộc phải viết bằng Tiếng Anh. Tuyệt đối không comment tiếng Việt trong file mã nguồn.
+8. **QUY TẮC GIT COMMIT CHUẨN (`[tag]` / `[tag](MODULE)`):**
+   - Cú pháp bắt buộc: `[tag] nội dung commit` hoặc `[tag](MODULE) nội dung commit` (với `MODULE` thuộc `CORE`, `SYS`, `ACC`, `SD`, `PUR`, `WMS`, `CRM`, `HRM`, `MFG`, `SCM`, `PM`, `DASHBOARD`).
+   - Bộ 6 tag chuẩn:
+     - `[add]`: Thêm mới tính năng, bảng, API, màn hình, component.
+     - `[update]`: Cập nhật nghiệp vụ, sửa đổi kiến trúc, nâng cấp UI/Index.
+     - `[fix]`: Sửa lỗi (bug logic, giao diện, SQL, build).
+     - `[refactor]`: Tái cấu trúc code không làm thay đổi hành vi nghiệp vụ.
+     - `[db]`: Thay đổi riêng về SQL Schema, EF Migration, Index, Seed data.
+     - `[docs]`: Cập nhật tài liệu (`PROJECT_MASTER.md`, `AGENTS.md`, `.ai/`).
 

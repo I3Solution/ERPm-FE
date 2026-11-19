@@ -1,32 +1,63 @@
 # 🤖 AGENTS.MD: HƯỚNG DẪN DÀNH CHO AI AGENT TRONG DỰ ÁN ERPM-FE
 
-Chào bạn AI Assistant, bạn đang làm việc trên repository **ERPm-FE** - Ứng dụng Frontend Angular 18 + Ionic 8 Hybrid cho ERPm (Quản trị Bán hàng, Tồn kho & Kế toán mở rộng).
+Chào bạn AI Assistant, bạn đang làm việc trên repository **ERPm-FE** - Ứng dụng Frontend Angular 20 + Ionic 8 Hybrid cho ERPm (Quản trị Bán hàng, Tồn kho & Kế toán mở rộng).
+- **Quy tắc UI dùng chung:** [FE_UI_GUIDE.md](FE_UI_GUIDE.md). Đọc trước khi tạo hoặc rà soát màn hình và cập nhật cùng các thay đổi chuẩn UI.
 - **Repository Remote:** `https://github.com/I3Solution/ERPm-FE.git`
 
 ---
 
 ## 📌 QUY TẮC HOẠT ĐỘNG BẮT BUỘC
 
-1. **Đọc tài liệu cốt lõi trước khi thực hiện nhiệm vụ:**
-   - [PROJECT_MASTER.md](file:///d:/WORKING%20PLACE/ERPm/ERPm-FE/PROJECT_MASTER.md): Kiến trúc Standalone, Signals, Design System và quản lý submodule.
-   - [.ai/roadmap.md](file:///d:/WORKING%20PLACE/ERPm/ERPm-FE/.ai/roadmap.md): Lộ trình phát triển tính năng Frontend.
-   - [.ai/status.md](file:///d:/WORKING%20PLACE/ERPm/ERPm-FE/.ai/status.md): Trạng thái hiện tại của Frontend và các công việc tiếp theo.
+1. **Bootstrap theo task — không đọc tràn lan:**
+   - Xác định repository, branch, HEAD và working tree trước khi làm.
+   - Nếu task bắt đầu từ umbrella ERPm, đọc `ERPm/AGENTS.md`, `ERPm/.ai/context/README.md` và `ERPm/.ai/context/context-policy.md` trước để định tuyến.
+   - Đọc tài liệu cục bộ của repository này theo đúng phần liên quan: `PROJECT_MASTER.md`, `.ai/roadmap.md`, `.ai/status.md`, plan/task và source. Không mặc định đọc toàn bộ ba tài liệu lớn ở mọi task.
+   - Chỉ mở rộng sang repo/domain khác khi API contract, DTO, dictionary, database mapping hoặc dependency trực tiếp yêu cầu; ghi rõ bằng chứng.
+   - Các quy tắc kỹ thuật, Git và task logging bên dưới vẫn có hiệu lực; bootstrap gọn không có nghĩa là bỏ qua quy tắc.
 
 2. **Cấu trúc Git Submodule cho từng Module nghiệp vụ:**
    - Mỗi module trong `src/app/modules/` là một Git Submodule độc lập:
-     - `catalog`: `https://github.com/I3Solution/ERPm-FE-catalog.git`
-     - `dashboard`: `https://github.com/I3Solution/ERPm-FE-dashboard.git`
-     - `inventory`: `https://github.com/I3Solution/ERPm-FE-inventory.git`
-     - `partners`: `https://github.com/I3Solution/ERPm-FE-partners.git`
-     - `sales`: `https://github.com/I3Solution/ERPm-FE-sales.git`
+     - `ACC`: `https://github.com/I3Solution/ERPm-FE-ACC.git`
+     - `SD`: `https://github.com/I3Solution/ERPm-FE-SD.git`
+     - `PUR`: `https://github.com/I3Solution/ERPm-FE-PUR.git`
+     - `WMS`: `https://github.com/I3Solution/ERPm-FE-WMS.git`
+     - `CRM`: `https://github.com/I3Solution/ERPm-FE-CRM.git`
+     - `HRM`: `https://github.com/I3Solution/ERPm-FE-HRM.git`
+     - `MFG`: `https://github.com/I3Solution/ERPm-FE-MFG.git`
+     - `SCM`: `https://github.com/I3Solution/ERPm-FE-SCM.git`
+     - `PM`: `https://github.com/I3Solution/ERPm-FE-PM.git`
+     - `dashboard`: `https://github.com/I3Solution/ERPm-FE-DASHBOARD.git`
    - Khi sửa đổi code trong một module, cần cập nhật `.ai/plan.md`, `.ai/status.md` và `.ai/steps/` bên trong module đó, đồng thời commit submodule trước khi cập nhật pointer ở root FE.
 
 3. **Quy chuẩn lưu vết từng Step vào thư mục `.ai/steps/`:**
-   - Cập nhật file log: `d:/WORKING PLACE/ERPm/ERPm-FE/.ai/steps/step-[số thứ tự]-[tên-ngắn-gọn].md`.
+   - Cập nhật file log: `ERPm-FE/.ai/steps/step-[số thứ tự]-[tên-ngắn-gọn].md`.
 
-4. **Kỷ luật Kỹ thuật Frontend (Angular 18 + Ionic 8):**
+4. **Kỷ luật Kỹ thuật Frontend (Angular 20 + Ionic 8):**
    - 100% Standalone Components, Signal State Management, OnPush Change Detection.
+   - **Ngoại lệ Angular Material:** `@angular/material` + `@angular/cdk` chỉ nằm trong `app-data-table` (app-data-table bọc Material: lõi bảng PC = mat-table/matSort; vỏ + mobile = Ionic), sửa tại chỗ, không tạo bảng thứ hai; theme bằng token ERPm. Màn hình chỉ dùng `<app-data-table>`, không gắn Material trực tiếp. Không dùng Material cho form, dialog, điều hướng; form giữ `<app-form-control>`. Chi tiết: `PROJECT_MASTER.md` §4.2.
+   - **Standardized Reactive Forms (`FormGroup` + `<app-form-control>` / `<app-input-control>`):** Mọi biểu mẫu nhập liệu lưu dữ liệu (CRUD Modal, Chứng từ) bắt buộc dùng `FormGroup` (`ReactiveFormsModule`) và vẽ control qua `<app-form-control>` (`FormControlComponent`) hoặc `<app-input-control>` (`InputControlComponent`) bằng cách truyền `type` (`'text' | 'number' | 'currency' | 'date' | 'textarea' | 'select' | 'checkbox'`) và `dataSource` (`SelectOption[]`).
    - Triad 3-file tách bạch: Mỗi component bắt buộc có file `.ts`, `.html`, `.scss` riêng biệt. Không nhét inline template hoặc inline style.
+   - **Khóa UI-STD:** màn hình trong `src/app/modules` KHÔNG tự đặt `font-size`/`height`/`padding` (px/rem) cho nút, ô nhập, bảng, tiêu đề trang; dùng token `src/theme/*` và component dùng chung (`app-list-page`, `app-data-table`, `app-action-bar`). CI chạy `node tools/check-ui-std.mjs` (ratchet theo `tools/ui-std-baseline.json`: không được tăng; dọn xong thì chạy `--write` để hạ mốc).
    - Đa ngôn ngữ (i18n): Mọi text hiển thị bắt buộc qua pipe `translate`.
+   - **Ô bảng dài (toàn app):** không tự đặt `white-space: nowrap`/`text-overflow` hay `title` riêng cho ô dữ liệu trong `app-data-table`. Cell dữ liệu đã bọc `.cell-content` (trừ cột actions): chế độ toàn cục `truncate` (mặc định) cắt tối đa `--erpm-cell-clamp-lines` dòng (mặc định 2) kết thúc bằng `...` và hiện tooltip đầy đủ khi rê chuột; chế độ `wrap` tự xuống dòng đủ nội dung. Người dùng đổi bằng nút `…`/`↵` trên header (`TableDisplayService`, lưu `erpm_cell_overflow`). Đổi riêng một bảng/cột (giống ERP cũ): `<app-data-table overflow="2lines|wrap">` hoặc `<app-column overflow="2lines|wrap">` (`2lines` = cắt 2 dòng + `...`, `wrap` = hiện đủ; cột thắng bảng, bảng thắng chế độ toàn cục). Muốn cột luôn một dòng (tiền, mã) dùng `nowrap`/`money-cell` như hiện có. Bảng sửa trực tiếp (nhánh non-mat) chưa bọc `.cell-content`.
    - Cursor pointer & User select: Không để caret nhấp nháy trên non-editable text, các vùng tương tác ép `cursor: pointer`.
    - **Code Comments (English Only):** Toàn bộ comment trong TypeScript, HTML, SCSS bắt buộc 100% bằng Tiếng Anh.
+
+5. **Quy tắc Git Commit (Commit Message Convention):**
+   - Mọi lệnh `git commit` trên `ERPm-FE` và các Submodules bắt buộc tuân thủ cú pháp:
+     `[tag] nội dung commit` hoặc `[tag](MODULE) nội dung commit`
+   - **Bộ 6 Tag chuẩn:**
+     - `[add]`: Thêm mới màn hình, component, service, tính năng UI.
+     - `[update]`: Cập nhật giao diện, luồng tương tác hoặc tối ưu hiệu năng.
+     - `[fix]`: Sửa lỗi hiển thị, lỗi logic hoặc lỗi build.
+     - `[refactor]`: Tái cấu trúc component/service không làm thay đổi hành vi.
+     - `[db]`: Cập nhật mock data hoặc local storage schema.
+     - `[docs]`: Cập nhật tài liệu (`PROJECT_MASTER.md`, `AGENTS.md`, `.ai/`).
+   - **Bắt buộc:** trước khi push `ERPm-FE` hoặc bất kỳ `ERPm-FE-<MODULE>` nào, chạy một lần `git config push.recurseSubmodules check` trong `ERPm-FE`. Lệnh này chặn push nếu con trỏ submodule (SD, CRM, WMS, HRM…) trỏ tới commit submodule đó chưa push lên remote của chính nó. Thứ tự đúng: **push submodule con trước**, rồi mới push `ERPm-FE`. Đã xảy ra nhiều lần (SD/CRM lúc merge, CRM, WMS) khiến CI đỏ ở bước checkout với lỗi `not our ref` / `repository not found`.
+
+6. **Quy tắc ghi chép theo loại Task** (Step / change / bug / refactor / db / spike / review): theo mục 6 `AGENTS.md` của repo gốc `ERPm`. File task đặt ở `.ai/tasks/` của repo gốc, theo mẫu `.ai/tasks/_TEMPLATE.md`.
+
+7. **Quy tắc tạo card Trello:** theo mục 7 `AGENTS.md` của repo gốc `ERPm`.
+   - Tên card: `[tag](MODULE) <MÃ> <tiêu đề>`.
+   - Cột: Backlog / Todo / Doing / Blocked / Review / Done.
+   - Mỗi card link tới plan hoặc file task, kèm checklist build và test.

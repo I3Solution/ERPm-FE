@@ -1,0 +1,16 @@
+@if (leaf(); as node) {
+  <span class="bc" tabindex="0" role="button" [attr.aria-expanded]="open()" [attr.aria-label]="fullText()"
+    (mouseenter)="show()" (mouseleave)="hide()" (focus)="show()" (blur)="hide()" (click)="toggle($event)">
+    <span class="bc-name" [class.is-company]="node.company">{{ node.label }}</span>
+  </span>
+  @if (open()) {
+    <ol class="bc-pop" role="tooltip" [style.top.px]="popTop()" [style.left.px]="popLeft()">
+      @for (crumb of path(); track crumb.id; let i = $index; let last = $last) {
+        <li class="bc-level" [class.is-company]="crumb.company" [class.is-last]="last" [style.padding-left.rem]="i * 0.9">
+          @if (i > 0) { <span class="bc-elbow" aria-hidden="true">└</span> }
+          <span class="bc-label">{{ crumb.label }}</span>
+        </li>
+      }
+    </ol>
+  }
+}

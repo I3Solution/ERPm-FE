@@ -1,0 +1,18 @@
+<p class="role-hint">{{ 'role.area.scope_hint' | translate }}</p>
+<div class="role-fields">
+  <app-form-control [formControl]="modeControl()" type="select" [label]="'role.field.scope' | translate" [dataSource]="options()"></app-form-control>
+  <app-form-control [formControl]="descendantsControl()" type="checkbox" [checkboxLabel]="'role.field.descendants' | translate"></app-form-control>
+</div>
+@if (error()) { <p class="role-error" role="alert">{{ error() }}</p> }
+@if (showCustomBranches()) {
+  <div class="role-branches">
+    @if (!readOnly()) {
+      <app-branch-select [tree]="branchTree()" [placeholder]="'role.add_branch' | translate" (valueChange)="add($event)"></app-branch-select>
+    }
+    <ul class="role-chips">
+      @for (id of branchIds(); track id) {
+        <li>{{ branchName(id) }} @if (!readOnly()) { <button type="button" [attr.aria-label]="'common.delete' | translate" (click)="remove(id)">&times;</button> }</li>
+      }
+    </ul>
+  </div>
+}

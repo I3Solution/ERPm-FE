@@ -1,0 +1,107 @@
+<div class="role-container">
+  <div class="erpm-page-header">
+    <div>
+      <h1 class="erpm-page-title">{{ 'role.title' | translate }}</h1>
+      <p class="erpm-page-subtitle">{{ 'role.subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  <div class="role-tabs" role="tablist">
+    <button type="button" role="tab" [class.active]="tab() === 'roles'" [attr.aria-selected]="tab() === 'roles'" (click)="tab.set('roles')">{{ 'role.tab.roles' | translate }}</button>
+    <button type="button" role="tab" [class.active]="tab() === 'accounts'" [attr.aria-selected]="tab() === 'accounts'" (click)="tab.set('accounts')">{{ 'role.tab.accounts' | translate }}</button>
+  </div>
+
+  @if (tab() === 'roles') {
+    <div class="role-layout">
+      <!-- Role list -->
+      <aside class="role-list erpm-table-container">
+        <div class="role-list-head">
+          <app-form-control class="role-search" [formControl]="keywordControl" type="text" [placeholder]="'common.search' | translate"></app-form-control>
+          @if (auth.can('sys:role:create')) {
+            <button type="button" class="erpm-btn erpm-btn-primary" (click)="startNew()">{{ 'role.add' | translate }}</button>
+          }
+        </div>
+        <ul>
+          @for (role of visibleRoles(); track role.id) {
+            <li [class.selected]="role.id === selectedId()" [class.inactive]="!role.isActive">
+              <button type="button" class="role-pick" (click)="select(role)">
+                <strong>{{ role.name }}</strong>
+                <small>{{ role.code }}@if (role.isSystemRole) { · {{ 'role.system' | translate }} }@if (role.companyId == null) { · {{ 'role.template' | translate }} }</small>
+              </button>
+              <span class="role-row-actions">
+                @if (auth.can('sys:role:create')) {
+                  <button type="button" class="erpm-btn erpm-btn-secondary" (click)="copy(role)">{{ 'role.copy' | translate }}</button>
+                }
+                @if (!role.isSystemRole && auth.can('sys:role:delete')) {
+                  <button type="button" class="erpm-btn erpm-btn-secondary" (click)="remove(role)">{{ 'common.delete' | translate }}</button>
+                }
+              </span>
+            </li>
+          } @empty {
+            <li class="role-empty">{{ loading() ? ('common.loading' | translate) : ('role.empty' | translate) }}</li>
+          }
+        </ul>
+      </aside>
+
+      <!-- Designer -->
+      <section class="role-designer erpm-table-container">
+        @if (draft(); as role) {
+          @if (role.isSystemRole) {
+            <p class="role-note">{{ 'error.iam.system_role' | translate }}</p>
+          }
+          <form [formGroup]="form" (ngSubmit)="save()" class="role-form">
+            <div class="role-fields">
+              <app-form-control formControlName="code" type="text" [label]="'role.field.code' | translate" [required]="true"></app-form-control>
+              <app-form-control formControlName="name" type="text" [label]="'role.field.name' | translate" [required]="true"></app-form-control>
+              <app-form-control formControlName="description" type="text" [label]="'role.field.description' | translate"></app-form-control>
+              <app-form-control formControlName="isActive" type="checkbox" [checkboxLabel]="'common.active' | translate"></app-form-control>
+            </div>
+
+            <div class="role-modes" role="tablist">
+              <button type="button" role="tab" [class.active]="mode() === 'matrix'" [attr.aria-selected]="mode() === 'matrix'" (click)="switchMode('matrix')">{{ 'role.mode.matrix' | translate }}</button>
+              <button type="button" role="tab" [class.active]="mode() === 'json'" [attr.aria-selected]="mode() === 'json'" (click)="switchMode('json')">{{ 'role.mode.json' | translate }}</button>
+            </div>
+
+            @if (mode() === 'matrix') {
+              @if (!matrixEditable()) {
+                <p class="role-note">{{ 'role.json.not_matrix' | translate }}</p>
+              }
+              <!-- Area 1: what can be done -->
+              <fieldset class="role-area">
+                <legend>{{ 'role.area.actions' | translate }}</legend>
+                <app-permission-matrix [catalog]="catalog()" [matrix]="matrix()" [readOnly]="readOnly()" [resetKey]="openCount()"
+                  (matrixChange)="onMatrixChange($event)"></app-permission-matrix>
+              </fieldset>
+
+              <!-- Area 2: whose data is visible -->
+              <fieldset class="role-area">
+                <legend>{{ 'role.area.scope' | translate }}</legend>
+                <app-data-scope [modeControl]="form.controls.scopeMode" [descendantsControl]="form.controls.includeDescendants"
+                  [options]="scopeOptions()" [showCustomBranches]="showCustomBranches()" [branchIds]="customBranchIds()" [branchTree]="branchTree()"
+                  [error]="scopeError()" [readOnly]="readOnly()" (branchIdsChange)="onCustomBranchesChange($event)"></app-data-scope>
+              </fieldset>
+            } @else {
+              <app-policy-json-editor [control]="form.controls.json" [rows]="18" [label]="'role.json.label' | translate"
+                [error]="jsonError()" [alert]="true"></app-policy-json-editor>
+            }
+
+            @if (conflict()) {
+              <p class="role-note" role="alert">{{ 'role.conflict_hint' | translate }}
+                <button type="button" class="erpm-btn erpm-btn-secondary" (click)="reloadSelected()">{{ 'role.reload' | translate }}</button></p>
+            }
+            @if (!readOnly()) {
+              <div class="role-actions">
+                <button type="button" class="erpm-btn erpm-btn-secondary" (click)="cancelDraft()">{{ 'common.cancel' | translate }}</button>
+                <button type="submit" class="erpm-btn erpm-btn-primary" [disabled]="saving()">{{ 'common.save' | translate }}</button>
+              </div>
+            }
+          </form>
+        } @else {
+          <p class="role-empty">{{ 'role.pick' | translate }}</p>
+        }
+      </section>
+    </div>
+  } @else {
+    <app-account-access [roles]="roles()"></app-account-access>
+  }
+</div>

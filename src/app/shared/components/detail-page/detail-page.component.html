@@ -1,0 +1,27 @@
+<section class="detail-page">
+  <app-action-bar [actions]="actions()" (actionSelect)="actionSelect.emit($event)">
+    <app-back-button toolbar-start [defaultUrl]="backLink()" [label]="backLabel()"></app-back-button>
+    <ng-container actions><ng-content select="[actions]"></ng-content></ng-container>
+  </app-action-bar>
+
+  @if (title()) {
+    <header class="erpm-page-header">
+      <div class="header-info">
+        <h1 class="erpm-page-title">{{ title() | translate }}</h1>
+        @if (subtitle()) { <p class="erpm-page-subtitle">{{ subtitle() | translate }}</p> }
+        <div class="detail-meta"><ng-content select="[meta]"></ng-content></div>
+      </div>
+    </header>
+  }
+
+  @if (error()) {
+    <div class="detail-error" role="alert">
+      <p>{{ 'common.load_error' | translate }}</p>
+      <button type="button" class="erpm-btn erpm-btn-secondary" (click)="retry.emit()">{{ 'common.retry' | translate }}</button>
+    </div>
+  } @else if (loading()) {
+    <app-skeleton [lines]="10"></app-skeleton>
+  } @else {
+    <div class="detail-body"><ng-content></ng-content></div>
+  }
+</section>

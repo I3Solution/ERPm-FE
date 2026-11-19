@@ -1,5 +1,5 @@
 <nav [attr.aria-label]="'menu.modules' | translate">
-  <app-tree-view [nodes]="nodes()" [nodeTemplate]="entry" [(expanded)]="expanded" [toggleFromLabel]="true"></app-tree-view>
+  <app-tree-view [nodes]="nodes()" [nodeTemplate]="entry" [expanded]="expanded()" (expandedChange)="onExpandedChange($event)" [toggleFromLabel]="true"></app-tree-view>
 </nav>
 
 <ng-template #entry let-node>

@@ -22,7 +22,8 @@
 
 ## Dữ liệu phân cấp
 
-- Dùng `app-tree-view` cho nhóm điều hướng hoặc dữ liệu cha–con. Node dùng ID ổn định, nút nở/thu có tên truy cập và báo trạng thái, node lá căn cùng hàng. Menu lọc quyền ở nguồn và mở nhóm có route đang xem. Màn dữ liệu truyền template riêng cho nội dung và thao tác của node.
+- Dùng `app-tree-view` cho nhóm điều hướng hoặc dữ liệu cha–con. Node dùng ID ổn định, nút nở/thu có tên truy cập và báo trạng thái, node lá căn cùng hàng. Menu lọc quyền ở nguồn và mở tạm nhóm chứa route đang xem mà không ghi đè lựa chọn thủ công. Màn dữ liệu truyền template riêng cho nội dung và thao tác của node.
+- Trạng thái mở/thu thủ công của nhóm menu điều hướng được lưu phiên bản hóa theo `account.id` qua `NavigationPreferenceService` (`erpm_nav_expanded:account:<id>`), dùng chung cho sidebar desktop và trang Thêm (`/more`) trên mobile; tự loại ID nhóm đã xóa, tôn trọng quyền hiện tại và chịu lỗi khi dữ liệu cũ/hỏng hoặc `localStorage` bị chặn. Khi người dùng bấm thu nhóm đang active, nhóm thu lại ngay trong phiên xem hiện tại (và bị gỡ khỏi preference nếu trước đó đã lưu mở); khi tải lại trang hoặc điều hướng rời khỏi nhóm rồi quay lại route đó, nhóm sẽ tự mở tạm lại để hỗ trợ định vị.
 - Giữ tổ tiên để người dùng thấy đường dẫn khi tìm trong cây. Bộ lọc mở nhánh có kết quả. Khi bỏ lọc, dùng lại trạng thái mở/đóng trước đó. Màn tham chiếu là ACC Hệ thống tài khoản.
 
 ## Rà soát trước khi bàn giao

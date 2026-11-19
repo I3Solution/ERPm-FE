@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { IsActiveMatchOptions, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
+import { NavigationPreferenceService } from '../../../core/services/navigation-preference.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { TreeKey, TreeNode, TreeViewComponent } from '../tree-view/tree-view.component';
 
@@ -59,6 +60,10 @@ const MODULES: NavigationNode[] = [
   ])
 ];
 
+export const MODULE_NAVIGATION_GROUP_IDS: ReadonlySet<string> = new Set(
+  MODULES.filter(node => !!node.children?.length).map(node => String(node.id))
+);
+
 @Component({
   selector: 'app-module-navigation',
   standalone: true,
@@ -70,6 +75,7 @@ const MODULES: NavigationNode[] = [
 export class ModuleNavigationComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly navPreferences = inject(NavigationPreferenceService);
   private readonly routeChange = toSignal(this.router.events.pipe(filter(event => event instanceof NavigationEnd)));
 
   public readonly exactPath: IsActiveMatchOptions = { paths: 'exact', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' };
@@ -80,19 +86,58 @@ export class ModuleNavigationComponent {
     return children.length ? [{ ...node, children }] : [];
   }));
 
-  public readonly activeGroup = computed(() => {
+  private readonly visibleGroupIds = computed<ReadonlySet<string>>(() => new Set(
+    this.nodes().filter(node => !!node.children?.length).map(node => String(node.id))
+  ));
+
+  public readonly activeGroup = computed<string | undefined>(() => {
     this.routeChange();
-    return this.nodes().find(node => node.children?.some(child =>
+    const id = this.nodes().find(node => node.children?.some(child =>
       this.router.isActive(child.data.route!, child.data.exact ? this.exactPath : this.nestedPath)
     ))?.id;
+    return id === undefined ? undefined : String(id);
   });
 
-  public readonly expanded = linkedSignal<TreeKey | undefined, ReadonlySet<TreeKey>>({
-    source: this.activeGroup,
-    computation: (active, previous) => active === undefined
-      ? previous?.value ?? new Set()
-      : new Set([...(previous?.value ?? []), active])
+  private readonly syncActiveGroupEffect = effect(() => {
+    const active = this.activeGroup();
+    this.auth.account();
+    untracked(() => this.navPreferences.syncActiveGroup(active));
   });
+
+  /**
+   * Displayed expanded group IDs: intersection of persisted manual choices with currently
+   * permitted visible groups, plus ephemeral expansion of the active route group unless
+   * collapsed during the current visit.
+   */
+  public readonly expanded = computed<ReadonlySet<TreeKey>>(() => {
+    const visible = this.visibleGroupIds();
+    const result = new Set<TreeKey>();
+    for (const id of this.navPreferences.expandedGroups()) {
+      if (visible.has(id)) {
+        result.add(id);
+      }
+    }
+    const active = this.activeGroup();
+    if (active && visible.has(active) && !this.navPreferences.isActiveGroupSuppressed(active)) {
+      result.add(active);
+    }
+    return result;
+  });
+
+  public onExpandedChange(next: ReadonlySet<TreeKey>): void {
+    const current = this.expanded();
+    const active = this.activeGroup();
+    for (const key of next) {
+      if (!current.has(key)) {
+        this.navPreferences.setGroupExpanded(String(key), true, MODULE_NAVIGATION_GROUP_IDS, active);
+      }
+    }
+    for (const key of current) {
+      if (!next.has(key)) {
+        this.navPreferences.setGroupExpanded(String(key), false, MODULE_NAVIGATION_GROUP_IDS, active);
+      }
+    }
+  }
 
   private canShow(node: NavigationNode): boolean {
     return !node.data.permission || this.auth.can(node.data.permission);

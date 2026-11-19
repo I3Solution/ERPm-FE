@@ -16,6 +16,7 @@ import { NotificationBellComponent } from './shared/components/notification-bell
 import { NotificationToastComponent } from './shared/components/notification-toast/notification-toast.component';
 import { AppDialogComponent } from './shared/components/app-dialog/app-dialog.component';
 import { DropdownMenuComponent, MenuItem } from './shared/components/dropdown-menu/dropdown-menu.component';
+import { ModuleNavigationComponent } from './shared/components/module-navigation/module-navigation.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,7 +32,8 @@ import { DropdownMenuComponent, MenuItem } from './shared/components/dropdown-me
     NotificationBellComponent,
     NotificationToastComponent,
     AppDialogComponent,
-    DropdownMenuComponent
+    DropdownMenuComponent,
+    ModuleNavigationComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -58,18 +60,19 @@ export class AppComponent {
     effect(() => { const signedIn = this.auth.isAuthenticated(); untracked(() => { if (signedIn) this.branches.loadBranches(); else { this.branches.branches.set([]); this.branches.branchTree.set([]); this.branches.currentBranch.set(null); } }); });
   }
 
-  /** Actions of the account menu; add an item here (and a case in onProfileAction) for profile, password and so on. */
   public profileItems = computed<MenuItem[]>(() => [
-    // On a phone the header has no room for the theme and language buttons, so they live here instead.
-    { id: 'theme', label: this.isDarkMode() ? 'theme.light' : 'theme.dark', icon: this.isDarkMode() ? '☀' : '☾', mobileOnly: true },
-    { id: 'lang-vi', label: 'header.lang_vi', icon: this.currentLang() === 'vi' ? '✓' : '', mobileOnly: true },
-    { id: 'lang-en', label: 'header.lang_en', icon: this.currentLang() === 'en' ? '✓' : '', mobileOnly: true },
+    { id: 'lang-vi', label: 'header.lang_vi', current: this.currentLang() === 'vi' },
+    { id: 'lang-en', label: 'header.lang_en', current: this.currentLang() === 'en' },
+    { id: 'theme', label: this.isDarkMode() ? 'theme.light' : 'theme.dark', icon: this.isDarkMode() ? '☀' : '☾' },
+    { id: 'cells', label: this.cellOverflow() === 'truncate' ? 'table.action_wrap_cells' : 'table.action_truncate_cells',
+      icon: this.cellOverflow() === 'truncate' ? '↵' : '…' },
     { id: 'sign-out', label: 'auth.sign_out', icon: '⎋', danger: true }
   ]);
 
   public onProfileAction(id: string): void {
     if (id === 'sign-out') { this.auth.logout(); this.router.navigateByUrl('/login'); }
     else if (id === 'theme') this.toggleTheme();
+    else if (id === 'cells') this.tableDisplay.toggle();
     else if (id === 'lang-vi' || id === 'lang-en') this.setLanguage(id === 'lang-vi' ? 'vi' : 'en');
   }
 
@@ -93,6 +96,11 @@ export class AppComponent {
       url.startsWith('/roles');
   }
 
+  public isMoreRouteActive(): boolean {
+    const path = (this.router.url ?? '').split(/[?#]/, 1)[0];
+    return this.isAdminRouteActive() || path.startsWith('/accounting/') || path.startsWith('/sales/') || path.startsWith('/notifications');
+  }
+
   public get currentLang() {
     return this.localizationService.currentLang;
   }
@@ -107,7 +115,6 @@ export class AppComponent {
 
   /** Global long-cell mode (truncate with hover, or wrap); see TableDisplayService. */
   public get cellOverflow() { return this.tableDisplay.cellOverflow; }
-  public toggleCellOverflow(): void { this.tableDisplay.toggle(); }
 
   public toggleTheme(): void {
     this.themeService.toggleTheme();

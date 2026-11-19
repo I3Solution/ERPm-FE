@@ -1,6 +1,7 @@
 # 🤖 AGENTS.MD: HƯỚNG DẪN DÀNH CHO AI AGENT TRONG DỰ ÁN ERPM-FE
 
 Chào bạn AI Assistant, bạn đang làm việc trên repository **ERPm-FE** - Ứng dụng Frontend Angular 20 + Ionic 8 Hybrid cho ERPm (Quản trị Bán hàng, Tồn kho & Kế toán mở rộng).
+- **Quy tắc UI dùng chung:** [FE_UI_GUIDE.md](FE_UI_GUIDE.md). Đọc trước khi tạo hoặc rà soát màn hình và cập nhật cùng các thay đổi chuẩn UI.
 - **Repository Remote:** `https://github.com/I3Solution/ERPm-FE.git`
 
 ---

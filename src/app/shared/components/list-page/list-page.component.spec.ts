@@ -9,10 +9,21 @@ import { ListAction, ListPageComponent } from './list-page.component';
   standalone: true,
   imports: [ListPageComponent],
   template: `<app-list-page title="t" [loading]="loading" [error]="error" [count]="count" [total]="total" [page]="page" [pageSize]="10"
-    [actions]="actions" (actionSelect)="picked.push($event)" (pageChange)="changed = $event" (retry)="retried = true"><p class="row">rows</p></app-list-page>`
+    [actions]="actions" [selectedCount]="selected" (clearSelection)="selected = 0"
+    (actionSelect)="picked.push($event)" (pageChange)="changed = $event" (retry)="retried = true">
+    @if (withControls) {
+      <div filters><input aria-label="Search"></div>
+    }
+    @if (withControls) {
+      <button actions type="button" (click)="picked.push('custom')">Custom</button>
+    }
+    <p class="row">rows</p>
+  </app-list-page>`
 })
 class HostComponent {
   loading = false; error = false; count = 0; total = 0; page = 1; changed = 0; retried = false; picked: string[] = [];
+  withControls = false;
+  selected = 0;
   actions: ListAction[] = [
     { id: 'create', label: 'common.create', icon: '➕', primary: true },
     { id: 'export', label: 'common.actions' },
@@ -71,6 +82,21 @@ describe('ListPageComponent', () => {
     expect(host.picked).toEqual(['create']);
   });
 
+  it('projects custom filters and actions into the same toolbar', () => {
+    host.withControls = true;
+    update();
+    const toolbar = el().querySelector('app-action-bar') as HTMLElement;
+    expect(toolbar.querySelector('.toolbar-filters [filters] input')).toBeTruthy();
+    (toolbar.querySelector('.toolbar-actions button[actions]') as HTMLButtonElement).click();
+    expect(host.picked).toEqual(['custom']);
+  });
+
+  it('hides the toolbar when the page has no controls or allowed actions', () => {
+    host.actions = [{ id: 'secret', label: 'common.actions', permission: 'no:such:permission' }];
+    update();
+    expect(getComputedStyle(el().querySelector('.page-toolbar') as HTMLElement).display).toBe('none');
+  });
+
   it('puts the other actions in one menu and hides those the user may not use', () => {
     expect(el().querySelectorAll('app-dropdown-menu').length).toBe(1);
     (el().querySelector('.dm-trigger') as HTMLButtonElement).click();
@@ -79,5 +105,25 @@ describe('ListPageComponent', () => {
     expect(items.length).toBe(1);
     (items[0] as HTMLButtonElement).click();
     expect(host.picked).toEqual(['export']);
+  });
+
+  it('keeps excess primary actions in the menu and enables a row action when the list has a selection', () => {
+    host.actions = [...host.actions, { id: 'bulk', label: 'Bulk', primary: true, requiresSelection: true }];
+    update();
+    (el().querySelector('.dm-trigger') as HTMLButtonElement).click();
+    update();
+    const bulk = () => Array.from(document.body.querySelectorAll<HTMLButtonElement>('.dm-panel button'))
+      .find(button => button.textContent?.trim() === 'Bulk');
+    expect(bulk()?.disabled).toBeTrue();
+    expect(el().querySelectorAll('.toolbar-primary').length).toBe(1);
+    host.selected = 2;
+    update();
+    expect(bulk()?.disabled).toBeFalse();
+    bulk()?.click();
+    expect(host.picked).toEqual(['bulk']);
+    (el().querySelector('.toolbar-selection button') as HTMLButtonElement).click();
+    update();
+    expect(host.selected).toBe(0);
+    expect(el().querySelector('.toolbar-selection')).toBeNull();
   });
 });

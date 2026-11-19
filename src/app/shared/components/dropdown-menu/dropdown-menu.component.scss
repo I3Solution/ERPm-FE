@@ -42,3 +42,8 @@
   &:disabled { opacity: 0.45; cursor: default; }
   &.is-danger { color: var(--erpm-danger-text, #b91c1c); }
 }
+
+.dm-current {
+  margin-inline-start: auto;
+  color: var(--erpm-primary-700);
+}

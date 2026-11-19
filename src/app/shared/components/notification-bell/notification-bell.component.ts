@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { NotificationStateService } from '../../../core/services/notification-state.service';
 import { NotificationSignalRService } from '../../../core/services/notification-signalr.service';
 import { NotificationPopoverComponent } from '../notification-popover/notification-popover.component';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-notification-bell',
   standalone: true,
-  imports: [CommonModule, NotificationPopoverComponent],
+  imports: [CommonModule, NotificationPopoverComponent, TranslatePipe],
   templateUrl: './notification-bell.component.html',
   styleUrls: ['./notification-bell.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

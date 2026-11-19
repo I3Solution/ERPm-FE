@@ -1,0 +1,42 @@
+<ng-container *ngTemplateOutlet="branch; context: { items: nodes() }"></ng-container>
+
+<ng-template #branch let-items="items">
+  <ul class="tree-list">
+    @for (node of items; track node.id) {
+      @let hasChildren = !!node.children?.length;
+      @let open = hasChildren && (reveal() || expanded().has(node.id));
+      <li>
+        <div class="tree-row" [class.branch-row]="hasChildren">
+          @if (hasChildren && !reveal()) {
+            <button type="button" class="tree-toggle" [class.tree-toggle-label]="toggleFromLabel()" [attr.aria-expanded]="open"
+              [attr.aria-label]="((open ? 'common.collapse' : 'common.expand') | translate) + ' ' + (node.label | translate)"
+              (click)="toggle(node.id)">
+              <span class="tree-chevron" aria-hidden="true"></span>
+              @if (toggleFromLabel()) {
+                <ng-container *ngTemplateOutlet="content; context: { $implicit: node }"></ng-container>
+              }
+            </button>
+          } @else {
+            <span class="tree-marker" aria-hidden="true"></span>
+          }
+          @if (!hasChildren || reveal() || !toggleFromLabel()) {
+            <div class="tree-content"><ng-container *ngTemplateOutlet="content; context: { $implicit: node }"></ng-container></div>
+          }
+        </div>
+        @if (open) {
+          <div class="tree-children">
+            <ng-container *ngTemplateOutlet="branch; context: { items: node.children }"></ng-container>
+          </div>
+        }
+      </li>
+    }
+  </ul>
+</ng-template>
+
+<ng-template #content let-node>
+  @if (nodeTemplate(); as template) {
+    <ng-container *ngTemplateOutlet="template; context: { $implicit: node }"></ng-container>
+  } @else {
+    {{ node.label | translate }}
+  }
+</ng-template>

@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { BackButtonComponent } from '../back-button/back-button.component';
-import { ActionBarComponent } from '../action-bar/action-bar.component';
-import type { ListAction } from '../list-page/list-page.component';
+import { ActionBarComponent, type PageAction } from '../action-bar/action-bar.component';
 import { SkeletonComponent } from '../skeleton/skeleton.component';
 
 /**
@@ -33,8 +32,8 @@ export class DetailPageComponent {
   public readonly backLink = input('/');
   public readonly backLabel = input('common.back_to_list');
 
-  /** Standard action bar, same declaration as list pages (see ListAction). */
-  public readonly actions = input<ListAction[]>([]);
+  /** Standard action bar, same declaration as list pages. */
+  public readonly actions = input<PageAction[]>([]);
   public readonly actionSelect = output<string>();
   public readonly retry = output<void>();
 }

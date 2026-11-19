@@ -10,6 +10,7 @@
   computed,
   contentChildren,
   inject,
+  input,
   signal
 } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
@@ -58,7 +59,13 @@ export class DataTableComponent<T = any> {
   @Input() canEdit = false;
 
   // === Features & Interactions ===
-  @Input() selectable = false;
+  private readonly selectionEnabled = signal(false);
+  @Input() set selectable(value: boolean) { this.selectionEnabled.set(value); }
+  get selectable(): boolean { return this.selectionEnabled(); }
+  /** Controlled selection when a host exposes row actions in its toolbar. */
+  public readonly selection = input<readonly T[]>();
+  public readonly selectionLabel = input<(row: T) => string>();
+  public readonly cardTemplate = input<TemplateRef<{ $implicit: T }>>();
   @Input() showIndex = true;
   @Input() clickableRows = false;
   /** Long-text mode for every column of this table ('2lines' | 'wrap'); a column's own overflow wins. */
@@ -86,6 +93,7 @@ export class DataTableComponent<T = any> {
 
   // === Reactive State (Signals) ===
   public selectedRows = signal<T[]>([]);
+  private readonly selectedKeys = computed(() => new Set((this.selection() ?? this.selectedRows()).map(row => this.selectionKey(row))));
   public currentSort = signal<TableSort | null>(null);
 
   // Template projections
@@ -209,43 +217,43 @@ export class DataTableComponent<T = any> {
   // =========================================================================
 
   public isRowSelected(row: T): boolean {
-    const list = this.selectedRows();
-    const idKey = typeof this.trackBy === 'string' ? (this.trackBy as keyof T) : ('id' as keyof T);
-    return list.some(item => (item[idKey] !== undefined && item[idKey] === row[idKey]) || item === row);
+    return this.selectable && this.selectedKeys().has(this.selectionKey(row));
   }
 
   public isAllSelected(): boolean {
-    return this.data.length > 0 && this.selectedRows().length === this.data.length;
+    return this.data.length > 0 && this.data.every(row => this.isRowSelected(row));
   }
 
   public isPartiallySelected(): boolean {
-    const count = this.selectedRows().length;
-    return count > 0 && count < this.data.length;
+    return this.data.some(row => this.isRowSelected(row)) && !this.isAllSelected();
   }
 
   public toggleSelectAll(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
-    if (checked) {
-      this.selectedRows.set([...this.data]);
-    } else {
-      this.selectedRows.set([]);
-    }
-    this.selectionChange.emit(this.selectedRows());
+    this.updateSelection(checked ? [...this.data] : []);
   }
 
   public toggleRowSelection(row: T, event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
-    const idKey = typeof this.trackBy === 'string' ? (this.trackBy as keyof T) : ('id' as keyof T);
-    let next: T[];
-    if (checked) {
-      next = [...this.selectedRows(), row];
-    } else {
-      next = this.selectedRows().filter(
-        item => (item[idKey] !== undefined ? item[idKey] !== row[idKey] : item !== row)
-      );
-    }
-    this.selectedRows.set(next);
-    this.selectionChange.emit(next);
+    const key = this.selectionKey(row);
+    const keys = new Set(this.selectedKeys());
+    if (checked) keys.add(key);
+    else keys.delete(key);
+    this.updateSelection(this.data.filter(item => keys.has(this.selectionKey(item))));
+  }
+
+  public rowSelectionLabel(row: T): string {
+    const label = this.selectionLabel();
+    return label ? label(row) : String(this.selectionKey(row));
+  }
+
+  private selectionKey(row: T): unknown {
+    return typeof this.trackBy === 'function' ? this.trackBy(row) ?? row : row?.[this.trackBy as keyof T] ?? row;
+  }
+
+  private updateSelection(rows: T[]): void {
+    if (this.selection() === undefined) this.selectedRows.set(rows);
+    this.selectionChange.emit(rows);
   }
 
   public onRowClick(row: T, event: MouseEvent): void {

@@ -48,7 +48,7 @@ export const routes: Routes = [
   { path: 'accounting', loadChildren: () => import('./modules/ACC/acc.routes').then(m => m.ACC_ROUTES) },
   { path: 'roles', loadComponent: () => import('./modules/SYS/roles/roles.component').then(m => m.RolesComponent), canActivate: [permissionGuard('sys:role:view')] },
   { path: 'admin', loadComponent: () => import('./modules/SYS/admin-hub/admin-hub.component').then(m => m.AdminHubComponent), canActivate: [authGuard] },
-  { path: 'more', redirectTo: 'admin', pathMatch: 'full' },
+  { path: 'more', loadComponent: () => import('./modules/SYS/module-menu/module-menu.component').then(m => m.ModuleMenuComponent), canActivate: [authGuard] },
   { path: 'notifications', loadComponent: () => import('./modules/SYS/notifications/notification-center/notification-center.component').then(m => m.NotificationCenterComponent), canActivate: [authGuard] },
   { path: 'notifications/preferences', loadComponent: () => import('./modules/SYS/notifications/notification-preferences/notification-preferences.component').then(m => m.NotificationPreferencesComponent), canActivate: [authGuard] },
   { path: 'notifications/templates', loadComponent: () => import('./modules/SYS/notifications/notification-templates/notification-templates.component').then(m => m.NotificationTemplatesComponent), canActivate: [permissionGuard('sys:notification:view')] },

@@ -4,6 +4,10 @@
   align-items: center;
 }
 
+@media (max-width: 767px) {
+  .bell-container { position: static; }
+}
+
 .bell-btn {
   position: relative;
   width: 2.25rem;
@@ -62,4 +66,8 @@
   75% { transform: rotate(4deg); }
   85% { transform: rotate(-4deg); }
   100% { transform: rotate(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bell-btn.shake { animation: none; }
 }

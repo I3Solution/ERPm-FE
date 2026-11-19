@@ -10,13 +10,13 @@ import { TreeKey, TreeNode, TreeViewComponent } from '../tree-view/tree-view.com
 interface NavigationEntry {
   icon: string;
   route?: string;
-  permission?: string;
+  permission?: string | string[];
   exact?: boolean;
 }
 
 type NavigationNode = TreeNode<NavigationEntry>;
 
-function link(route: string, label: string, icon: string, permission?: string, exact = false): NavigationNode {
+function link(route: string, label: string, icon: string, permission?: string | string[], exact = false): NavigationNode {
   return { id: route, label, data: { route, icon, permission, exact } };
 }
 
@@ -31,7 +31,7 @@ const MODULES: NavigationNode[] = [
     link('/sales', 'menu.sales_pos', '🛒', 'sd:invoice:view', true),
     link('/sales/orders', 'menu.orders', '📦', 'sd:order:view'),
     link('/sales/quotations', 'menu.quotations', '📝', 'sd:quotation:view'),
-    link('/sales/price-lists', 'menu.price_lists', '🏷️', 'sd:pricelist:view'),
+    link('/sales/price-lists', 'menu.price_lists', '🏷️', ['sd:pricelist:view', 'pur:pricelist:view']),
     link('/sales/returns', 'menu.returns', '↩️', 'sd:return:view'),
     link('/sales/analytics', 'menu.sales_analytics', '📈', 'sd:report:view')
   ]),
@@ -140,6 +140,8 @@ export class ModuleNavigationComponent {
   }
 
   private canShow(node: NavigationNode): boolean {
-    return !node.data.permission || this.auth.can(node.data.permission);
+    const permission = node.data.permission;
+    if (!permission) return true;
+    return Array.isArray(permission) ? this.auth.canAny(permission) : this.auth.can(permission);
   }
 }

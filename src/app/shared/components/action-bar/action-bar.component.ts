@@ -4,8 +4,8 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 import { DropdownMenuComponent, type MenuItem } from '../dropdown-menu/dropdown-menu.component';
 
 export interface PageAction extends MenuItem {
-  /** Permission code; the action is hidden when the user lacks it. */
-  permission?: string;
+  /** Permission code(s); the action is hidden when the user lacks all of them. */
+  permission?: string | string[];
   /** The main action is always visible. Secondary actions share the overflow menu. */
   primary?: boolean;
   /** Keep the action disabled until at least one row is selected. */
@@ -32,7 +32,10 @@ export class ActionBarComponent {
 
   private readonly auth = inject(AuthService);
   private readonly allowed = computed(() => this.actions()
-    .filter(action => !action.permission || this.auth.can(action.permission))
+    .filter(action => {
+      if (!action.permission) return true;
+      return Array.isArray(action.permission) ? this.auth.canAny(action.permission) : this.auth.can(action.permission);
+    })
     .map(action => action.requiresSelection && this.selectedCount() === 0 ? { ...action, disabled: true } : action));
   public readonly primaryAction = computed(() => this.allowed().find(a => a.primary));
   public readonly menuActions = computed(() => this.allowed().filter(action => action !== this.primaryAction()));

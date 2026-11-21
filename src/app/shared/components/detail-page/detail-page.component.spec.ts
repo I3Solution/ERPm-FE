@@ -47,6 +47,16 @@ describe('DetailPageComponent', () => {
     expect(fixture.componentInstance.picked).toBe('save');
   });
 
+  it('pins the bar at the top and repeats the title only once the page title scrolls away', () => {
+    const bar = el().querySelector('app-action-bar') as HTMLElement;
+    expect(getComputedStyle(bar).position).toBe('sticky');
+    expect(el().querySelector('.bar-title')).toBeNull();
+    const page = fixture.debugElement.children[0].componentInstance as unknown as { titleOut: { set(v: boolean): void } };
+    page.titleOut.set(true);
+    fixture.detectChanges();
+    expect(el().querySelector('app-action-bar .toolbar-start .bar-title')?.textContent).toContain('Name');
+  });
+
   it('hides the body while loading', () => {
     fixture.componentInstance.loading = true;
     fixture.changeDetectorRef.markForCheck(); fixture.detectChanges();

@@ -1,11 +1,13 @@
 <section class="detail-page">
-  <app-action-bar [actions]="actions()" (actionSelect)="actionSelect.emit($event)">
+  <div #sentinel class="stick-sentinel" aria-hidden="true"></div>
+  <app-action-bar [class.is-stuck]="stuck()" [actions]="actions()" (actionSelect)="actionSelect.emit($event)">
     <app-back-button toolbar-start [defaultUrl]="backLink()" [label]="backLabel()"></app-back-button>
+    @if (title() && titleOut()) { <span toolbar-start class="bar-title" aria-hidden="true">{{ title() | translate }}</span> }
     <ng-container actions><ng-content select="[actions]"></ng-content></ng-container>
   </app-action-bar>
 
   @if (title()) {
-    <header class="erpm-page-header">
+    <header #header class="erpm-page-header">
       <div class="header-info">
         <h1 class="erpm-page-title">{{ title() | translate }}</h1>
         @if (subtitle()) { <p class="erpm-page-subtitle">{{ subtitle() | translate }}</p> }

@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { HttpErrorResponse, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
+import { HttpContextToken, HttpErrorResponse, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, tap, throwError } from 'rxjs';
 import { AuthService } from './services/auth.service';
@@ -8,6 +8,9 @@ import { LocalizationService } from './services/localization.service';
 
 /** Codes whose server message carries values the dictionary text cannot (for example the overlapping version). */
 const SERVER_TEXT_CODES = new Set(['error.sd.pricelist_version_overlap']);
+
+/** HTTP statuses the caller shows itself, so the shared error banner stays quiet for them. */
+export const HANDLED_ERROR_STATUSES = new HttpContextToken<readonly number[]>(() => []);
 
 export const apiInterceptor: HttpInterceptorFn = (request, next) => {
   if (!request.url.startsWith('/api/')) return next(request);
@@ -25,6 +28,7 @@ export const apiInterceptor: HttpInterceptorFn = (request, next) => {
     tap(event => { if (event instanceof HttpResponse) errors.succeeded(order); }),
     catchError((error: HttpErrorResponse) => {
     if (token && token !== auth.token()) return throwError(() => error);
+    if (request.context.get(HANDLED_ERROR_STATUSES).includes(error.status)) return throwError(() => error);
     const code = error.error?.errorCode || error.error?.message;
     const serverText = SERVER_TEXT_CODES.has(error.error?.errorCode) && typeof error.error?.message === 'string' && !error.error.message.startsWith('error.') ? error.error.message : null;
     errors.fail(serverText ?? (typeof code === 'string' && code.startsWith('error.') ? code : error.status === 403 ? 'error.access.denied' : error.status === 401 ? 'error.auth.invalid' : error.status === 429 ? 'error.auth.rate_limit' : 'error.connection'));

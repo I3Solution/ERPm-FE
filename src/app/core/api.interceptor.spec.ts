@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpClient, HttpContext, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { signal } from '@angular/core';
-import { apiInterceptor } from './api.interceptor';
+import { apiInterceptor, HANDLED_ERROR_STATUSES } from './api.interceptor';
 import { AuthService } from './services/auth.service';
 import { ApiErrorService } from './services/api-error.service';
 
@@ -36,6 +36,17 @@ describe('apiInterceptor error banner', () => {
     http.get('/api/v1/branches').subscribe();
     backend.expectOne('/api/v1/branches').flush({ data: [] });
     expect(errors.message()).toBeNull();
+  });
+
+  it('stays quiet for a status the caller handles itself, but not for other statuses', () => {
+    const context = new HttpContext().set(HANDLED_ERROR_STATUSES, [404]);
+    http.get('/api/v1/branches/1/serving-warehouses', { context }).subscribe({ error: () => undefined });
+    backend.expectOne('/api/v1/branches/1/serving-warehouses').flush({ errorCode: 'error.branch_setting.not_found' }, { status: 404, statusText: 'Not Found' });
+    expect(errors.message()).toBeNull();
+
+    http.get('/api/v1/branches/1/serving-warehouses', { context }).subscribe({ error: () => undefined });
+    backend.expectOne('/api/v1/branches/1/serving-warehouses').flush({}, { status: 500, statusText: 'Server Error' });
+    expect(errors.message()).toBe('error.connection');
   });
 
   it('keeps the banner while the failing request is the latest one', () => {
